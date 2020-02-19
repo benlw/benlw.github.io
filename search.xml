@@ -7,7 +7,7 @@
 <li>精读论文并简单实现论文的例子</li>
 <li>搭建一个基本的框架(包含正运动学,jacobian,正逆动力学部分),将其仿真实现,并可应用于n-dof的机械臂.</li>
 </ul>
-<p>仿真如下<br><img src="artificial_potential.gif" alt=""></p>
+<p>仿真如下:(t=0.01s,红色圆表示安全距离,蓝色圆为障碍.*点为目标点)<br><img src="artificial_potential.gif" alt=""></p>
 <p>解决规划问题的论文有不少,但最经典的应该还是khatib1986那篇文章:real time obstacle avoidance for manipulators and moile robots.总的说来就是在operation space计算控制律,并通过jacobian矩阵将其转化为力矩,求得joint space的控制力作为控制信号.有陷入局部极小点的问题(这一块我将放在mathematica中进行分析,这款软件可视化很给力,尽管我还是个初学者)</p>
 <h5 id="大体思路如下"><a href="#大体思路如下" class="headerlink" title="大体思路如下:"></a>大体思路如下:</h5><ol>
 <li>寻找each arm segment距离障碍最近点,如果满足一定条件,则施加斥力</li>

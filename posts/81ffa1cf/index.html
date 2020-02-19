@@ -20,16 +20,16 @@
     var CONFIG = {"hostname":"5imcs.com","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":"ture"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="目的 精读论文并简单实现论文的例子 搭建一个基本的框架(包含正运动学,jacobian,正逆动力学部分),将其仿真实现,并可应用于n-dof的机械臂.  仿真如下 解决规划问题的论文有不少,但最经典的应该还是khatib1986那篇文章:real time obstacle avoidance for manipulators and moile robots.总的说来就是在operation s">
+  <meta name="description" content="目的 精读论文并简单实现论文的例子 搭建一个基本的框架(包含正运动学,jacobian,正逆动力学部分),将其仿真实现,并可应用于n-dof的机械臂.  仿真如下:(t&#x3D;0.01s,红色圆表示安全距离,蓝色圆为障碍.*点为目标点) 解决规划问题的论文有不少,但最经典的应该还是khatib1986那篇文章:real time obstacle avoidance for manipulators a">
 <meta property="og:type" content="article">
 <meta property="og:title" content="读论文real time obstacle avoidance for manipulators and moile robots并仿真">
 <meta property="og:url" content="https://5imcs.com/posts/81ffa1cf/index.html">
 <meta property="og:site_name" content="math.h">
-<meta property="og:description" content="目的 精读论文并简单实现论文的例子 搭建一个基本的框架(包含正运动学,jacobian,正逆动力学部分),将其仿真实现,并可应用于n-dof的机械臂.  仿真如下 解决规划问题的论文有不少,但最经典的应该还是khatib1986那篇文章:real time obstacle avoidance for manipulators and moile robots.总的说来就是在operation s">
+<meta property="og:description" content="目的 精读论文并简单实现论文的例子 搭建一个基本的框架(包含正运动学,jacobian,正逆动力学部分),将其仿真实现,并可应用于n-dof的机械臂.  仿真如下:(t&#x3D;0.01s,红色圆表示安全距离,蓝色圆为障碍.*点为目标点) 解决规划问题的论文有不少,但最经典的应该还是khatib1986那篇文章:real time obstacle avoidance for manipulators a">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://5imcs.com/posts/81ffa1cf/artificial_potential.gif">
 <meta property="article:published_time" content="2020-02-20T04:04:39.000Z">
-<meta property="article:modified_time" content="2020-02-19T14:01:37.652Z">
+<meta property="article:modified_time" content="2020-02-19T14:08:23.792Z">
 <meta property="article:author" content="Benliang Wang">
 <meta property="article:tag" content="Matlab">
 <meta property="article:tag" content="机械臂">
@@ -191,7 +191,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-19 22:01:37" itemprop="dateModified" datetime="2020-02-19T22:01:37+08:00">2020-02-19</time>
+                <time title="修改时间：2020-02-19 22:08:23" itemprop="dateModified" datetime="2020-02-19T22:08:23+08:00">2020-02-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -233,7 +233,7 @@
 <li>精读论文并简单实现论文的例子</li>
 <li>搭建一个基本的框架(包含正运动学,jacobian,正逆动力学部分),将其仿真实现,并可应用于n-dof的机械臂.</li>
 </ul>
-<p>仿真如下<br><img src="artificial_potential.gif" alt=""></p>
+<p>仿真如下:(t=0.01s,红色圆表示安全距离,蓝色圆为障碍.*点为目标点)<br><img src="artificial_potential.gif" alt=""></p>
 <p>解决规划问题的论文有不少,但最经典的应该还是khatib1986那篇文章:real time obstacle avoidance for manipulators and moile robots.总的说来就是在operation space计算控制律,并通过jacobian矩阵将其转化为力矩,求得joint space的控制力作为控制信号.有陷入局部极小点的问题(这一块我将放在mathematica中进行分析,这款软件可视化很给力,尽管我还是个初学者)</p>
 <h5 id="大体思路如下"><a href="#大体思路如下" class="headerlink" title="大体思路如下:"></a>大体思路如下:</h5><ol>
 <li>寻找each arm segment距离障碍最近点,如果满足一定条件,则施加斥力</li>
