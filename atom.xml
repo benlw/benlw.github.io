@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://5imcs.com/"/>
-  <updated>2020-03-01T10:27:57.975Z</updated>
+  <updated>2020-03-01T10:30:04.537Z</updated>
   <id>https://5imcs.com/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>coordinate-invariant algorithm验证</title>
+    <title>coordinate-invariant dynamics algorithm验证</title>
     <link href="https://5imcs.com/posts/1e752288/"/>
     <id>https://5imcs.com/posts/1e752288/</id>
     <published>2020-02-29T16:00:00.000Z</published>
-    <updated>2020-03-01T10:27:57.975Z</updated>
+    <updated>2020-03-01T10:30:04.537Z</updated>
     
     <content type="html"><![CDATA[<h5 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h5><ul><li>以平面RRR三连杆和空间三连杆为例,通过选择两种标架(joint frame以及center of mass frame),实现坐标不变算法对机械臂正逆动力学仿真:包括对inertial matrix, energy的分析; </li><li>搭建一个基本的creatrobot函数(其中各link为cuboid),采用euler数值积分,将仿真可视化,并与商业软件对比(对比末端轨迹),在此基础上测试变分积分子.</li></ul><h4 id="Coordinate-invariant-algorithm"><a href="#Coordinate-invariant-algorithm" class="headerlink" title="Coordinate-invariant algorithm"></a>Coordinate-invariant algorithm</h4><h5 id="center-of-mass"><a href="#center-of-mass" class="headerlink" title="center of mass"></a>center of mass</h5><h5 id="joint-frame"><a href="#joint-frame" class="headerlink" title="joint frame"></a>joint frame</h5><p> (刚编写完函数,还在测试中,先占个坑,空余时间将本篇博客补充完整.20-03-01)</p>]]></content>
     
