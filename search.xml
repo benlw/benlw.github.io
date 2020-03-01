@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>coordinate-invariant algorithm验证</title>
+    <url>/posts/1e752288/</url>
+    <content><![CDATA[<h5 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h5><ul>
+<li>以平面RRR三连杆和空间三连杆为例,通过选择两种标架(joint frame以及center of mass frame),实现坐标不变算法对机械臂正逆动力学仿真:包括对inertial matrix, energy的分析; </li>
+<li>搭建一个基本的creatrobot函数(其中各link为cuboid),采用euler数值积分,将仿真可视化,并与商业软件对比(对比末端轨迹),在此基础上测试变分积分子.</li>
+</ul>
+<h4 id="Coordinate-invariant-algorithm"><a href="#Coordinate-invariant-algorithm" class="headerlink" title="Coordinate-invariant algorithm"></a>Coordinate-invariant algorithm</h4><h5 id="center-of-mass"><a href="#center-of-mass" class="headerlink" title="center of mass"></a>center of mass</h5><h5 id="joint-frame"><a href="#joint-frame" class="headerlink" title="joint frame"></a>joint frame</h5><p> (刚编写完函数,还在测试中,先占个坑,空余时间将本篇博客补充完整.20-03-01)</p>
+]]></content>
+      <categories>
+        <category>动力学</category>
+        <category>仿真</category>
+      </categories>
+      <tags>
+        <tag>Matlab</tag>
+        <tag>机械臂</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>读论文real time obstacle avoidance for manipulators and moile robots并仿真</title>
     <url>/posts/81ffa1cf/</url>
     <content><![CDATA[<h5 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h5><ul>
@@ -14,15 +32,15 @@
 <li>将斥力转化为关节力矩</li>
 <li>作为控制律</li>
 </ol>
-<p>我们希望整个机械臂避免碰撞,但目前我们将问题减少至仅关心每段到障碍物最近的点.如果达到距离阀值则将其远离障碍.</p>
-<p>为了找到手臂距离障碍物最近点$p_{psp}$,假设$x_c(:,i)$和$x_c(:,i+1)$为手臂(考虑直线)首尾端点.$ob_orgin$为障碍物中心.</p>
+<p>我们希望整个机械臂避免碰撞,但目前我们将问题减少至仅关心每段到障碍物最近的点.如果达到距离阀值则将施加斥力使其远离障碍.</p>
+<p>为了找到手臂距离障碍物最近点$p_{psp}$,假设$x_c(:,i)$和$x_c(:,i+1)$为手臂(考虑直线)首尾端点.$ob_{orgin}$为障碍物中心.</p>
 <figure class="highlight matlab"><table><tr><td class="code"><pre><span class="line"><span class="comment">% 计算各杆距离障碍物最近点closest,dist到障碍物中心距离,drhodx最近点指向障碍物外点向量</span></span><br><span class="line">taurep = <span class="built_in">zeros</span>(n,<span class="number">1</span>); <span class="comment">%斥力产生的力矩</span></span><br><span class="line">closest = []; dist = []; drhodx = [];</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>: n</span><br><span class="line">    vec_line = xc(:,<span class="built_in">i</span>+<span class="number">1</span>) - xc(:,<span class="built_in">i</span>);<span class="comment">%每一节端点</span></span><br><span class="line">    vec_ob_line = ob_orgin - xc(:,<span class="built_in">i</span>); <span class="comment">%the vector from the obstacle to the first line point</span></span><br><span class="line">    projection = <span class="built_in">dot</span>(vec_line,vec_ob_line)/<span class="built_in">dot</span>(vec_line,vec_line);</span><br><span class="line"><span class="keyword">if</span> projection  &lt; <span class="number">0</span></span><br><span class="line">    pclosest = xc(:,<span class="built_in">i</span>);</span><br><span class="line"><span class="keyword">elseif</span> projection &gt; <span class="number">1</span></span><br><span class="line">    pclosest = xc(:,<span class="built_in">i</span>+<span class="number">1</span>);</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    pclosest = xc(:,<span class="built_in">i</span>) + projection*vec_line;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">closest = [closest,pclosest]; <span class="comment">%ok</span></span><br></pre></td></tr></table></figure>
 <p>利用夹角公式即可.<br>论文中<br>距离函数设计如下(arm closer,response stronger): </p>
 <blockquote>
 <p>$$F_{psp}=\eta(\frac{1}{\rho}-\frac{1}{\rho_0})\frac{1}{\rho^2}\frac{\partial \rho}{\partial x}$$<br>其中$\rho$表示到障碍的距离,$\rho_0$为安全(threshold)距离.(这里有个问题:如何合适的确定距离阀值呢?-这需要从论文的证明角度进行考虑.) </p>
 </blockquote>
 <hr>
-<p>关键在于第二部分,我采用的是机械臂的几何雅克比矩阵[1] (spatial velocity twist jacobian,为方面表述记为$J_s$),故与论文中的$^0J$相差一个变换.</p>
+<p>关键在于第二部分,我采用的是机械臂的几何雅克比矩阵[1] (spatial velocity twist jacobian,为方便表述记为$J_s$),故与论文中的$^0J$相差一个变换.</p>
 <blockquote>
 <p>几本教材的说法不太统一.</p>
 </blockquote>
@@ -35,14 +53,14 @@
 
 <p>第三种为[1] 书中所介绍的,利用伴随映射和Twist计算.不再赘述.</p>
 <blockquote>
-<p>再利用$\tau = J^TM_{x}F_{psp}$计算关节空间的力矩,方便起见,仿真程序设$M_{x}$为单位矩阵.</p>
+<p>再利用$\tau = J^TM_{x}F_{psp}$计算关节空间的力矩,方便起见,仿真程序设$M_{x}$为单位矩阵.($M$ works to linearize the control)</p>
 </blockquote>
 <hr>
 <p>特别注意的是,虚拟引力的设计,为了使得追踪过程end-effector走直线(不受虚拟斥力时),考虑速度限制,详细见论文.</p>
 <figure class="highlight matlab"><table><tr><td class="code"><pre><span class="line">dx = js*dthetalist; </span><br><span class="line">lamb = kp/kv; vmax = <span class="number">2.5</span>; <span class="comment">%x_tilde = xc(:,end)-xd;</span></span><br><span class="line">dxd = lamb*(xd - xc(:,<span class="keyword">end</span>));v = vmax/(<span class="built_in">sqrt</span>(dxd'*dxd));</span><br><span class="line"><span class="keyword">if</span> v &gt; <span class="number">1</span></span><br><span class="line">    v = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">f_att = [<span class="built_in">zeros</span>(<span class="number">3</span>,<span class="number">1</span>);-kv*(dx(<span class="number">4</span>:<span class="number">6</span>,<span class="number">1</span>)-v*dxd)];</span><br></pre></td></tr></table></figure>
 
 <p>关于动力学,采用递推公式(相比Lagrange方法,更适合多自由度情况).</p>
-<p>[1]: A Mathematical Introduction to<br>Robotic Manipulation</p>
+<p>[1]: A Mathematical Introduction to Robotic Manipulation</p>
 ]]></content>
       <categories>
         <category>仿真</category>
