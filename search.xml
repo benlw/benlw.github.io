@@ -9,9 +9,6 @@
 </ul>
 <h4 id="Coordinate-invariant-algorithm"><a href="#Coordinate-invariant-algorithm" class="headerlink" title="Coordinate-invariant algorithm"></a>Coordinate-invariant algorithm</h4><h5 id="center-of-mass"><a href="#center-of-mass" class="headerlink" title="center of mass"></a>center of mass</h5><h5 id="joint-frame"><a href="#joint-frame" class="headerlink" title="joint frame"></a>joint frame</h5><p> (刚编写完函数,还在测试中,先占个坑,空余时间将本篇博客补充完整.20-03-01)</p>
 <p><img src="testAnimated.gif" alt=""></p>
-<p><img src="vrep-1.png" alt=""></p>
-<p><img src="vrep-2.png" alt=""></p>
-<p><a href="3rrrplanar_in_gravity.ttt">here is v-rep file</a></p>
 ]]></content>
       <categories>
         <category>动力学</category>
