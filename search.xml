@@ -8,6 +8,8 @@
 <li>搭建一个基本的creatrobot函数(其中各link为cuboid),采用euler数值积分,将仿真可视化,并与商业软件对比(对比末端轨迹),在此基础上测试变分积分子.</li>
 </ul>
 <h4 id="Coordinate-invariant-algorithm"><a href="#Coordinate-invariant-algorithm" class="headerlink" title="Coordinate-invariant algorithm"></a>Coordinate-invariant algorithm</h4><h5 id="center-of-mass"><a href="#center-of-mass" class="headerlink" title="center of mass"></a>center of mass</h5><h5 id="joint-frame"><a href="#joint-frame" class="headerlink" title="joint frame"></a>joint frame</h5><p> (刚编写完函数,还在测试中,先占个坑,空余时间将本篇博客补充完整.20-03-01)</p>
+<p><img src="testAnimated.gif" alt=""></p>
+<p><a href="3rrrplanar_in_gravity.ttt">here is v-rep file</a></p>
 ]]></content>
       <categories>
         <category>动力学</category>
@@ -59,7 +61,7 @@
 <p>特别注意的是,虚拟引力的设计,为了使得追踪过程end-effector走直线(不受虚拟斥力时),考虑速度限制,详细见论文.</p>
 <figure class="highlight matlab"><table><tr><td class="code"><pre><span class="line">dx = js*dthetalist; </span><br><span class="line">lamb = kp/kv; vmax = <span class="number">2.5</span>; <span class="comment">%x_tilde = xc(:,end)-xd;</span></span><br><span class="line">dxd = lamb*(xd - xc(:,<span class="keyword">end</span>));v = vmax/(<span class="built_in">sqrt</span>(dxd'*dxd));</span><br><span class="line"><span class="keyword">if</span> v &gt; <span class="number">1</span></span><br><span class="line">    v = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">f_att = [<span class="built_in">zeros</span>(<span class="number">3</span>,<span class="number">1</span>);-kv*(dx(<span class="number">4</span>:<span class="number">6</span>,<span class="number">1</span>)-v*dxd)];</span><br></pre></td></tr></table></figure>
 
-<p>关于动力学,采用递推公式(相比Lagrange方法,更适合多自由度情况).</p>
+<p>关于动力学,采用递推公式(相比Lagrange方法,更适合多自由度情况),我将放在另一篇博客介绍.<a href="https://5imcs.com/posts/1e752288/">链接</a></p>
 <p>[1]: A Mathematical Introduction to Robotic Manipulation</p>
 ]]></content>
       <categories>
