@@ -20,16 +20,18 @@
     var CONFIG = {"hostname":"5imcs.com","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":"ture"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="目的 以平面RRR三连杆和空间三连杆为例,通过选择两种标架(joint frame以及center of mass frame),实现坐标不变算法对机械臂正逆动力学仿真:包括对inertial matrix, energy的分析;  搭建一个基本的creatrobot函数(其中各link为cuboid),采用euler数值积分,将仿真可视化,并与商业软件对比(对比末端轨迹),在此基础上测试变分积分">
+  <meta name="description" content="目的 以平面RRR三连杆和空间三连杆为例,通过选择两种标架(joint frame以及center of mass frame),实现坐标不变算法对机械臂正逆动力学仿真:包括对inertial matrix, energy的分析;  搭建一个基本的creatrobot函数(其中各link为cuboid),采用euler数值积分,将仿真可视化,并与商业软件V-rep对比(对比末端轨迹),在此基础上测">
 <meta property="og:type" content="article">
-<meta property="og:title" content="coordinate-invariant dynamics algorithm验证">
+<meta property="og:title" content="coordinate-invariant algorithm验证">
 <meta property="og:url" content="https://5imcs.com/posts/1e752288/index.html">
 <meta property="og:site_name" content="math.h">
-<meta property="og:description" content="目的 以平面RRR三连杆和空间三连杆为例,通过选择两种标架(joint frame以及center of mass frame),实现坐标不变算法对机械臂正逆动力学仿真:包括对inertial matrix, energy的分析;  搭建一个基本的creatrobot函数(其中各link为cuboid),采用euler数值积分,将仿真可视化,并与商业软件对比(对比末端轨迹),在此基础上测试变分积分">
+<meta property="og:description" content="目的 以平面RRR三连杆和空间三连杆为例,通过选择两种标架(joint frame以及center of mass frame),实现坐标不变算法对机械臂正逆动力学仿真:包括对inertial matrix, energy的分析;  搭建一个基本的creatrobot函数(其中各link为cuboid),采用euler数值积分,将仿真可视化,并与商业软件V-rep对比(对比末端轨迹),在此基础上测">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://5imcs.com/posts/1e752288/testAnimated.gif">
+<meta property="og:image" content="https://5imcs.com/posts/1e752288/vrep.gif">
+<meta property="og:image" content="https://5imcs.com/posts/1e752288/file.jpg">
 <meta property="article:published_time" content="2020-02-29T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-03-03T09:02:23.922Z">
+<meta property="article:modified_time" content="2020-03-04T16:35:57.679Z">
 <meta property="article:author" content="Benliang Wang">
 <meta property="article:tag" content="Matlab">
 <meta property="article:tag" content="机械臂">
@@ -48,7 +50,7 @@
   };
 </script>
 
-  <title>coordinate-invariant dynamics algorithm验证 | math.h</title>
+  <title>coordinate-invariant algorithm验证 | math.h</title>
   
 
 
@@ -174,7 +176,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          coordinate-invariant dynamics algorithm验证
+          coordinate-invariant algorithm验证
         </h1>
 
         <div class="post-meta">
@@ -191,7 +193,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-03 17:02:23" itemprop="dateModified" datetime="2020-03-03T17:02:23+08:00">2020-03-03</time>
+                <time title="修改时间：2020-03-05 00:35:57" itemprop="dateModified" datetime="2020-03-05T00:35:57+08:00">2020-03-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -233,11 +235,32 @@
       
         <h5 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h5><ul>
 <li>以平面RRR三连杆和空间三连杆为例,通过选择两种标架(joint frame以及center of mass frame),实现坐标不变算法对机械臂正逆动力学仿真:包括对inertial matrix, energy的分析; </li>
-<li>搭建一个基本的creatrobot函数(其中各link为cuboid),采用euler数值积分,将仿真可视化,并与商业软件对比(对比末端轨迹),在此基础上测试变分积分子.</li>
+<li>搭建一个基本的creatrobot函数(其中各link为cuboid),采用euler数值积分,将仿真可视化,并与商业软件V-rep对比(对比末端轨迹),在此基础上测试变分积分子.</li>
 </ul>
-<h4 id="Coordinate-invariant-algorithm"><a href="#Coordinate-invariant-algorithm" class="headerlink" title="Coordinate-invariant algorithm"></a>Coordinate-invariant algorithm</h4><h5 id="center-of-mass"><a href="#center-of-mass" class="headerlink" title="center of mass"></a>center of mass</h5><h5 id="joint-frame"><a href="#joint-frame" class="headerlink" title="joint frame"></a>joint frame</h5><p> (刚编写完函数,还在测试中,先占个坑,空余时间将本篇博客补充完整.20-03-01)</p>
-<p><img src="testAnimated.gif" alt=""></p>
+<h4 id="Coordinate-invariant-algorithm"><a href="#Coordinate-invariant-algorithm" class="headerlink" title="Coordinate-invariant algorithm"></a>Coordinate-invariant algorithm</h4><p>criag的书采用的就是这一方法,李泽湘的新的lecture也加入了这部分内容,坐标系建立在关节处,这一点与Park不同.</p>
+<p>起初研究这部分内容,我还产生了一个疑问,为了保证惯性矩阵Inertia Matrix的简洁优雅,所以计算是在center of mass这一标架上进行的,$\tau = F^T_iS_i$, 其中$S_i$为screw aixs of i joint expressed in {i} frame.那么$\tau$结果应该是施加在第i杆质心上的?</p>
+<p>先说结果,,从程序实验来看,其实两种方法实验结果一致(包括得到的力矩).</p>
+<p>我还没有仔细证明,假设质心Inertia Matrix是$I_b$,那么在关节处(frame {s})应为为$Ad^T_gI_b Ad_g$. </p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Is</span> = <span class="title">inertialmatirx_check</span><span class="params">(T,Ib)</span></span></span><br><span class="line"><span class="comment">%测试 I_s = Ad^T_T(bs)I_bAd_T&#123;bs&#125; 将cm惯性矩阵转换到joint处</span></span><br><span class="line"><span class="comment">%&#123;</span></span><br><span class="line"><span class="comment">Mb = diag([172.27656, 172.27656, 172.27656, 3.16441, 32.90891, 34.31683]);</span></span><br><span class="line"><span class="comment">Rbs = [0.98655, 0.16044, 0.03136; 0.0005, 0.18889, -0.982; -0.16347, 0.9688, 0.18627];</span></span><br><span class="line"><span class="comment">Pbs = [0.74197; 0.019914; -0.013597];%Pbs = [0;0;0];%</span></span><br><span class="line"><span class="comment">Tbs = [Rbs, Pbs; 0 0 0 1];</span></span><br><span class="line"><span class="comment">Is = inertialmatirx_check(Tbs,Mb);</span></span><br><span class="line"><span class="comment">%&#125;</span></span><br><span class="line">Is =  Adjoint(T)'*Ib*Adjoint(T);</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>这里得到的Inertial Matrix不是<code>[I_c ,0 ; 0 ,m]</code>形的,目前我没找到相关的文献描述,但从推导来看,是没有问题的(加上惯性矩阵的转换,应该可以推导出下面两种方式等价).如果将对角置0,下述程序得不到相同的结果.</p>
+<h5 id="center-of-mass"><a href="#center-of-mass" class="headerlink" title="center of mass"></a>center of mass</h5><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%主要参数</span></span><br><span class="line"><span class="comment">%center of mass 相对位置</span></span><br><span class="line">M01 = [[<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>,  <span class="number">0.05</span>]; [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]];</span><br><span class="line">M12 = [[<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>,  <span class="number">0.10</span>]; [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]];</span><br><span class="line">M23 = [[<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>,  <span class="number">0.10</span>]; [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]];</span><br><span class="line">M34 = [[<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>,  <span class="number">0.05</span>]; [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]];</span><br><span class="line">G = <span class="built_in">diag</span>(<span class="built_in">ones</span>(<span class="number">1</span>,<span class="number">6</span>)); <span class="comment">%inertia matrix</span></span><br><span class="line">w1 = [<span class="number">0</span>;<span class="number">0</span>;<span class="number">1</span>]; q1 = [<span class="number">0</span>;<span class="number">0</span>;<span class="number">0</span>]; q2 = [<span class="number">0.10</span>;<span class="number">0</span>;<span class="number">0</span>]; q3 = [<span class="number">0.20</span>;<span class="number">0</span>;<span class="number">0</span>];</span><br><span class="line">S = [[<span class="number">0</span>; <span class="number">0</span>; <span class="number">1</span>;    -<span class="built_in">cross</span>(w1,q1)], ...</span><br><span class="line">     [<span class="number">0</span>; <span class="number">0</span>; <span class="number">1</span>;    -<span class="built_in">cross</span>(w1,q2)], ...</span><br><span class="line">     [<span class="number">0</span>; <span class="number">0</span>; <span class="number">1</span>;    -<span class="built_in">cross</span>(w1,q3)]];</span><br></pre></td></tr></table></figure>
 
+<h5 id="joint-frame"><a href="#joint-frame" class="headerlink" title="joint frame"></a>joint frame</h5><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%主要参数</span></span><br><span class="line"><span class="comment">%center of mass 相对位置</span></span><br><span class="line">M01 = [[<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>,  <span class="number">0.00</span>]; [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]];</span><br><span class="line">M12 = [[<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>,  <span class="number">0.10</span>]; [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]];</span><br><span class="line">M23 = [[<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>,  <span class="number">0.10</span>]; [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]];</span><br><span class="line">M34 = [[<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>,  <span class="number">0.10</span>]; [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]];</span><br><span class="line">G = <span class="built_in">diag</span>(<span class="built_in">ones</span>(<span class="number">1</span>,<span class="number">6</span>)); <span class="comment">%inertia matrix</span></span><br><span class="line">T = [[<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>,  <span class="number">-0.05</span>]; [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>]; [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]]</span><br><span class="line">Ic = inertialmatirx_check(T,G) <span class="comment">%转化为Ic标架下</span></span><br><span class="line">w1 = [<span class="number">0</span>;<span class="number">0</span>;<span class="number">1</span>]; q1 = [<span class="number">0</span>;<span class="number">0</span>;<span class="number">0</span>]; q2 = [<span class="number">0.10</span>;<span class="number">0</span>;<span class="number">0</span>]; q3 = [<span class="number">0.20</span>;<span class="number">0</span>;<span class="number">0</span>];</span><br><span class="line">S = [[<span class="number">0</span>; <span class="number">0</span>; <span class="number">1</span>;    -<span class="built_in">cross</span>(w1,q1)], ...</span><br><span class="line">     [<span class="number">0</span>; <span class="number">0</span>; <span class="number">1</span>;    -<span class="built_in">cross</span>(w1,q2)], ...</span><br><span class="line">     [<span class="number">0</span>; <span class="number">0</span>; <span class="number">1</span>;    -<span class="built_in">cross</span>(w1,q3)]];</span><br></pre></td></tr></table></figure>
+
+<h5 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h5><ul>
+<li><p>Matlab<br><img src="testAnimated.gif" alt=""></p>
+</li>
+<li><p>Vrep<br><img src="vrep.gif" alt=""></p>
+</li>
+<li><p>对比<br><img src="file.jpg" alt=""></p>
+<h5 id="V-rep基础教程"><a href="#V-rep基础教程" class="headerlink" title="V-rep基础教程"></a>V-rep基础教程</h5><p>推荐阅读顺序如下:</p>
+</li>
+<li><p><a href="https://www.coppeliarobotics.com/helpFiles/en/buildingAModelTutorial.htm" target="_blank" rel="noopener">Building a clean model tutorial</a> Building the joints</p>
+</li>
+<li><p><a href="https://www.coppeliarobotics.com/helpFiles/" target="_blank" rel="noopener">CoppeliaSim User Manual</a></p>
+</li>
+</ul>
+<h5 id="下一步将继续研究离散的算法-待续"><a href="#下一步将继续研究离散的算法-待续" class="headerlink" title="下一步将继续研究离散的算法.(待续)"></a>下一步将继续研究离散的算法.(待续)</h5>
     </div>
 
     
@@ -267,7 +290,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://5imcs.com/posts/1e752288/" title="coordinate-invariant dynamics algorithm验证">https://5imcs.com/posts/1e752288/</a>
+    <a href="https://5imcs.com/posts/1e752288/" title="coordinate-invariant algorithm验证">https://5imcs.com/posts/1e752288/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -356,7 +379,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#目的"><span class="nav-number">1.</span> <span class="nav-text">目的</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Coordinate-invariant-algorithm"><span class="nav-number"></span> <span class="nav-text">Coordinate-invariant algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#center-of-mass"><span class="nav-number">1.</span> <span class="nav-text">center of mass</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#joint-frame"><span class="nav-number">2.</span> <span class="nav-text">joint frame</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#目的"><span class="nav-number">1.</span> <span class="nav-text">目的</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Coordinate-invariant-algorithm"><span class="nav-number"></span> <span class="nav-text">Coordinate-invariant algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#center-of-mass"><span class="nav-number">1.</span> <span class="nav-text">center of mass</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#joint-frame"><span class="nav-number">2.</span> <span class="nav-text">joint frame</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#结果"><span class="nav-number">3.</span> <span class="nav-text">结果</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#V-rep基础教程"><span class="nav-number">4.</span> <span class="nav-text">V-rep基础教程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#下一步将继续研究离散的算法-待续"><span class="nav-number">5.</span> <span class="nav-text">下一步将继续研究离散的算法.(待续)</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
