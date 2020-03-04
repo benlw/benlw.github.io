@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>coordinate-invariant algorithm验证</title>
+    <title>coordinate-invariant dynamics algorithm验证</title>
     <url>/posts/1e752288/</url>
     <content><![CDATA[<h4 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h4><ul>
 <li>以平面RRR三连杆和空间三连杆为例,通过选择两种标架(joint frame以及center of mass frame),实现坐标不变算法对机械臂正逆动力学仿真:包括对inertial matrix, energy的分析; </li>
