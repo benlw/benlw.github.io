@@ -65,7 +65,7 @@
 <blockquote>
 <p>关于为什么将$[0,tf]$转化到$[0,1]$</p>
 </blockquote>
-<p>如果我没理解错的话,除了为了分析Hessian之外,在编程中我发现,如果tf过大,划分步长不够的话,<code>forwardynamics</code>函数容易积累误差.想必这也是论文作者杆敢划分21点的原因,平均下来步长也就0.05,perfect!</p>
+<p>如果我没理解错的话,除了为了分析Hessian之外,在编程中我发现,如果tf过大,划分步长不够的话,<code>forwardynamics</code>函数容易积累误差.想必这也是论文作者敢划分21点的原因,平均下来步长也就0.05,perfect!</p>
 <ul>
 <li><p>局部最优与全局</p>
 <blockquote>
@@ -75,8 +75,7 @@
 <li><p>关于梯度与Hessian阵.</p>
 </li>
 </ul>
-<!-- 这是一个可以对论文改进的方向,也是我目前在研究的.博文到这里, 耗费一周时间总算完成了一个OCP问题小实验.-->
-]]></content>
+<!-- 这是一个可以对论文改进的方向,也是我目前在研究的.博文到这里, 耗费一周时间总算完成了一个OCP问题小实验.-->]]></content>
       <categories>
         <category>最优控制</category>
         <category>仿真</category>
