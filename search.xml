@@ -9,16 +9,17 @@
 <li><p>搭建一个基本的框架(包含问题描述,障碍物避障准则(代数层面),离散,B-spline,SQP等部分),将其仿真实现,并可应用于n-dof的机械臂.</p>
 </li>
 </ul>
-<p>仿真如下<br>(暂未实现)<br><img src="release_1_without_obstacles.png" alt="场景"></p>
-<p>这篇文章对于最优控制的框架值得学习,尤其利用代数将避障处理成不等式约束,再利用隐面剔除策略减少约束.本文在前面newton-euler dynamics算法的基础上,结合B样条将问题离散,简单(在未引入隐面剔除策略下,调用<code>fmincon</code>函数)实现论文的optimal time数值算例.</p>
+<p>仿真如下</p>
+<p><img src="scene.png" alt=""></p>
+<p><font color=red>这篇文章对于最优控制的框架值得学习,尤其利用代数将避障处理成不等式约束,再利用隐面剔除策略减少约束.本文在前面newton-euler dynamics算法的基础上,结合B样条将问题离散,简单(在未引入隐面剔除策略下,调用<code>fmincon</code>函数)实现论文的optimal time数值算例.</font></p>
 <h5 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述:"></a>问题描述:</h5><ol>
 <li>动力学方程</li>
 </ol>
-<p>验证一下是否和论文的一样 p462 </p>
+<p>可参考上一篇博文,这部分算法已经在Vrep中验证过了.简单验证一下是否和论文的一样 p462 </p>
 <figure class="highlight matlab"><table><tr><td class="code"><pre><span class="line"><span class="comment">% grav = inversedyn(robot.thetalist, zeros(3, 1), zeros(3, 1) ,robot.g, robot.T, robot.InertiaMtr, robot.Twist)</span></span><br><span class="line"><span class="comment">% k = -9.81;</span></span><br><span class="line"><span class="comment">% F_q_u = [0; -k*l*cos(robot.thetalist(2))*(0.5*m2+m3+m4)-k*l*cos(robot.thetalist(2)+robot.thetalist(3))*(0.5*m3+m4);...</span></span><br><span class="line"><span class="comment">%             -k*l*cos(robot.thetalist(2)+robot.thetalist(3))*(0.5*m3+m4)]</span></span><br></pre></td></tr></table></figure>
 
 <blockquote>
-<p> 以核对无误 但是输入文章fig9的u1,u2,u3输入进去,杆1不怎么移动,这里应该是论文fig9有问题,我们将其乘以scaling factor 100.</p>
+<p> 核对无误 但是输入文章fig9的u1,u2,u3输入进去,杆1不怎么移动,这里应该是论文fig9有问题,我们将其乘以scaling factor 100. aha,作者回复我了,说忘记在论文提fig9是经过normalized,真实的边界的在-100~100Nm.此外,作者建议不要考虑重力(insufficient control 将导致robot崩溃 - -),关于初值的选取作者建议除了论文中的scaling方法,还可以从无障碍物开始训练,以constructing good initial guess.本博文也将采用这一策略.</p>
 </blockquote>
 <ol start="3">
 <li>避障准则</li>
@@ -27,7 +28,7 @@
 <li>提升: 隐面剔除策略</li>
 </ol>
 <h5 id="序列二次规划-SQP"><a href="#序列二次规划-SQP" class="headerlink" title="序列二次规划(SQP)"></a>序列二次规划(SQP)</h5><p>因为时间有限,本此仿真将利用Matlab优化函数处理离散最优问题.先对<code>fmincon</code>有个大概了解.后续腾出手来再补充SQP.</p>
-<p>作为Nonlinear programming solver,求解如下形式:<br>$$min_x f(x) ~ s.t : c(x)\leq 0,<del>~ ceq(x) = 0,</del> A\cdot x \leq b,<del>~ Aeq\cdot x = beq, ~and</del> lb \leq x \leq ub  $$</p>
+<p>作为Nonlinear programming solver,求解如下形式:<br>$$ min_x f(x) ~ s.t : c(x)\leq 0, ceq(x) = 0, A\cdot x \leq b, Aeq\cdot x = beq, and, lb \leq x \leq ub  $$</p>
 <h5 id="开发进度"><a href="#开发进度" class="headerlink" title="开发进度"></a>开发进度</h5><ul>
 <li><p>spline_curve(torque_grid_point, t, order, knot_vector),样条离散,输入 $t \in [0,1]$ 计算torque. 关于初值的选取我问了论文作者,他说如果没记错的话,对于torque control取了21个控制点(de boor point), 一阶样条,与auxiliary control $\omega$一致.</p>
 </li>
@@ -48,28 +49,33 @@
 <p>从动力学方程的角度,似乎不太好按第一种方式进行离散,因为时间最优控制一般是bang-bang控制,关节轨迹一般需要比较高阶的样条(但在initial_guess时会更直观一点吧?).不过结果应该差不多吧,按这种方式离散, 上述边界约束则是非线性约束.</p>
 <p>我还是按论文走.对control离散之后,调用正动力学计算$\ddot{\theta}$,选择合适的积分策略(这里简单选择euler显示格式,因为步长划分比较多).再调用正运动学计算负载位姿$T_{load} = [R,p;0 0 0 1] $,得到离散后避障约束方程(P444,OCP Problem)以及关节边界约束:</p>
 <p>$$   G_I(x_k(z))^T w_I,h(t_k) =  0, I = 1,…,M=12,~~ K = 0,…,N $$<br>$$   g_I(x_k(z))^T w_I,h(t_k) &lt;= -e $$<br>$$   \phi(x_o,x_N(z)) = 0; $$</p>
+<p>在程序中我设置了两个模式,以便切换.</p>
 <blockquote>
-<p>调试很久, 发现一些问题, 先不考虑障碍物约束<code>robot.collision_mode = 0; %false = 0 默认不考虑</code>, 进行最省时间路径规划</p>
+<p><code>robot.collision_mode = 0; %false = 0 默认不考虑</code>, 进行最省时间路径规划</p>
 </blockquote>
 <blockquote>
-<p>Q1.错误使用 barrier<br>Nonlinear constraint function is undefined at initial point. Fmincon cannot continue.<br>检查一下 nonlinear_constraint(initial_guess) 看是不是有NaN.(问题主要出在计算正动力学时$$M$$矩阵奇异.这与我们初值选取有关,如果想要避免这一问题,初始值可以稍微小一点.)</p>
+<p>Q1.错误使用 barrier<br>Nonlinear constraint function is undefined at initial point. Fmincon cannot continue.</p>
 </blockquote>
+<p>检查一下,调用<code>nonlinear_constraint(initial_guess)</code> 看是不是有NaN.(问题主要出在计算正动力学时 $ M $ 矩阵奇异.这与我们初值选取有关,如果想要避免这一问题,初始值可以稍微小一点.)</p>
 <blockquote>
 <p>Q2.Local minimum found that satisfies the constraints. 弄了个乌龙,返回满足局部最优,于是将其绘制轨迹曲线,发现都为0, 才发现最优化问题改变了x(1:6,1)这几个值,边界条件得管好呀..</p>
 </blockquote>
-<p> 未经过任何优化,运行1min左右,得到了一个(忽略障碍)局部(非bang-bang,应该还有继续优化空间)最优时间解.<font color=red>如下</font></p>
-<p><img src="release_1_without_obstacles.png" alt=""></p>
+<p> 未经过任何优化,运行1min左右,得到了一个(忽略障碍)局部(非bang-bang,应该还有继续优化空间)最优时间解.<font color=red>如下</font><br><img src="release_1_without_obstacles.png" alt=""></p>
 <p> 有了这么个解之后,可以做很多事情了.</p>
+<blockquote>
+<p>关于为什么将$[0,tf]$转化到$[0,1]$</p>
+</blockquote>
+<p>如果我没理解错的话,除了为了分析Hessian之外,在编程中我发现,如果tf过大,划分步长不够的话,<code>forwardynamics</code>函数容易积累误差.想必这也是论文作者杆敢划分21点的原因,平均下来步长也就0.05,perfect!</p>
 <ul>
 <li><p>局部最优与全局</p>
 <blockquote>
-<p>探讨一下全局的策略.待完善.</p>
+<p>探讨一下全局的策略.待完善. 涉及SQP一些技术手段,待后面再讨论. 本文仅在运行程序时做一些小记录.</p>
 </blockquote>
 </li>
 <li><p>关于梯度与Hessian阵.</p>
 </li>
 </ul>
-<p>(这是一个可以对论文改进的方向,也是我目前在研究的. 博文到这里, 耗费一周时间总算完成了一个OCP问题小实验. )</p>
+<!-- 这是一个可以对论文改进的方向,也是我目前在研究的.博文到这里, 耗费一周时间总算完成了一个OCP问题小实验.-->
 ]]></content>
       <categories>
         <category>最优控制</category>
