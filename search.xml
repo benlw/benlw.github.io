@@ -19,7 +19,7 @@
 <figure class="highlight matlab"><table><tr><td class="code"><pre><span class="line"><span class="comment">% grav = inversedyn(robot.thetalist, zeros(3, 1), zeros(3, 1) ,robot.g, robot.T, robot.InertiaMtr, robot.Twist)</span></span><br><span class="line"><span class="comment">% k = -9.81;</span></span><br><span class="line"><span class="comment">% F_q_u = [0; -k*l*cos(robot.thetalist(2))*(0.5*m2+m3+m4)-k*l*cos(robot.thetalist(2)+robot.thetalist(3))*(0.5*m3+m4);...</span></span><br><span class="line"><span class="comment">%             -k*l*cos(robot.thetalist(2)+robot.thetalist(3))*(0.5*m3+m4)]</span></span><br></pre></td></tr></table></figure>
 
 <blockquote>
-<p> 核对无误 但是输入文章fig9的u1,u2,u3输入进去,杆1不怎么移动,这里应该是论文fig9有问题,我们将其乘以scaling factor 100. aha,作者回复我了,说忘记在论文提fig9是经过normalized,真实的边界的在-100~100Nm.此外,作者建议不要考虑重力(insufficient control 将导致robot崩溃 - -),关于初值的选取作者建议除了论文中的scaling方法,还可以从无障碍物开始训练,以constructing good initial guess.本博文也将采用这一策略.</p>
+<p> 核对无误 但是输入文章fig9的u1,u2,u3输入进去,杆1不怎么移动,这里应该是论文fig9有问题,我们将其乘以scaling factor 100. aha,作者回复我了,说忘记在论文提fig9是经过normalized,实际边界在-100~100Nm.此外,作者建议不要考虑重力(insufficient control 将导致robot崩溃 - -),关于初值的选取作者建议除了论文中的scaling方法,还可以从无障碍物开始训练,以constructing good initial guess.本博文也将采用这一策略.</p>
 </blockquote>
 <ol start="3">
 <li>避障准则</li>
