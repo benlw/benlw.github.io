@@ -11,6 +11,8 @@
 </ul>
 <p>仿真如下</p>
 <p><img src="scene.png" alt=""></p>
+<p>无障碍局部时间最优</p>
+<p><img src="testAnimated.gif" alt=""></p>
 <p><font color=red>这篇文章对于最优控制的框架值得学习,尤其利用代数将避障处理成不等式约束,再利用隐面剔除策略减少约束.本文在前面newton-euler dynamics算法的基础上,结合B样条将问题离散,简单(在未引入隐面剔除策略下,调用<code>fmincon</code>函数)实现论文的optimal time数值算例.</font></p>
 <h5 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述:"></a>问题描述:</h5><ol>
 <li>动力学方程</li>
@@ -77,8 +79,8 @@
 </ul>
 <!-- 这是一个可以对论文改进的方向,也是我目前在研究的.博文到这里, 耗费一周时间总算完成了一个OCP问题小实验.-->]]></content>
       <categories>
-        <category>最优控制</category>
         <category>仿真</category>
+        <category>读论文</category>
       </categories>
       <tags>
         <tag>Matlab</tag>
