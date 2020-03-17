@@ -11,8 +11,10 @@
 </ul>
 <p>仿真如下</p>
 <p><img src="scene.png" alt=""></p>
-<p>无障碍局部时间最优</p>
-<p><img src="testAnimated.gif" alt=""></p>
+<!-- 无障碍局部时间最优
+
+![](testAnimated.gif) -->
+
 <p><font color=red>这篇文章对于最优控制的框架值得学习,尤其利用代数将避障处理成不等式约束,再利用隐面剔除策略减少约束.本文在前面newton-euler dynamics算法的基础上,结合B样条将问题离散,简单(在未引入隐面剔除策略下,调用<code>fmincon</code>函数)实现论文的optimal time数值算例.</font></p>
 <h5 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述:"></a>问题描述:</h5><ol>
 <li>动力学方程</li>
@@ -58,7 +60,7 @@
 <blockquote>
 <p>Q1.错误使用 barrier<br>Nonlinear constraint function is undefined at initial point. Fmincon cannot continue.</p>
 </blockquote>
-<p>检查一下,调用<code>nonlinear_constraint(initial_guess)</code> 看是不是有NaN.(问题主要出在计算正动力学时 $ M $ 矩阵奇异.这与我们初值选取有关,如果想要避免这一问题,初始值可以稍微小一点.)</p>
+<p>遇到这个问题需要检查一下,调用<code>nonlinear_constraint(initial_guess)</code> 看是不是有NaN.(问题主要出在计算正动力学时 $ M $ 矩阵奇异.这与我们初值选取有关,如果想要避免这一问题,初始值可以稍微小一点.)</p>
 <blockquote>
 <p>Q2.Local minimum found that satisfies the constraints. 弄了个乌龙,返回满足局部最优,于是将其绘制轨迹曲线,发现都为0, 才发现最优化问题改变了x(1:6,1)这几个值,边界条件得管好呀..</p>
 </blockquote>
@@ -69,22 +71,30 @@
 </blockquote>
 <p>如果我没理解错的话,除了为了分析Hessian之外,在编程中我发现,如果tf过大,划分步长不够的话,<code>forwardynamics</code>函数容易积累误差.想必这也是论文作者敢划分21点的原因,平均下来步长也就0.05,perfect!</p>
 <ul>
-<li><p>局部最优与全局</p>
-<blockquote>
+<li>局部最优与全局<blockquote>
 <p>探讨一下全局的策略.待完善. 涉及SQP一些技术手段,待后面再讨论. 本文仅在运行程序时做一些小记录.</p>
 </blockquote>
+</li>
+</ul>
+<p>在训练initial guess的时候, 训练到了<code>iter = 10</code>,从下午六点到晚上八点半才训练出一个较好的初值.这次优化包括了<code>6+ 3*21 + 12*21 + 1</code>个变量,其实应该像论文中所采取的做法,将Hessian输入到sqp求解中,能有效提高计算效率.经过我的测试,一个good initial guess可以将计算缩短,我在目标函数中加入了惩罚项 $\alpha||norm(\omega_i)||$,可以稍微提高鲁棒性.</p>
+<p>.<font color=red>对大于20维优化问题,不建议用Matlab <code>fmincon</code>,本笔记只做一个简单的测试.具体实践中,还应该吃透一些常用的优化算法,编写好优化问题的梯度与Hessian.</font></p>
+<ul>
+<li>exitflag</li>
+</ul>
+<p>-2 No feasible point<br>-1 The output function terminated the algorithm<br>0 Iterations exceeded options.<br>1-5, 某种情况达到了收敛. 具体见doc fmincon.</p>
+<ul>
+<li><p>关于$\omega$</p>
 </li>
 <li><p>关于梯度与Hessian阵.</p>
 </li>
 </ul>
 <!-- 这是一个可以对论文改进的方向,也是我目前在研究的.博文到这里, 耗费一周时间总算完成了一个OCP问题小实验.-->]]></content>
       <categories>
-        <category>仿真</category>
-        <category>读论文</category>
+        <category>optimal control</category>
       </categories>
       <tags>
         <tag>Matlab</tag>
-        <tag>机械臂</tag>
+        <tag>仿真</tag>
       </tags>
   </entry>
   <entry>
@@ -141,11 +151,10 @@ https://forum.coppeliarobotics.com/viewtopic.php?f=9&t=8356&p=32424#p32424 提�
 ]]></content>
       <categories>
         <category>动力学</category>
-        <category>仿真</category>
       </categories>
       <tags>
-        <tag>Matlab</tag>
-        <tag>机械臂</tag>
+        <tag>仿真</tag>
+        <tag>Matlab &amp; Vrep</tag>
       </tags>
   </entry>
   <entry>
@@ -193,12 +202,11 @@ https://forum.coppeliarobotics.com/viewtopic.php?f=9&t=8356&p=32424#p32424 提�
 <p>[1]: A Mathematical Introduction to Robotic Manipulation</p>
 ]]></content>
       <categories>
-        <category>仿真</category>
-        <category>读论文</category>
+        <category>trajectory planning</category>
       </categories>
       <tags>
         <tag>Matlab</tag>
-        <tag>机械臂</tag>
+        <tag>仿真</tag>
       </tags>
   </entry>
   <entry>
@@ -236,11 +244,11 @@ https://forum.coppeliarobotics.com/viewtopic.php?f=9&t=8356&p=32424#p32424 提�
 </blockquote>
 ]]></content>
       <categories>
-        <category>仿真</category>
+        <category>正逆运动学</category>
       </categories>
       <tags>
-        <tag>机械臂</tag>
         <tag>Mathematica</tag>
+        <tag>仿真</tag>
       </tags>
   </entry>
   <entry>
