@@ -4,17 +4,15 @@
     <title>读论文path planning and collision avoidance for robots并仿真</title>
     <url>/posts/c7ca1a9b/</url>
     <content><![CDATA[<h5 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h5><ul>
-<li><p>通读论文并实现论文的例子</p>
-</li>
-<li><p>搭建一个基本的框架(包含问题描述,障碍物避障准则(代数层面),离散,B-spline,SQP等部分),将其仿真实现,并可应用于n-dof的机械臂.</p>
-</li>
+<li>通读论文并实现论文的例子</li>
 </ul>
-<p>仿真如下</p>
 <p><img src="scene.png" alt=""></p>
-<!-- 无障碍局部时间最优
-
-![](testAnimated.gif) -->
-
+<ul>
+<li>搭建一个基本的框架(包含问题描述,障碍物避障准则(代数层面),离散,B-spline,SQP等部分),将其仿真实现,并可应用于n-dof的机械臂.</li>
+</ul>
+<p>仿真如下:</p>
+<p>(局部?)时间最优</p>
+<p><img src="testAnimated.gif" alt=""></p>
 <p><font color=red>这篇文章对于最优控制的框架值得学习,尤其利用代数将避障处理成不等式约束,再利用隐面剔除策略减少约束.本文在前面newton-euler dynamics算法的基础上,结合B样条将问题离散,简单(在未引入隐面剔除策略下,调用<code>fmincon</code>函数)实现论文的optimal time数值算例.</font></p>
 <h5 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述:"></a>问题描述:</h5><ol>
 <li>动力学方程</li>
@@ -83,12 +81,14 @@
 </ul>
 <p>-2 No feasible point<br>-1 The output function terminated the algorithm<br>0 Iterations exceeded options.<br>1-5, 某种情况达到了收敛. 具体见doc fmincon.</p>
 <ul>
-<li><p>关于$\omega$</p>
-</li>
-<li><p>关于梯度与Hessian阵.</p>
-</li>
+<li>关于$\omega$</li>
 </ul>
-<!-- 这是一个可以对论文改进的方向,也是我目前在研究的.博文到这里, 耗费一周时间总算完成了一个OCP问题小实验.-->]]></content>
+<p><img src="Res.png" alt=""></p>
+<ul>
+<li>关于梯度与Hessian阵.</li>
+</ul>
+<!-- 这是一个可以对论文改进的方向,也是我目前在研究的.博文到这里, 耗费一周时间总算完成了一个OCP问题小实验.-->
+]]></content>
       <categories>
         <category>optimal control</category>
       </categories>
