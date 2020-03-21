@@ -20,17 +20,22 @@
     var CONFIG = {"hostname":"5imcs.com","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":"ture"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="math.h">
-<meta property="og:url" content="https://5imcs.com/about/index.html">
+  <meta name="description" content="目的 对于基于采样的刚体路径规划问题,具体的,包括如何在$\rm SE(3)$定义合适的距离,采样函数,以及采样点插值.  参考 Effective sampling and distance metrics for rigid body path planning  大致思路 methods for generating a uniform distribution of randomly sa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective sampling in SE(3)">
+<meta property="og:url" content="https://5imcs.com/posts/e9246c12/index.html">
 <meta property="og:site_name" content="math.h">
+<meta property="og:description" content="目的 对于基于采样的刚体路径规划问题,具体的,包括如何在$\rm SE(3)$定义合适的距离,采样函数,以及采样点插值.  参考 Effective sampling and distance metrics for rigid body path planning  大致思路 methods for generating a uniform distribution of randomly sa">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-02-18T07:04:05.555Z">
-<meta property="article:modified_time" content="2020-02-18T07:04:05.523Z">
+<meta property="og:image" content="https://5imcs.com/posts/e9246c12/sampling_sphere.png">
+<meta property="article:published_time" content="2020-03-21T08:59:14.756Z">
+<meta property="article:modified_time" content="2020-03-21T08:59:14.768Z">
 <meta property="article:author" content="Benliang Wang">
+<meta property="article:tag" content="Matlab">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://5imcs.com/posts/e9246c12/sampling_sphere.png">
 
-<link rel="canonical" href="https://5imcs.com/about/">
+<link rel="canonical" href="https://5imcs.com/posts/e9246c12/">
 
 
 <script id="page-configurations">
@@ -38,12 +43,11 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false
+    isPost: true
   };
 </script>
 
-  <title> | math.h
-  </title>
+  <title>Effective sampling in SE(3) | math.h</title>
   
 
 
@@ -147,44 +151,178 @@
       <div class="main-inner">
         <div class="content-wrap">
           
-  
-  
 
           <div class="content">
             
 
   <div class="posts-expand">
-    
-    
-    
-    <div class="post-block" lang="zh-CN">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://5imcs.com/posts/e9246c12/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Benliang Wang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="math.h">
+    </span>
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Effective sampling in SE(3)
+        </h1>
 
-<h1 class="post-title" itemprop="name headline">
-</h1>
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
 
-<div class="post-meta">
+              <time title="创建时间：2020-03-21 16:59:14" itemprop="dateCreated datePublished" datetime="2020-03-21T16:59:14+08:00">2020-03-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/sampling/" itemprop="url" rel="index">
+                    <span itemprop="name">sampling</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
   
 
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h5 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h5><ul>
+<li>对于基于采样的刚体路径规划问题,具体的,包括如何在$\rm SE(3)$定义合适的距离,采样函数,以及采样点插值.</li>
+</ul>
+<p>参考 Effective sampling and distance metrics for rigid body path planning</p>
+<p><img src="sampling_sphere.png" alt=""></p>
+<h5 id="大致思路"><a href="#大致思路" class="headerlink" title="大致思路"></a>大致思路</h5><ol>
+<li>methods for generating a uniform distribution of randomly sampled rotations for both euler angle and quaternion parameterizations</li>
+<li>distance metics on $\rm SE(3)$ and geodesic interpolation function for rotations.</li>
+<li>experimental result</li>
+</ol>
+<p>刚体位形空间通常定义为所有可能位置和定向的半直积.任何刚体运动都可以通过绕某轴的旋转加上移动来实现.刚体运动曲线在$\rm SE(3)$上.</p>
+<p>可以证明,there are no differentiable bi-invariant distance metrics on $\rm SE(3)$[7].</p>
+<h6 id="旋转矩阵的表示"><a href="#旋转矩阵的表示" class="headerlink" title="旋转矩阵的表示"></a>旋转矩阵的表示</h6><ul>
+<li>Rotation Matrices</li>
+</ul>
+<p>不容易定义 $\rho(R_1,R_2)$旋转矩阵间距离及插值以产生一系列光滑中间点.</p>
+<ul>
+<li>Euler angles</li>
+</ul>
+<p>多对一</p>
+<ul>
+<li>四元数 (excellent choice)</li>
+</ul>
+<p>任意定向可以由axis $v= (v_x,v_y,v_z)$及旋转角$\theta$得到,对应单位四元数$|Q|=1$</p>
+<p>$$ Q = (\omega,x,y,z) = (\cos(\frac{\theta}{2}),v_x\sin(\frac{\theta}{2}),v_y\sin(\frac{\theta}{2}),v_z\sin(\frac{\theta}{2}) )$$</p>
+<p>Translation component可以直接处理: $(x,y,z) = rand()$</p>
+<p>对于旋转,直观的,可以选取随机的旋转轴以及旋转角. Arvo’s Method[17]</p>
+<p>伪代码:<br>(生成均匀分布的四元数)<br>$s = rand()$<br>$\sigma_1 = \sqrt{1-s}, \sigma_2 = \sqrt{s}$;</p>
+<p>$\theta_1 =2\pi<em>rand(), \theta_2=2\pi</em>rand()$</p>
+<p>return$(w=\cos(\theta_2)<em>\sigma_2, x=\sin(\theta_1)</em>\sigma_1, y =\cos(\theta_1)<em>\sigma_1, z=\sin(\theta_2)</em>\sigma_2)$</p>
+<h6 id="“距离函数”"><a href="#“距离函数”" class="headerlink" title="“距离函数”"></a>“距离函数”</h6><p>直观的,定义$q =(R,p)$,则 $\rho = w_p|| p_o-p_1||+ w_Rf(R_0.R_1)$</p>
+<p>恰当的权重见[4,5]</p>
+<ul>
+<li>四元数</li>
+</ul>
+<p>Park与Ravani对$\rm SO(3)$定义双不变距离测度$f = ||log(Q_1^{-1}Q_2)||$</p>
+<p>另一种选择,内积,$\lambda =Q_1\cdot Q_2 = w_1w_2+ x_1x_2+..$,, 值得注意的是,$Q$与$-Q$表示相同rotation. $\rho = w_R*(1-||\lambda||)$</p>
+<h6 id="插值"><a href="#插值" class="headerlink" title="插值"></a>插值</h6><p>简单选择algorithm7做线性插值,$f\in[0,1]$</p>
+<hr>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/IMG_0615.JPG" alt="Benliang Wang 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
 </div>
 
-</header>
+        
 
-      
-      
-      
-      <div class="post-body">
-          
-      </div>
-      
-      
-      
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Benliang Wang
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://5imcs.com/posts/e9246c12/" title="Effective sampling in SE(3)">https://5imcs.com/posts/e9246c12/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Matlab/" rel="tag"># Matlab</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
     </div>
-    
+  </div>
 
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/c7ca1a9b/" rel="prev" title="读论文path planning and collision avoidance for robots并仿真">
+      <i class="fa fa-chevron-left"></i> 读论文path planning and collision avoidance for robots并仿真
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
     
-    
-    
+  </article>
+  
+  
+  
+
   </div>
 
 
@@ -236,6 +374,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#目的"><span class="nav-number">1.</span> <span class="nav-text">目的</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#大致思路"><span class="nav-number">2.</span> <span class="nav-text">大致思路</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#旋转矩阵的表示"><span class="nav-number">2.1.</span> <span class="nav-text">旋转矩阵的表示</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#“距离函数”"><span class="nav-number">2.2.</span> <span class="nav-text">“距离函数”</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#插值"><span class="nav-number">2.3.</span> <span class="nav-text">插值</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -399,6 +538,53 @@
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
