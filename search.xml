@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Effective sampling in SE(3)</title>
+    <title>effective sampling in SE(3)</title>
     <url>/posts/e9246c12/</url>
     <content><![CDATA[<h5 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h5><ul>
 <li>对于基于采样的刚体路径规划问题,具体的,包括如何在$\rm SE(3)$定义合适的距离,采样函数,以及采样点插值.</li>
@@ -30,9 +30,7 @@
 <p>$$ Q = (\omega,x,y,z) = (\cos(\frac{\theta}{2}),v_x\sin(\frac{\theta}{2}),v_y\sin(\frac{\theta}{2}),v_z\sin(\frac{\theta}{2}) )$$</p>
 <p>Translation component可以直接处理: $(x,y,z) = rand()$</p>
 <p>对于旋转,直观的,可以选取随机的旋转轴以及旋转角. Arvo’s Method[17]</p>
-<p>伪代码:<br>(生成均匀分布的四元数)<br>$s = rand()$<br>$\sigma_1 = \sqrt{1-s}, \sigma_2 = \sqrt{s}$;</p>
-<p>$\theta_1 =2\pi<em>rand(), \theta_2=2\pi</em>rand()$</p>
-<p>return$(w=\cos(\theta_2)<em>\sigma_2, x=\sin(\theta_1)</em>\sigma_1, y =\cos(\theta_1)<em>\sigma_1, z=\sin(\theta_2)</em>\sigma_2)$</p>
+<p>伪代码:<br>(生成均匀分布的四元数)<br>$s = rand()$<br>$\sigma_1 = \sqrt{1-s}, \sigma_2 = \sqrt{s}$;<br>$\theta_1 =2\pi<em>rand(), \theta_2=2\pi</em>rand()$<br>return$(w=\cos(\theta_2)<em>\sigma_2, x=\sin(\theta_1)</em>\sigma_1, y =\cos(\theta_1)<em>\sigma_1, z=\sin(\theta_2)</em>\sigma_2)$</p>
 <h6 id="“距离函数”"><a href="#“距离函数”" class="headerlink" title="“距离函数”"></a>“距离函数”</h6><p>直观的,定义$q =(R,p)$,则 $\rho = w_p|| p_o-p_1||+ w_Rf(R_0.R_1)$</p>
 <p>恰当的权重见[4,5]</p>
 <ul>
@@ -42,6 +40,7 @@
 <p>另一种选择,内积,$\lambda =Q_1\cdot Q_2 = w_1w_2+ x_1x_2+..$,, 值得注意的是,$Q$与$-Q$表示相同rotation. $\rho = w_R*(1-||\lambda||)$</p>
 <h6 id="插值"><a href="#插值" class="headerlink" title="插值"></a>插值</h6><p>简单选择algorithm7做线性插值,$f\in[0,1]$</p>
 <hr>
+<p>未完待续</p>
 ]]></content>
       <categories>
         <category>sampling</category>
