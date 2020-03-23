@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://5imcs.com/"/>
-  <updated>2020-03-20T02:21:31.531Z</updated>
+  <updated>2020-03-23T08:50:12.391Z</updated>
   <id>https://5imcs.com/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>virtualbox虚拟硬盘扩容与诊所网页项目测试</title>
+    <link href="https://5imcs.com/posts/8090a50b/"/>
+    <id>https://5imcs.com/posts/8090a50b/</id>
+    <published>2020-03-23T08:50:12.383Z</published>
+    <updated>2020-03-23T08:50:12.391Z</updated>
+    
+    <content type="html"><![CDATA[<h5 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h5><ol><li><p>原本该虚拟硬盘是测试opencv的,所以划分了10G(固定大小),昨天拿来测试了下一个angular,nodejs的网页项目,发现硬盘容量不够了,这次增加到20G.</p></li><li><p>记录一下nodejs,angualr以及mongo基本命令,了解下如何部署前后端分离的网站.</p></li></ol><h6 id="扩容"><a href="#扩容" class="headerlink" title="扩容"></a>扩容</h6><p>步骤:</p><p>1.添加新的虚拟硬盘ubuntuS.vdi,并插入Gparted光盘.</p><p><img src="b34e207f.png" alt=""></p><p><a href="https://gparted.org/download.php" target="_blank" rel="noopener">GParted – Download</a></p><p><a href="https://sourceforge.net/projects/gparted/files/gparted-live-stable/1.1.0-1/gparted-live-1.1.0-1-amd64.iso/download?use_mirror=ayera" target="_blank" rel="noopener">Download GParted from SourceForge.net</a></p><ol start="2"><li>启动,并且</li></ol><blockquote><p>sudo dd if=/dev/sda of=/dev/sdb</p></blockquote><p>使用Gparted查看,并核对下,从sda对拷到sdb.</p><p>结束后,将一些未配置的空间(右键ext4)配置到sdb.</p><ol start="3"><li>最后将旧的虚拟硬盘及光盘移除.</li></ol><h6 id="网页项目本地部署"><a href="#网页项目本地部署" class="headerlink" title="网页项目本地部署"></a>网页项目本地部署</h6>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h5 id=&quot;目的&quot;&gt;&lt;a href=&quot;#目的&quot; class=&quot;headerlink&quot; title=&quot;目的&quot;&gt;&lt;/a&gt;目的&lt;/h5&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;原本该虚拟硬盘是测试opencv的,所以划分了10G(固定大小),昨天拿来测试了下一个angular,nodejs的网页项
+      
+    
+    </summary>
+    
+    
+      <category term="Notes" scheme="https://5imcs.com/categories/Notes/"/>
+    
+    
+      <category term="virtualbox" scheme="https://5imcs.com/tags/virtualbox/"/>
+    
+  </entry>
   
   <entry>
     <title>读论文path planning and collision avoidance for robots并仿真</title>
