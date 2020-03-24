@@ -13,7 +13,8 @@
 <li>distance metics on $\rm SE(3)$ and geodesic interpolation function for rotations.</li>
 <li>experimental result</li>
 </ol>
-<div class="pdf" target="file.pdf" height=""></div>
+<p><img src="file.pdf" alt=""></p>
+<!--<div class="pdf" target="file.pdf" height=""></div> -->
 
 
 ]]></content>
