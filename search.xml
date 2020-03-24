@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Effective sampling in SE(3)</title>
+    <url>/posts/e9246c12/</url>
+    <content><![CDATA[<h5 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h5><ul>
+<li>对于基于采样的刚体路径规划问题,具体的,包括如何在$\rm SE(3)$定义合适的距离,采样函数,以及采样点插值.</li>
+</ul>
+<p>参考 Effective sampling and distance metrics for rigid body path planning</p>
+<p><img src="sampling_sphere.png" alt=""></p>
+<h5 id="大致思路"><a href="#大致思路" class="headerlink" title="大致思路"></a>大致思路</h5><ol>
+<li>methods for generating a uniform distribution of randomly sampled rotations for both euler angle and quaternion parameterizations</li>
+<li>distance metics on $\rm SE(3)$ and geodesic interpolation function for rotations.</li>
+<li>experimental result</li>
+</ol>
+<div class="pdf" target="file.pdf" height=""></div>
+
+
+]]></content>
+      <categories>
+        <category>sampling</category>
+      </categories>
+      <tags>
+        <tag>Matlab</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>virtualbox虚拟硬盘扩容与诊所网页项目测试</title>
     <url>/posts/8090a50b/</url>
     <content><![CDATA[<h5 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h5><ol>
@@ -25,7 +49,8 @@
 <ol start="3">
 <li>最后将旧的虚拟硬盘及光盘移除.</li>
 </ol>
-<h6 id="网页项目本地部署"><a href="#网页项目本地部署" class="headerlink" title="网页项目本地部署"></a>网页项目本地部署</h6>]]></content>
+<h6 id="网页项目本地部署"><a href="#网页项目本地部署" class="headerlink" title="网页项目本地部署"></a>网页项目本地部署</h6><p>待续</p>
+]]></content>
       <categories>
         <category>Notes</category>
       </categories>
@@ -303,8 +328,8 @@ https://forum.coppeliarobotics.com/viewtopic.php?f=9&t=8356&p=32424#p32424 提�
         <category>正逆运动学</category>
       </categories>
       <tags>
-        <tag>Mathematica</tag>
         <tag>仿真</tag>
+        <tag>Mathematica</tag>
       </tags>
   </entry>
   <entry>
