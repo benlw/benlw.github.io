@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://5imcs.com/projects/index.html</loc>
+    
+    <lastmod>2020-04-23T08:04:28.135Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://5imcs.com/about/index.html</loc>
+    
+    <lastmod>2020-04-23T08:03:33.848Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://5imcs.com/posts/e9246c12/</loc>
     
     <lastmod>2020-04-23T07:21:05.037Z</lastmod>
@@ -65,13 +79,6 @@
   </url>
   
   <url>
-    <loc>https://5imcs.com/projects/index.html</loc>
-    
-    <lastmod>2020-02-19T08:23:10.094Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://5imcs.com/categories/index.html</loc>
     
     <lastmod>2020-02-19T00:53:51.319Z</lastmod>
@@ -82,13 +89,6 @@
     <loc>https://5imcs.com/tags/index.html</loc>
     
     <lastmod>2020-02-18T08:25:16.711Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://5imcs.com/about/index.html</loc>
-    
-    <lastmod>2020-02-18T07:04:05.523Z</lastmod>
     
   </url>
   
