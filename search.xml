@@ -1,6 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>读论文Continuous control with deep reinforcement learning并测试walking robot学习实例</title>
+    <url>/posts/1080553f/</url>
+    <content><![CDATA[<h4 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h4><ul>
+<li>许多物理任务具有连续且高维的动作空间. google Deepmind(DDPG.论文算法)使用actor-critic结构,用于连续动作的预测.</li>
+<li>以walking robot为例,训练其走直线并保证最省能量控制.</li>
+</ul>
+<h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><ul>
+<li>RL(见补充:1)</li>
+</ul>
+<p>可解决一些非常困难的控制问题(无人机,机器人).与其它使用静态数据集学习框架(无监督\有监督)不同,RL与动态环境交互,旨在找到”收集奖励最多”的动作序列.</p>
+<p>假设agent里有一个大脑,它接收状态观测observations,输出动作.这种映射称为policy.如果提供一组观测量,策略便会确定要采取的动作.如果将策略表示为神经网络,则可以让agent一次接收上千输入状态,并给出有意义的动作.当环境不断变化,这种”策略”不再最优或无法映射到有效动作,强化学习算法RL—(根据采取的行动,从环境中观察的结果以及所获得的奖励reward,<br>,update)–&gt;policy. 从而使得给定任何状态,agent都可以采取最有利的动作以产生最多的奖励累计.比如这次没考好,贪玩了,则调整策略,下次好好学习.</p>
+<p>强化学习核心是优化问题(让计算机自主学习优化参数,”反复试错”).<br>基本关键词有: policy,state,action,reward(特定状态下的instantaneous奖励), value(从该状态到未来的全部奖励)等…所以一般评估状态的价值,而不是评估奖励(见Q-learning中的Q表更新方式),这样可以帮助agent选择一段时间内可获得的最优奖励的动作(而非短期利益).</p>
+<p>基本分类:policy function based(如policy gradients方法), value function based(Q-learning), actor-critic based(DDPG,论文采用).</p>
+<center>
+<pre class="mermaid">graph LR
+    A[Policy <br> RL]-->|Actions| B[states <br> reward]
+    B-->|Reward| A
+    B-->|State Observations| A</pre>
+</center>
+
+<p>关于model-free(agent doesn’t need to know anything about the environment at all)和model-based(we know what’s not worth exploring)</p>
+<p>优缺点: 大量样本,大量试错….如何理解神经网络的权重和偏差值,如果策略不符合规划,如何调整这个策略.把所有函数压缩在一个黑盒子,一旦出现问题,很难手动定位到出问题的点,无法解释输出为何这样.</p>
+<ul>
+<li><font color=red>Q学习</font> (Q表记录潜在奖励,以学生写作业为例,a1–看电视, a2–写作业)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>a1</th>
+<th>a2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>s1</td>
+<td>-2</td>
+<td>1</td>
+</tr>
+<tr>
+<td>s2</td>
+<td>-4</td>
+<td>2</td>
+</tr>
+</tbody></table>
+<p>关键: 如何更新?</p>
+<p>根据Q表的估计,在s1状态采取了a2(写作业),并到达了a2状态,这时开始更新决策Q表: 想象在s2中采取行为,分别看哪种行为对应Q值大.</p>
+<p>比如说Q(s2,a2)比Q(s2,a1)大(预估的).我们将$\gamma* maxQ(s2,a’) + r$ (最大的Q乘以衰减值 + 达到s2所获奖励),因为这里获得实际的奖励,于是将其作为现实Q(s1,a2)的值.之前的Q(s1,a2)为估计值.</p>
+<p>注: Bellman方程的表现形式，它表明了当前状态s下Agent所能够获得的期望回报值与其后继状态之间存在关联.</p>
+<p>有了现实与估计值,就能更新Q(s1,a2):</p>
+<p>$ Q(s,a)=Q(s,a)+\alpha*[r+\gamma*maxQ(s’,a’)-Q(s,a)] $($\alpha$学习效率).</p>
+<p>算法流程:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">initial Q(s,a)</span><br><span class="line">repeat(for each episode):</span><br><span class="line">	initial s</span><br><span class="line">	repeat(for each step of episode):</span><br><span class="line">		choose a from s using policy derived from Q (eg: epsilon greedy)</span><br><span class="line">		take a, observe r,and s&#39;</span><br><span class="line">		$ Q(s,a)&#x3D;Q(s,a)+\alpha*[r+\gamma*maxQ(s&#39;,a&#39;)-Q(s,a)] $</span><br><span class="line">		s &#x3D; s&#39;</span><br><span class="line">	until s is terminal</span><br></pre></td></tr></table></figure>
+
+<p>一个例子: —O—–| (O代表人,|表示宝藏,训练它快速发现宝藏) 视频链接:<a href="https://morvanzhou.github.io/tutorials/machine-learning/reinforcement-learning/2-1-general-rl/" target="_blank" rel="noopener">^1</a></p>
+<ul>
+<li><font color=red>DQN(Deep Q network,2013,deepmind)</font>, 针对具有高维observation spaces以及离散且低维action sapces的agent训练,比如: 训练计算机玩电子游戏(离散的按键动作). </li>
+</ul>
+<p>关键: 融合了神经网络和Q-学习</p>
+<p>Q学习用表格存储状态及其行动所拥有的Q值.当状态非常多时,如下围棋,计算机内存不够.</p>
+<p>解决方法: </p>
+<ol>
+<li>利用神经网络,将状态s和动作a作为神经网络的输入,经分析得到(s,a)的Q值.这样一来就没必要继续在表格中记录Q值. 神经网络相当于眼鼻口接受外部信息,经大脑加工输出每种动作a的值,通过强化学习的方式选择动作.</li>
+<li>更新神经网络, 训练样本怎么来? 采取的做法是用Q-学习中的Q现实值表示正确的Q值,神经网络的参数通过旧神经网络的参数+学习率*(Q现实-Q估计)来更新.</li>
+<li>通过神经网络预测Q(s’,a’)值.选取Q最大相应的动作来获取环境的reward.</li>
+<li>Experience replay:将系统探索环境数据储存起来.然后随机采样样本更新神经网络的参数.</li>
+</ol>
+<ul>
+<li><font color=red>policy gradients</font> 论文链接:<a href="https://papers.nips.cc/paper/1713-policy-gradient-methods-for-reinforcement-learning-with-function-approximation.pdf" target="_blank" rel="noopener">^2</a></li>
+</ul>
+<p>上述两种方法主要是根据奖惩值,学习正确行为.如果是在无穷多(连续)动作中计算价值,吃不消.</p>
+<p>思路: 通过神经网络分析,选取行为,再利用奖惩(不求导情况下),在神经网络反向传播中,左右下次被选的可能性.</p>
+<p>例子: CartPole(传统强化学习任务之一:控制倒立摆): <a href="https://gym.openai.com/envs/CartPole-v0/" target="_blank" rel="noopener">^3</a> (注:其实DQN方法也能解决,将任务简化为cart只有离散动作R,L,状态为杆的位置及速度,但如果对倒立摆施加连续的扭矩这种方法就不合适了)</p>
+<p>reward = $(-\theta^2-\dot{\theta})^2 $</p>
+<h4 id="论文思路"><a href="#论文思路" class="headerlink" title="论文思路"></a>论文思路</h4><ul>
+<li>DDPG(deep determinstic policy gradient, actor-critic)</li>
+</ul>
+<p>在控制中我们需要连续的动作空间,就像对倒立摆问题施加连续的力矩.将policy function based,value function based两种技术合并到一类称为执行-评价器(actor-critic)的算法中,其中执行器<br>是一个network,试图采取它认为当下状态最好的动作,评价器network则试图估计状态的价值和执行器采取的行动. </p>
+<center>
+<pre class="mermaid">graph LR
+    C[Observations]-->A[Actor]
+    C-->B[critic]
+    B-->|Value|D[Compare]
+    A -->|Actions|E[Environment]
+    E-->|Reward|D</pre>
+</center>
+适用于连续动作空间,因为critic只需要查看一个动作,而不是试图通过评估所有动作.基本原理为,Actor采取与策略函数相同的方法(见policy gradient)选择动作.评价器则预估它认为状态-动作的值,然后使用环境反馈的奖励来确定它预测的价值准确程度,之后再类似神经网络的反向传播进行自我更新.Actor调整将来再次采取该动作的概率.(该策略会沿着评价器建议的方向进行梯度上升,执行器从评价器反馈中学习正确的动作,从而了解动作好坏.评价器从所获得奖励中学习价值函数,以便正确评价执行器采取的动作).agent利用策略和价值函数算法的最佳部分.A-C能处理连续状态和动作空间.
+
+<p>最后可将优化的静态策略部署到物理环境中,也可以选择将RL算法一并部署以继续学习.</p>
+<h4 id="walking-robot例子-model-based-可从Matlab文件中心下载该实例-视频讲解及源码-4"><a href="#walking-robot例子-model-based-可从Matlab文件中心下载该实例-视频讲解及源码-4" class="headerlink" title="walking robot例子 (model-based) 可从Matlab文件中心下载该实例. 视频讲解及源码^4"></a>walking robot例子 (model-based) 可从Matlab文件中心下载该实例. 视频讲解及源码<a href="https://www.mathworks.com/videos/deep-reinforcement-learning-for-walking-robots--1551449152203.html" target="_blank" rel="noopener">^4</a></h4><p>从传统控制角度:</p>
+<p>observations(eg: camera images) -&gt; feature extraction -&gt; state estimation( other sensors) -&gt; control(blance, leg.motor control…) -&gt; 行走 </p>
+<p>从RL(end-to-end)角度:</p>
+<p>observations -&gt; (Black Box) -&gt; motor command</p>
+<ul>
+<li>分析:</li>
+</ul>
+<ol>
+<li><p>actions(torque)<br>left-right ankle\knee\hip, 机器人躯干\腿和其所处世界构成环境.</p>
+</li>
+<li><p>observations<br>来自环境的观测值,基于传感器的类型和位置.本例中有31个观测值,具体包括躯干的Y,Z轴坐标值,沿X,Y,Z方向躯干速度,躯干旋转角度和角速度,以及6个关节的角度\角速度,脚与底面接触力.以及反馈上个时间步输出的力矩指令.</p>
+</li>
+</ol>
+<p>控制系统(RL agent)接受31观测值,并且连续不断计算6个力矩.它使用一个actor将31观测值映射到6个力矩动作,以及一个评价器让执行器更有效率.</p>
+<ul>
+<li>工作流程</li>
+</ul>
+<ol>
+<li>设置具有足够参数的策略.</li>
+</ol>
+<p>A-C神经网络.</p>
+<ol start="2">
+<li>选择reward来奖励良好的控制.</li>
+</ol>
+<p>reward = $v_x+ 0.00625-50*z^2 - \sum(\tau_i^2) + -3y^2$</p>
+<ol start="3">
+<li>选择RL算法观察(s,a),以及调整参数(traning过程).</li>
+</ol>
+<p>DDPG</p>
+<h4 id="继续研究的方向"><a href="#继续研究的方向" class="headerlink" title="继续研究的方向"></a>继续研究的方向</h4><ol>
+<li>最优控制结果作为样本训练神经网络?</li>
+<li>用神经网络来训练轨迹规划参数?(已有不少文献)</li>
+<li>流形学习? (流形学习估计柔性臂位姿)</li>
+</ol>
+<h4 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h4><ol>
+<li><a href="https://ww2.mathworks.cn/videos/series/reinforcement-learning.html" target="_blank" rel="noopener">https://ww2.mathworks.cn/videos/series/reinforcement-learning.html</a> <a href="https://www.bilibili.com/video/BV1Gg4y1v7TR?p=2" target="_blank" rel="noopener">https://www.bilibili.com/video/BV1Gg4y1v7TR?p=2</a></li>
+<li><a href="https://www.davidsilver.uk/teaching/" target="_blank" rel="noopener">https://www.davidsilver.uk/teaching/</a> </li>
+<li>3BlueBrown(神经网络)<br><a href="https://www.bilibili.com/video/BV1bx411M7Zx?from=search&amp;seid=3993471132113230062" target="_blank" rel="noopener">https://www.bilibili.com/video/BV1bx411M7Zx?from=search&amp;seid=3993471132113230062</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>Deep Reinforcement Learning</category>
+      </categories>
+      <tags>
+        <tag>笔记</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>effective sampling in SE(3)</title>
     <url>/posts/e9246c12/</url>
     <content><![CDATA[<h5 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h5><ul>
