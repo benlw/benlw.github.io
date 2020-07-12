@@ -347,8 +347,11 @@
 <li>搭建一个基本的creatrobot函数(其中各link为cuboid),采用euler数值积分,将仿真可视化,并与商业软件V-rep对比(对比末端轨迹),在此基础上测试变分积分子.</li>
 </ul>
 <h4 id="Coordinate-invariant-algorithm"><a href="#Coordinate-invariant-algorithm" class="headerlink" title="Coordinate-invariant algorithm"></a>Coordinate-invariant algorithm</h4><p>criag的书采用的就是这一方法,李泽湘的新的lecture也加入了这部分内容,坐标系建立在关节处,这一点与Park不同.</p>
-<p>起初研究这部分内容,我还产生了一个疑问,为了保证惯性矩阵Inertia Matrix的简洁优雅,所以计算是在center of mass这一标架上进行的,$\tau = F^T_iS_i$, 其中$S_i$为screw aixs of i joint expressed in {i} frame.那么$\tau$结果应该是施加在第i杆质心上的?</p>
-<!--先说结果,从程序实验来看,其实两种方法实验结果一致(包括得到的力矩).
+<!--起初研究这部分内容,我还产生了一个疑问,为了保证惯性矩阵Inertia Matrix的简洁优雅,所以计算是在center of mass这一标架上进行的,$\tau = F^T_iS_i$, 其中$S_i$为screw aixs of i joint expressed in {i} frame.那么$\tau$结果应该是施加在第i杆质心上的?
+
+[^_^]: <https://robotics.stackexchange.com/questions/20249/newton-euler-inverse-dynamics-by-screw>
+
+先说结果,从程序实验来看,其实两种方法实验结果一致(包括得到的力矩).
 
 我还没有仔细证明,但思路应该是要利用质心Inertia Matrix是$I_b$,那么在关节处(frame {s})应为为$Ad^T_gI_b Ad_g$. -->
 <!--
