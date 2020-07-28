@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"5imcs.com","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":"ture"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":12},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="从综述开始,我觉得比较好的两篇:    [1]: Multi-agent reinforcement learning: An overview,2010多智能体系统由一群自主,可交互的实体组成,它们共享一个环境,并由传感器感知环境,执行器采取行动.这一系统在各种邻域已有应用,如机器人团队,分布式控制,资源管理,协作决策系统collaborative decision support syst">
+<meta property="og:type" content="article">
+<meta property="og:title" content="强化学习论文(multi-agent RL综述篇)">
+<meta property="og:url" content="https://5imcs.com/posts/5ad812f1/index.html">
+<meta property="og:site_name" content="math.h">
+<meta property="og:description" content="从综述开始,我觉得比较好的两篇:    [1]: Multi-agent reinforcement learning: An overview,2010多智能体系统由一群自主,可交互的实体组成,它们共享一个环境,并由传感器感知环境,执行器采取行动.这一系统在各种邻域已有应用,如机器人团队,分布式控制,资源管理,协作决策系统collaborative decision support syst">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-07-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-07-28T23:28:41.926Z">
+<meta property="article:author" content="Ben">
+<meta property="article:tag" content="查文献">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://5imcs.com/posts/5ad812f1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>强化学习论文(multi-agent RL综述篇) | math.h</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="math.h" type="application/atom+xml">
+</head>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/love.js"></script>
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"><a href="https://github.com/benlw/" target="_blank" rel="noopener" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">math.h</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-right"></div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-home"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-projects">
+
+    <a href="/projects/" rel="section"><i class="fa fa-fw fa-calendar"></i>计划</a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/links/" rel="section"><i class="fa fa-fw fa-link"></i>友链</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://5imcs.com/posts/5ad812f1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ben">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="math.h">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          强化学习论文(multi-agent RL综述篇)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-27 00:00:00" itemprop="dateCreated datePublished" datetime="2020-07-27T00:00:00+08:00">2020-07-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-07-29 07:28:41" itemprop="dateModified" datetime="2020-07-29T07:28:41+08:00">2020-07-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9F%A5%E6%96%87%E7%8C%AE/" itemprop="url" rel="index">
+                    <span itemprop="name">查文献</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/5ad812f1/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/5ad812f1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<blockquote>
+<p>从综述开始,我觉得比较好的两篇: </p>
+</blockquote>
+<hr>
+<h4 id="1-Multi-agent-reinforcement-learning-An-overview-2010"><a href="#1-Multi-agent-reinforcement-learning-An-overview-2010" class="headerlink" title="[1]: Multi-agent reinforcement learning: An overview,2010"></a>[1]: Multi-agent reinforcement learning: An overview,2010</h4><p>多智能体系统由一群自主,可交互的实体组成,它们共享一个环境,并由传感器感知环境,执行器采取行动.这一系统在各种邻域已有应用,如机器人团队,分布式控制,资源管理,协作决策系统collaborative decision support system,数据挖掘等.尽管可以对智能体赋予预设行为,但因为环境的复杂性,在随时间变化的环境中,先前良好的行为可能会变得不合适或者难以实施,所以它们经常需要在线学习新的行为,从而使智能体或整个多智能体性能提升[115,106].</p>
+<p>强化学习rl通过与动态环境交互来进行学习.在每个时间步长,agent会感知环境状态,并采取行动,从而转到一个新的状态.设计奖励函数对其评估,agent必须在交互过程中将奖励累积最大化.强化学习反馈的信息量比监督学习少,但多于无监督学习[104].单智能体任务的rl算法比较成熟(有易于理解,且经证明收敛的算法).对设定进行一些简化或者泛化,使得rl也可以用于多智能体中.</p>
+<p>本文全面概述了marl,主要关注自主agent使用rl(temporal-difference rl)算法在线学习解决动态任务.并讨论了博弈论对marl(及静态任务的重要算法)的贡献.我们首先指出marl的优势及挑战.实际上该领域的关键在于为multi-agent system定义恰当的目标.我们介绍了文献中提出的不同学习目标,一方面考虑了系统的稳定性,另一方面也考虑了agent对其它agent不断变化行为的适应性.本章的核心包括对marl代表性算法详细概述.</p>
+<p>按任务类型组织算法:fully cooperative完全合作(fcoo), fully competitive完全竞争(fcom),以及mixed;然后根据学习目标的类型确定目标:稳定性,适应性或两者结合.此外,我们简要讨论marl技术应用领域,并在一个模拟实例中进行比较.该实例设计两个协作agent运输目标物体.在展望中,我们提出一些未解决的问题及有希望的方向.</p>
+<p>本文其余部分安排如下,sec2介绍了单agent的rl,marl,博弈论的必要背景.sec3回顾了marl的主要优缺点.sec4介绍了有代表性marl算法目标.<font color=red>sec5对marl进行了分类</font>.sec6回顾了几个应用领域,sec7提供了一个实例(运输目标物体).sec8总结了marl前景.sec8介绍了相关工作,sec10总结.</p>
+<h5 id="sec2-RL背景"><a href="#sec2-RL背景" class="headerlink" title="sec2:RL背景"></a>sec2:RL背景</h5><p>本节介绍了但智能体,多智能体rl的相关背景.首先,介绍single-agent学习任务及求解算法.然后过渡到多智能体的强化学习marl,讨论仅限于具有有限数量的离散状态和动作空间.实际上大部分marl算法也是在这设定下提出的.</p>
+<h6 id="the-single-agent-sa-case-可以参考上一篇笔记"><a href="#the-single-agent-sa-case-可以参考上一篇笔记" class="headerlink" title="the single-agent(sa) case(可以参考上一篇笔记)"></a>the single-agent(sa) case(可以参考上一篇笔记)</h6><p>sarl可以用markov 决策过程表示,定义如下:<br>(def1). 有限markov决策过程是一个4元组$&lt;X,U,f,\rho&gt;$ ,$X$表示agent的状态空间,$U$是动作空间,$f:X\times U\times X\rightarrow [0,1]$是状态转移概率函数,<br>$\rho:X\times U\times X\rightarrow R$是奖励函数.</p>
+<p>$x_k\in X$描述每个离散时间步$k$的状态,agent观察状态并采取一个动作$u_k$.作为结果,agent状态根据状态转移函数$f(x_k,u_k,x_{k+1})$转移到了下一个状态.agent再由奖励函数$\rho(x_k,u_k,x_{k+1})$获得奖励$r_{k+1}\in R$.该奖励对动作$u_k$进行评估.但从表达式看,它并没有说明这一行动长期效果.我们假设奖励有界.</p>
+<p>对于确定性系统,转移概率函数变成$f’:X\times U\rightarrow X$.此时即时奖励仅与当前状态和动作有关,即$r_{k+1} = \rho’(x_k,u_k)$.某些markov决策过程具有最终状态(吸收状态?).从最终状态获得奖励为0.在这种情况下,学习过程通常分为不同的回合(<font color=red>就像那个寻找宝藏的例子</font>).</p>
+<p>agent在任一状态下如何选择决策的过程称为agent的policy策略.策略可以是随机的$h:X\times U\rightarrow [0,1]$,也可以是确定性的$h’:X\rightarrow U$.agent的目标就是找到一种策略,可以从每个状态$x_k$,最大化期望折扣收益:</p>
+<p>$R^h(x)=E[\sum\gamma^kr_{K+1}|x_0 =x,h]$</p>
+<p>其中$\gamma\in[0,1]$为折扣因子,刻画了未来收益的不确定性,目的是保证从长远来看,收益$R$代表了奖励的累积.然而agent每次只能获得当前步的即时奖励.将其转换成通过计算最佳 state-action value 函数(q-函数).$Q^h:X\times U\rightarrow R$给出策略$h$从任何状态-动作中获得的预期收益.</p>
+<p>$Q^h(x,u)=E[\sum\gamma^kr_{K+1}|x_0 =x,u_o=u,h]$</p>
+<p>最优$Q$函数定义为$Q^{*}(x,u)=max_hQ^h(x,u)$.并满足bellman方程:</p>
+<p>$Q^{<em>}(x,u)=\sum_{x’\in X}f(x,u,x’)[\rho(x,u,x’)+\gamma max_{u’}Q^{</em>}(x’,u’)],\forall x\in X,u\in U$</p>
+<p>等式表明在状态$x$下采取动作$u$的最优回报是期望的即时回报，加上下一状态的最优(折扣)回报值.当$Q^{*}$计算好后,最优策略就是在每一状态下,选择回报最大的动作.</p>
+<p>$h’^{<em>}(x)=arg \max_uQ^{</em>}(x,u)$</p>
+<p>当多个动作达到最大$Q$值时,可以选择任意一个,并且保持策略最优.在这种情况下,<code>arg</code><br>运算符被解释为仅返回有效解决方案(u)之一.以这种方式最大化Q的策略被认为是贪婪的,因此可以首先确定$Q^{<em>}$,然后计算$Q^{</em>}$中的贪婪策略来找到最优策略.</p>
+<p>已经存在很多rl算法,比如基于在线估计q函数的model-free方法[6,89],model-based方法(通常称为动态规划,<font color=red>dynamics programming</font>)[8,96].以及model-learning方法(估计模型,然后使用model-based技术)[79,119].the model包括转移概率和奖励函数.许多marl都是从q-learning[137]的model-free算法得出的,例如[17,42,49,67,69,70].</p>
+<p>q-learning是一种将bellman方程迭代近似求解的方法:</p>
+<p>$Q_{k+1}(x_k,u_k)=Q_k(x_k,u_k)+\alpha [r_{k+1}+\gamma max_{u’}Q_k(x_{k+1},u’)-Q_k(x_k,u_k)]$</p>
+<p>算法先随机初始化$Q(x,u)$值,然后不停迭代更新.方括号之间的是temporal difference.即当前$Q_k(x_k,u_k)$估计与更新估计$r_{k+1}+\gamma max_{u’}Q_k(x_{k+1},u’)$间的差.这个新的估计是bellman的右侧的一种迭代版本.在这里,$x’$由下一状态$x_{k+1}$替换,$\rho(x_k,u_k,x’)$被奖励$r_{K+1}$替换.学习率$\alpha$随时间变化,一般降低.</p>
+<p>在以下条件下,序列$Q_k$证明收敛于$Q^{*}$:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- explicit,distinct values of Q-function被存储并且对于每个状态-动作对更新</span><br><span class="line">- $sum \alpha_k^2$ is finite,while  $sum \alpha_k$ infinite</span><br><span class="line">- all the state-action paris are visited infinitely often.</span><br></pre></td></tr></table></figure>
+
+<p>除此之外,agent一直以非零概率在所以状态下尝试所有动作,这称为探索.例如在每个步骤中随机以$e\in (0,1)$中选择随机动作,$(1-e)$选择贪婪动作.就得到了$e-$贪婪探索过程.当然还可以使用boltzmann探索过程,agent在状态$x$下依概率$h(x,u)$选择动作,定义如下:</p>
+<p>$h(x,u)=\frac{e^{Q(x,u)/\tau} }{\sum_{u’}e^{Q(x,u’)/\tau} }$</p>
+<p>$\tau$为超函数,当$\tau$接近0,agent倾向选择最优动作,当其无限大,agent随机.</p>
+<h6 id="the-multi-agent-case"><a href="#the-multi-agent-case" class="headerlink" title="the multi-agent case"></a>the multi-agent case</h6><p>markov决策过程泛化到ma情形则是随机博弈.</p>
+<p>(def2)随机博弈是一个多元组$&lt;X,U_1,…,U_n,f,\rho_1,…,\rho_n&gt;$,n为agent个数,$X$是状态集合,$U_i$为其对应的动作空间,所有agent动作空间为$U=U_1\times…\times U_n$.$f:X\times U\times X\rightarrow [0,1]$是状态转移函数.$\rho_i:X\times U\times X\rightarrow R,i=1,..,n$是每个agent奖励函数.</p>
+<p>依旧假定奖励函数有界.在ma情形下,转移函数是每个agent联合动作的结果,$u_k=[u^T_{1,k},…,u^T_{n,k}]^T,u_k\in U,u_{i,k}\in U_i$.每个agent的策略$h_i:X\times U_i\rightarrow [0,1]$,所有agent的策略组成了联合策略joint policy $h$.因为奖励函数$r_{i,k+1}$取决于联合行动,所以其回报也取决于joint policy:</p>
+<p>$R^h_i(x) =  E{ \sum \gamma^kr_{i,k+1}|x_0=x,h }$</p>
+<p>Q函数(depends on joint action and on the joint policy)</p>
+<p>$Q^h_i(x,u) = E{ \sum\gamma^kr_{i,k+1}|x_0=x,u_0=u,h }$</p>
+<p>在完全合作的随机博弈张,所有agent的奖励函数相同:$\rho_1=..\rho_n$.因为所有agent具有相同的目标:最大化收益.假设$n=2$,且$\rho_1=-\rho_2$,两个agent具有相反的目标,随机博弈完全竞争的.混合博弈mixed game是除上述之外的博弈.</p>
+<h6 id="static-repeated-and-stage-games-待研究"><a href="#static-repeated-and-stage-games-待研究" class="headerlink" title="static, repeated,and stage games(待研究)"></a>static, repeated,and stage games(<font color=red>待研究</font>)</h6><p>许多marl算法是为static game或者以stage-wise fashion方式work设计的.接下来介绍有关static games的博弈理论[3,39].</p>
+<p>static game 是一种无状态信号且没有动力学的随机博弈.用元组$&lt;U_1,…,U_n,\rho_1,…,\rho_n&gt;$表示,奖励仅取决于联合动作$\rho_i:U\rightarrow R$.当只有两个agent,该博弈称为<font color=blue>bimatrix 博弈</font>.因为两个agent中奖励函数可表示为$|U_1|\times|U_2|$,其行row对应agent1的动作,列对应agent2的动作,,$|\cdot|$表示基数.完全竞争的静态博弈也称为零和博弈.因为奖励矩阵之和为0.混合静态博弈一般也称为一般博弈,因为agent奖励和没有限制.</p>
+<p>stage game是随机博弈在特定状态下出现的静态博弈.其奖励函数为投影在联合动作空间的随机博弈的q函数,通常,agent会多次访问随机博弈相同状态,所以stage game是重复game.在博弈理论中,重复博弈是由相同agent反复进行的静态博弈,与 one-shot 博弈主要区别在于,agent可以使用一些game iteration来收集关于其它agent行为或奖励信息,并在此做出更明智的选择.</p>
+<p>在静态或repeated game中,policy丢失状态参数,于是变为策略$\sigma_i: U_i\in [0,1]$.当状态为固定值,agent在随机博弈中某些状态下产生stage博弈策略为其策略$h_i$在动作空间$U_i$中的投影.marl算法在每个stage game分别依赖于 stage-wise approach学习策略.agent的整体策略为这些策略的和.</p>
+<p>静态博弈的重要解决方法是纳什平衡,首先,将agent i的最佳相应定义为对手策略opponent strategies的向量,作为可获得最大预期奖励的策略$\sigma^{*}_i$.</p>
+<p>$E{r_i|\sigma_1,…,\sigma_n}\leq E{r_i|\sigma_1,.,\sigma_i^{*},..,\sigma_n}$</p>
+<p>纳什平衡是一种联合策略$[\sigma^{*}_i]^T$,这样每个agent的策略都是对其它策略的最佳相应.纳什平衡描述了一种状态,只要其它所有agent保持策略不变,任何agent都不会从改变其策略中受到益.任何静态博弈中至少有一个(可能随机的)纳什平衡.一些静态博弈有多重纳什平衡.许多marl算法力求收敛到纳什平衡.</p>
+<p>随机策略在marl中非常重要,因其表达某些概念(如纳什平衡)是必不可少的.</p>
+<h5 id="sec3-机会与挑战-学习目标-不稳定性-及need-for-coordinate"><a href="#sec3-机会与挑战-学习目标-不稳定性-及need-for-coordinate" class="headerlink" title="sec3:机会与挑战(学习目标,不稳定性,及need for coordinate)"></a>sec3:机会与挑战(学习目标,不稳定性,及need for coordinate)</h5><p>marl较sarl存在一定优势,比如marl的分布式性质(可通过并行计算实现加速),此外,多个rl agent可以通过交流,教学或模仿等分享经验,更快更好完成任务,当系统中有agent失效,其它agent可以代替执行任务,从而使得系统更加鲁棒,也可方便加入新的agent,扩展性好.此外也面临一些挑战,包括维度灾难问题更加严重,转移概率函数和奖励函数都是在联合动作空间下计算,随着状态和动作维数增加,计算复杂性指数增长.</p>
+<p>再者就是学习的目标不好定义,agent的奖励于其它agent的行为相关,没办法单独最大化某个agent的奖励.一些文献提出了marl目标几种类型,考虑了agent学习动力学的稳定性[50],对其它agent的行为变化的适应性[93],或两者兼顾[14,16,17,26,70].参见sec4.</p>
+<p>不稳定性也是marl的一个问题.agent是同时在学习的,每个agent都面临一个不断变化的环境,最好的策略也可能会随着其它agent策略的改变而改变.最后,探索和贪婪过程会更加复杂,在多agent下,探索不仅是为了获取环境信息,还包括其它agent的信息,以此来适应其它agent的行为,但又不能过度探索从而打破其它agent平衡.</p>
+<p>need for coordinate源于以下事实,任何agent动作对环境影响还取决于其它agent采取的动作.因此,agent的动作必须选择相互一致才能达能预期效果(<font color=blue>?</font>),协同(coordinate)通常可以归结为在同样良好联合动作或策略之间始终如一的联系.在协作环境cooperative setting中需要协同coordinate.例如,考虑许多国家将电力电网互联,各国家地区由agent管理,尽管每个agent目标都是优化本国能源利益,但它仍需要协调邻国之间的电力流coordinate on the power flow,以实现最有意义的方案[84].</p>
+<h5 id="sec4-marl-goal"><a href="#sec4-marl-goal" class="headerlink" title="sec4:marl goal"></a>sec4:marl goal</h5><p>在完全合作fcoo的随机博弈中,共同收益可以一起最大化.但在其它情况下,agent回报通常是不同并相关的.无法独自最大化,指定一个好的目标是一个难题.</p>
+<p>主要从:稳定性(收敛到固定策略),适应性(保证agent改变策略时的性能),及两者兼顾讨论.</p>
+<p>目标通常根据策略及奖励来指定静态博弈的条件.通过要求一些动态博弈中所有状态逐步满足条件,可将某些目标拓展到动态博弈.在这种情况下,目标是根据阶段策略和预期回报来指定的(不再是策略和奖励.)</p>
+<p>收敛到平衡是稳定性基本要求[42,50].这意味着agent的策略最终收敛到coordinate equilibrium.纳什平衡是最常用的,但是,人们对其实用性提出了关注[108].例如,阶段性收到纳什平衡与动态博弈中的性能之间联系尚不清楚.</p>
+<p>在[16,17]中,为了保持稳定性需要收敛,并添加了合理性作为适应标准.为了算法收敛,作者要求学习者收敛于平稳策略,假设其它agent使用预定义的目标类算法,合理性在文中作为目标收敛到最佳相应的要求,尽管不明确要求到纳什平衡,但如果所有agent都是理性且收敛的,则自然会出现.</p>
+<p>rationality另一种选择是no-regret,见[14].要求agent获得的收益至少与任何固定策略的收益一样好,这适用于其它agent的任一组策略.这可以防止学习者被其它agent利用.注意,对于一些静态博弈,无悔学习算法收敛于纳什平衡[54,143].</p>
+<p>有针对的最优性/兼容性/安全性是 适应性要求,以平均奖励的有界形式表示[93].针对目标的最优性需要需要平均回报,至少是最佳相应的平均回报.兼容性规定了在self-play中平均回报的级别.即当其他agent使用学习算法.安全性要求针对所有的算法的安全级别的平均回报,满足这些要求的算法不一定收敛于平稳策略.</p>
+<p>marl算法其它属性也可能与稳定性和适应性有关,例如,与对手无关的学习,反之与是适应性有关[15,70].对手无关opponet-independent算法收敛于策略.与对手有关的算法学习其它agent模型,并以某种形式的最佳相应对它们做出反应.table1总结了marl算法的要求与属性.</p>
+<hr>
+<h5 id="2-A-Survey-and-Critique-of-Multiagent-Deep-Reinforcement-Learning-2019"><a href="#2-A-Survey-and-Critique-of-Multiagent-Deep-Reinforcement-Learning-2019" class="headerlink" title="[2]: A Survey and Critique of Multiagent Deep Reinforcement Learning,2019;"></a>[2]: A Survey and Critique of Multiagent Deep Reinforcement Learning,2019;</h5>
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/IMG_0615.JPG" alt="Ben 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Ben
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://5imcs.com/posts/5ad812f1/" title="强化学习论文(multi-agent RL综述篇)">https://5imcs.com/posts/5ad812f1/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9F%A5%E6%96%87%E7%8C%AE/" rel="tag"># 查文献</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/49286280/" rel="prev" title="机器人学,机器视觉与控制-MATLAB算法基础(动力学与控制篇)">
+      <i class="fa fa-chevron-left"></i> 机器人学,机器视觉与控制-MATLAB算法基础(动力学与控制篇)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Multi-agent-reinforcement-learning-An-overview-2010"><span class="nav-number">1.</span> <span class="nav-text">[1]: Multi-agent reinforcement learning: An overview,2010</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#sec2-RL背景"><span class="nav-number">1.1.</span> <span class="nav-text">sec2:RL背景</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#the-single-agent-sa-case-可以参考上一篇笔记"><span class="nav-number">1.1.1.</span> <span class="nav-text">the single-agent(sa) case(可以参考上一篇笔记)</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#the-multi-agent-case"><span class="nav-number">1.1.2.</span> <span class="nav-text">the multi-agent case</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#static-repeated-and-stage-games-待研究"><span class="nav-number">1.1.3.</span> <span class="nav-text">static, repeated,and stage games(待研究)</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#sec3-机会与挑战-学习目标-不稳定性-及need-for-coordinate"><span class="nav-number">1.2.</span> <span class="nav-text">sec3:机会与挑战(学习目标,不稳定性,及need for coordinate)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#sec4-marl-goal"><span class="nav-number">1.3.</span> <span class="nav-text">sec4:marl goal</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-A-Survey-and-Critique-of-Multiagent-Deep-Reinforcement-Learning-2019"><span class="nav-number">1.4.</span> <span class="nav-text">[2]: A Survey and Critique of Multiagent Deep Reinforcement Learning,2019;</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ben</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/benlw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;benlw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://benlw.gitee.io/" title="Gitee → https:&#x2F;&#x2F;benlw.gitee.io&#x2F;" rel="noopener" target="_blank"><i class="fa fa-fw fa-code"></i>Gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:benxin4@gmail.com" title="E-Mail → mailto:benxin4@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/users/9127891/ben" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;users&#x2F;9127891&#x2F;ben" rel="noopener" target="_blank"><i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ben</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : 23485,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes : 0,
+          toolbar  : 0,
+          statusbar: 0,
+          pagemode : 'thumbs',
+          view     : 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'default',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'iC5z051qk2CwmG42yasOiBKl-gzGzoHsz',
+      appKey     : 'bdK0qKny4bzoS5psG0QYyRiB',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+
+</body>
+</html>

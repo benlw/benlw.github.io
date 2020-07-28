@@ -22,25 +22,25 @@
 
   <meta property="og:type" content="website">
 <meta property="og:title" content="math.h">
-<meta property="og:url" content="https://5imcs.com/categories/%E5%8A%A8%E5%8A%9B%E5%AD%A6/index.html">
+<meta property="og:url" content="https://5imcs.com/page/2/index.html">
 <meta property="og:site_name" content="math.h">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="Ben">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://5imcs.com/categories/%E5%8A%A8%E5%8A%9B%E5%AD%A6/">
+<link rel="canonical" href="https://5imcs.com/page/2/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome: false,
+    isHome: true,
     isPost: false
   };
 </script>
 
-  <title>分类: 动力学 | math.h</title>
+  <title>归档 | math.h</title>
   
 
 
@@ -154,9 +154,7 @@
   <div class="post-block">
     <div class="posts-collapse">
       <div class="collection-title">
-        <h1 class="collection-header">动力学
-          <small>分类</small>
-        </h1>
+        <span class="collection-header">um! 目前共计 11 篇日志 .</span>
       </div>
 
       
@@ -169,40 +167,21 @@
 
       <div class="post-meta">
         <time itemprop="dateCreated"
-              datetime="2020-07-12T00:00:00+08:00"
-              content="2020-07-12">
-          07-12
+              datetime="2020-02-19T17:38:36+08:00"
+              content="2020-02-19">
+          02-19
         </time>
       </div>
 
       <h2 class="post-title">
-          <a class="post-title-link" href="/posts/49286280/" itemprop="url">
-            <span itemprop="name">机器人学,机器视觉与控制-MATLAB算法基础(动力学与控制篇)</span>
+          <a class="post-title-link" href="/posts/1b71e0af/" itemprop="url">
+            <span itemprop="name">github pages 及hexo next博客搭建</span>
           </a>
       </h2>
 
     </header>
   </article>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-03-01T00:00:00+08:00"
-              content="2020-03-01">
-          03-01
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/posts/1e752288/" itemprop="url">
-            <span itemprop="name">coordinate-invariant dynamics algorithm验证</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
 
     </div>
   </div>
@@ -211,6 +190,9 @@
   
 
   
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
 
 
 
@@ -460,6 +442,53 @@ if (document.querySelectorAll('pre.mermaid').length) {
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
