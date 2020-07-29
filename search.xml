@@ -8,7 +8,7 @@
 <p>从综述开始,我觉得比较好的两篇: </p>
 </blockquote>
 <hr>
-<h4 id="1-Multi-agent-reinforcement-learning-An-overview-2010"><a href="#1-Multi-agent-reinforcement-learning-An-overview-2010" class="headerlink" title="[1]: Multi-agent reinforcement learning: An overview,2010"></a>[1]: Multi-agent reinforcement learning: An overview,2010</h4><p>多智能体系统由一群自主,可交互的实体组成,它们共享一个环境,并由传感器感知环境,执行器采取行动.这一系统在各种邻域已有应用,如机器人团队,分布式控制,资源管理,协作决策系统collaborative decision support system,数据挖掘等.尽管可以对智能体赋予预设行为,但因为环境的复杂性,在随时间变化的环境中,先前良好的行为可能会变得不合适或者难以实施,所以它们经常需要在线学习新的行为,从而使智能体或整个多智能体性能提升[115,106].</p>
+<h4 id="1-Multi-agent-reinforcement-learning-MARL-An-overview-2010"><a href="#1-Multi-agent-reinforcement-learning-MARL-An-overview-2010" class="headerlink" title="[1]: Multi-agent reinforcement learning(MARL): An overview,2010"></a>[1]: Multi-agent reinforcement learning(MARL): An overview,2010</h4><p>多智能体系统由一群自主,可交互的实体组成,它们共享一个环境,并由传感器感知环境,执行器采取行动.这一系统在各种邻域已有应用,如机器人团队,分布式控制,资源管理,协作决策系统collaborative decision support system,数据挖掘等.尽管可以对智能体赋予预设行为,但因为环境的复杂性,在随时间变化的环境中,先前良好的行为可能会变得不合适或者难以实施,所以它们经常需要在线学习新的行为,从而使智能体或整个多智能体性能提升[115,106].</p>
 <p>强化学习rl通过与动态环境交互来进行学习.在每个时间步长,agent会感知环境状态,并采取行动,从而转到一个新的状态.设计奖励函数对其评估,agent必须在交互过程中将奖励累积最大化.强化学习反馈的信息量比监督学习少,但多于无监督学习[104].单智能体任务的rl算法比较成熟(有易于理解,且经证明收敛的算法).对设定进行一些简化或者泛化,使得rl也可以用于多智能体中.</p>
 <p>本文全面概述了marl,主要关注自主agent使用rl(temporal-difference rl)算法在线学习解决动态任务.并讨论了博弈论对marl(及静态任务的重要算法)的贡献.我们首先指出marl的优势及挑战.实际上该领域的关键在于为multi-agent system定义恰当的目标.我们介绍了文献中提出的不同学习目标,一方面考虑了系统的稳定性,另一方面也考虑了agent对其它agent不断变化行为的适应性.本章的核心包括对marl代表性算法详细概述.</p>
 <p>按任务类型组织算法:fully cooperative完全合作(fcoo), fully competitive完全竞争(fcom),以及mixed;然后根据学习目标的类型确定目标:稳定性,适应性或两者结合.此外,我们简要讨论marl技术应用领域,并在一个模拟实例中进行比较.该实例设计两个协作agent运输目标物体.在展望中,我们提出一些未解决的问题及有希望的方向.</p>
@@ -63,8 +63,127 @@
 <p>rationality另一种选择是no-regret,见[14].要求agent获得的收益至少与任何固定策略的收益一样好,这适用于其它agent的任一组策略.这可以防止学习者被其它agent利用.注意,对于一些静态博弈,无悔学习算法收敛于纳什平衡[54,143].</p>
 <p>有针对的最优性/兼容性/安全性是 适应性要求,以平均奖励的有界形式表示[93].针对目标的最优性需要需要平均回报,至少是最佳相应的平均回报.兼容性规定了在self-play中平均回报的级别.即当其他agent使用学习算法.安全性要求针对所有的算法的安全级别的平均回报,满足这些要求的算法不一定收敛于平稳策略.</p>
 <p>marl算法其它属性也可能与稳定性和适应性有关,例如,与对手无关的学习,反之与是适应性有关[15,70].对手无关opponet-independent算法收敛于策略.与对手有关的算法学习其它agent模型,并以某种形式的最佳相应对它们做出反应.table1总结了marl算法的要求与属性.</p>
+<p>stability and adaptation in MARL(<font color=blue>没看明白这小节..估计得从博弈理论入手吧</font>)</p>
+<table>
+<thead>
+<tr>
+<th>stability property</th>
+<th>adaptation property</th>
+<th>some relevant work</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>convergence</td>
+<td>rationality</td>
+<td>17,31</td>
+</tr>
+<tr>
+<td>convergence</td>
+<td>no-regret</td>
+<td>14</td>
+</tr>
+<tr>
+<td>–</td>
+<td>targeted optimality,safty, compatibility</td>
+<td>93,108</td>
+</tr>
+</tbody></table>
+<h5 id="sec5-marl-algorithms"><a href="#sec5-marl-algorithms" class="headerlink" title="sec5:marl algorithms"></a>sec5:marl algorithms</h5><p>方法比较久了.粗略看一下:</p>
+<p>MARL算法基于任务类型分类,主要有fully cooperative, fully competitive,以及mixed.</p>
+<p>(也可以通过算法侧重的学习目标来分)marl算法表现出其它agent的意识程度与agent追求的学习目标密切相关.关注稳定性的算法通常对其它agent是独立无感知的.在考虑适应性的算法需对其它agent行为有一定程度上的感知.如极端情况下忽略稳定性问题,则算法tracking跟踪其它agent的行为.即使没有明确的稳定性或适应性目标,算法也能展现出智能体的意识程度.所有agent tracking的算法和agent-aware的算法都用了对手模型来tracking其它agent的策略[25,49,133].</p>
+<p>此外还有一些其它的分类,包括</p>
+<ul>
+<li><p>homogeneity of rl,仅当所有agent的使用该算法(team-q,nash-q),或其它agent可以使用其它学习算法(awesome wolf-phc)</p>
+</li>
+<li><p>关于任务先验知识的假设,任务模型是否用于agent(model-based,)或者(model-free, team-Q).该模型包括过渡函数transition function(除非博弈是静态的)以及agent的奖励函数</p>
+</li>
+<li><p>关于agent输入的假设,通常假定输入精确的环境状态.不同体现在agent需要观察其它agent的行为,(如,team-q); 行为和回报(nash-q),或者两者都不(wolf-phc)</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>fcoo</th>
+<th>–</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>static</td>
+<td>dynamic</td>
+</tr>
+<tr>
+<td>JAL[29],FMQ[59]</td>
+<td>Team-Q[70],Distributed-Q[67], OAL[136]</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>fcom</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Minimax-Q[69]</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Mixed</th>
+<th>–</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>static</td>
+<td>dynamic</td>
+</tr>
+<tr>
+<td>Fictitious play[19]…</td>
+<td>sigle-agent rl[32,75,105], nash-Q[49],Ce-q[42]…</td>
+</tr>
+</tbody></table>
+<p>Marl可以看作是 temporal difference RL(尤其是q学习)和博弈论,以及更一般策略搜索技术的融合.</p>
+<p><img src="1.png" alt=""></p>
+<p><font color=red>fully cooperative</font></p>
+<p>对于完全合作的marl算法,如果在随机博弈中,会存在一个中心控制者(centralized controller),可以控制其它agent的动作.那么就能求解最大的联合动作值,随机博弈退化称markov决策过程,并且可以用q-learning来求解.</p>
+<p>$Q_{k+1}(x_k,u_k)=Q_k(x_k,u_k)+\alpha [r_{k+1}+\gamma max_{u’}Q_k(x_{k+1},u’)-Q_k(x_k,u_k)]$ (7)</p>
+<p>并且使用贪婪策略greedy policy,但是agent是独立决策者,即使所有agent都使用上述方程学习最优Q函数,也会出现coordination协同问题.agent应用$Q^{\star}$的贪婪策略来最大化回报:(每个agent都选择当前状态下最优的动作)</p>
+<p>$h’<em>i(x) = arg \max</em>{u_1,..u_{i-1},u_{i+1},…u_n}Q^{\star}(x,u)$ (8)</p>
+<p>但是在某些情况下,联合动作才能取得最优(此时单agent不一定最优).在没有coordination协同机制下,不同agent或许会打破最优联合动作的联系.</p>
+<p><img src="2.png" alt=""></p>
+<p>(例子1)比方说.如图,两个移动agent在保持队形maintaining formation(仅是相对距离保持)时需要避障,每个agent有三个动作,go sraight$s_i$, left($l_i$),right($r_i$).</p>
+<p>对于给定状态(agent位置),可以将Q函数投影到projected到联合动作空间.对于上图的所有状态,映射到q表.这个表描述了完全合作(协作)的静态(阶段 stage)博弈.行表示agent1的动作,列对应agent2的动作.如果两个agent left,或者同时right,那么有机会躲过障碍.Q 值为10.如果一个往左一个往右,那么破坏了队形,尽管仍有机会通过障碍,这时回报为0.其它情况例子发生碰撞q为负.</p>
+<p>Coordination-free methods</p>
+<ul>
+<li><p>Team Q学习,通过<b>假设最佳联合动作唯一</b>来避免协同问题avoids the coordination Problem,然后所有agent并行学习q函数,使用(8)选择最优联合动作来使得收益最大化.</p>
+</li>
+<li><p>在没有负回报的确定性问题中,可以用distribute q-learning算法求解,不需要协同机制,每个agent有布局策略$h’_i(x)$和一个取决自身动作的局部Q函数.当更新导致Q值增加时,才会更新局部q值.</p>
+</li>
+</ul>
+<p>$Q_{i,k+1}(x_k,u_{i,k})=max{Q_{i,k}(x_k,u_{i,k}), r_{k+1}+\gamma max_{u’<em>i}Q</em>{i,k}(x_{k+1},u’_i)}$</p>
+<p>这样可以保证局部q值使用拥有联合动作q值最大值.$Q_{i,k}(x,u_i)= max <em>{u_1,…,u</em>{i-1}},u_{i+1},..u_n Q_{k}(x,u), \forall k$,其中$u= [u_1,…,u_n]^T$,$u_i$固定.当仅更新导致q值有所改善,才会更新本地策略.这样可以保证联合策略$[h_{i,k}]^T$相对全局$Q_k$最优.并且在$Q_{i,0}=0$条件下,agent局部策略收敛的最优联合策略.</p>
+<p>coordination-based methods</p>
+<p>例如,通信multi-agent decision 问题[97].</p>
+<p><b>indirect coordination methods 间接协同方法</b></p>
+<p>该方法使得动作偏向于可能会带来丰厚回报的动作.这使得agent趋于协同动作选择(?).使用诸如 其它agent估计模型,或过去观察到的奖励的统计,来评估良好回报的可能性.</p>
+<p>(比如平均场方法?)</p>
+<p>Joint action learners[29]算法中,agent $i$为其它agent建模:</p>
+<p>$\sigma_j^i(u_j) = \frac{C^i_j(u_j) }{\sum_{u’_j\in U_j}C^i_j(u’_j)}$</p>
+<p>其中$\sigma_j^i$是agent $i$对$j$的策略模型,$C^i_j(u_j)$统计了$i$观察$j$采取动作$u_j$的次数.结合这些模型,衍生出几个启发式方法,来提高state-action的回报,</p>
+<p>比如FMQ方法,统计每个动作取得最优回报的频率,然后利用这个值对Q函数进行修改:</p>
+<p>公式(12)</p>
+<p>最后是基于社会公约(<a href="http://www.algorithmdog.com/multi-agent-rl)等显式的协同机制.约定每个agent的先后顺序以及动作选择的先后,这些信息是共享的.回到上面那个例子,规定a1优先a2,而且动作优先选择l,那么a1在行动时查表得知往左或右都有最高收益,根据社会公约,采取一个方向l1.轮到a2时,根据公约推理a1是选择l1,那么a2就采取l2,从而实现最大化的收益" target="_blank" rel="noopener">http://www.algorithmdog.com/multi-agent-rl)等显式的协同机制.约定每个agent的先后顺序以及动作选择的先后,这些信息是共享的.回到上面那个例子,规定a1优先a2,而且动作优先选择l,那么a1在行动时查表得知往左或右都有最高收益,根据社会公约,采取一个方向l1.轮到a2时,根据公约推理a1是选择l1,那么a2就采取l2,从而实现最大化的收益</a>.</p>
+<p><font color=red>fully competitive tasks(页19)</font></p>
+<p>略(参见<a href="http://www.algorithmdog.com/multi-agent-rl).大致思路是在完全竞争博弈中,应用最小最大化minimax原则,假定对手会采取使自己收益最小动作的情况,采取使自己最大收益的动作,使用公式来更新a1的策略函数和q函数" target="_blank" rel="noopener">http://www.algorithmdog.com/multi-agent-rl).大致思路是在完全竞争博弈中,应用最小最大化minimax原则,假定对手会采取使自己收益最小动作的情况,采取使自己最大收益的动作,使用公式来更新a1的策略函数和q函数</a>.</p>
+<p>以例子说明:</p>
+<p><img src="3.png" alt=""></p>
+<p>a1需要达到x位置,同时避免a2抓到.a2的目标就是抓捕a1.两个agent只能左右动作.图右侧是a1的q表,两个通水往左不产生收益,同时往右则a1达成目标且没有被抓到,收益10,根据minimax原则,a1应该选择往左走,以往往左最小收益期望为0,对于a2,其最优策略是往左保护目标位置.但如果a2不是采取最优策略,且a1通过建模可以预测到,那么a1往右走,达成目标.</p>
+<p><font color=red>mixed tasks(页20)</font></p>
+<p>在混合任务中大部分算法针对静态任务,而且关注适应性.最简单的就是直接应用单agent的rl算法,即每个agent的q函数只和自己有关,对对手没有感知.[130]在如何理解单agent在ma task中工作迈出了重要一步,文章将结果应用到进化博弈论(evolutionary game theory)中,用boltzmann策略在repeated games中分析q学习的学习动态.在某些情况下,q学习可以收敛到coordinated平衡点,而在其它情况下会存在不稳定的循环振荡.</p>
+<p>以例子说明:</p>
+<p><img src="4.png" alt=""></p>
 <hr>
-<h5 id="2-A-Survey-and-Critique-of-Multiagent-Deep-Reinforcement-Learning-2019"><a href="#2-A-Survey-and-Critique-of-Multiagent-Deep-Reinforcement-Learning-2019" class="headerlink" title="[2]: A Survey and Critique of Multiagent Deep Reinforcement Learning,2019;"></a>[2]: A Survey and Critique of Multiagent Deep Reinforcement Learning,2019;</h5>]]></content>
+<h4 id="2-A-Survey-and-Critique-of-Multiagent-Deep-Reinforcement-Learning-2019"><a href="#2-A-Survey-and-Critique-of-Multiagent-Deep-Reinforcement-Learning-2019" class="headerlink" title="[2]: A Survey and Critique of Multiagent Deep Reinforcement Learning,2019;"></a>[2]: A Survey and Critique of Multiagent Deep Reinforcement Learning,2019;</h4>]]></content>
       <categories>
         <category>查文献</category>
       </categories>
