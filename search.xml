@@ -184,7 +184,7 @@
 <p>convergence. littman[125]研究了markov博弈中强化学习联合动作agent[126]的收敛性,得出以下结论:1.在对抗环境(零和博弈)中,可以保证对于任意对手的最优play,例如minimax q-learning[124].在协同环境中,i.e协同博弈,所有agent共享相同的奖励功能,需要对其它agent做出一些基本假设,以保证收敛到最佳行为[125],例如纳什q学习[127]和friend-or-force q-learning[128].在其他类型的环境中,尚无保证收敛性的valued-based rl算法.</p>
 <p>最新的工作解决了scalability问题,较少集中在convergence guarantees,除少数例外[129,130,131,132].一项值得注意的研究表明部分观测情况下的multi-agent a-c算法的更新规则与regret minimization之间存在联系.这导致独立rl算法在具有不完善信息下的零和博弈中的新的收敛性[136].</p>
 <p>感兴趣的可以阅读更多关于multi-agent domians的收敛性文章[139,140,141].注意,一些mal算法已经证明不是收敛方法,而是针对对手类别的最佳响应.</p>
-<p><font color=red>emergent behaviors</font></p>
+<p><font color=red>emergent behaviors</font>(相对较早,将sarl算法直接应用到多ma环境,每个agent独立)</p>
 <p>最近一些工作从新兴行为(eg, cooperative或competitive)的类型的角度分析了先前提到的independent drl agents.</p>
 <p>最早的mdrl工作见tampuu等[155],使用两个独立的dqn leaning agent玩atari游戏,它们关注于使奖励函数适应agent,从而导致协同和竞争的新兴行为.leibo[156]研究了sequential social dilemmas下的independent dqns:满足一些不平的性的markov博弈,这项工作重点强调协作和竞争不仅以离散动作存在,而且在时间上可以拓展的.在相关研究中(one shot markov social dilemmas),lerer[176]拓展了tft策略,并证明了这些agent可以维持协作.为了构建agents,他们设计了self-paly和两个奖励方案,selfish或协作.</p>
 <p>self-paly是学习算法中比较有用的概念[190],因为在某些类型的games下,self-play可以保证收敛,以前也被用作mal的标准技术[192,14].其公开问题见sec4.5,leibo[159]日出了malthusian rl作为self-paly对population dynamics的拓展.这种方法被认为是community coevolution,并且可以局部最优[196].其局限性是在遗传算法进化算法中不是最新的.evolutionary策略已被用于解决强化学习问题[197]与evolving 函数逼近.</p>
@@ -199,7 +199,7 @@
 <p>另外:Learning Attentional Communication for Multi-Agent Cooperation<br><a href="https://cloud.tencent.com/developer/article/1618396" target="_blank" rel="noopener">多智能体强化学习(MARL)大总结与论文详细解读</a><br>能够让agent在任何时刻,自己决定是否与其它agent进行通信,或者与哪些进行通信.基于此论文提出了一个注意力机制的通信模型atoc,该模型基于agent的局部观察,可适用于协作环境及竞争环境.基本思路是通过局部观察及动作的编码,决定是否需要与其视野范围内的其它agent智能体进行通信.以及哪些智能体通信.决定进行通信的智能体称为发起者initiator,发起者从视野范围内选择协作agent组成一个通信群组,这个组在整个回合中变化,并且只在有需求时存在.文章采用一个双向的lstm网络作为通信群组之间的通信信道,这个lstm以通信群组中各个智能体的局部观察和动作作为输入,输出higher-level的编码信息作为agent策略网络的额外输入,来指导策略的生成.atoc采用ac框架,ddpg算法,同时考虑大规模agent的扩展性,所有agent共享策略网络,注意力单元,及通信信道参数.框架见论文.</p>
 <p>如果考虑带宽有限的问题,Learning to Schedule Communication in Multi-agent Reinforcement Learning,所有agent在有限的信道中发送信息,容量超出则发生丢包或者阻塞等情况.atoc通过限制发起者只能选择多个agent加入通信群组,但选取方式非常简单,本文将mac方法引入到marl中解决上述问题.</p>
 <p><img src="10.png" alt=""></p>
-<p>尽管通信是mdrl的一种新型趋势,但在mal中,对于不涉及交流(不显式的学习agent之间的通信)的合作环境已有大量的工作,因为这也是mdrl的自然基础.</p>
+<p><font color=red>协作学习</font><br>尽管通信是mdrl的一种新型趋势,但在mal中,对于不涉及交流(不显式的学习agent之间的通信)的合作环境已有大量的工作,因为这也是mdrl的自然基础.</p>
 <p>比如说foerster[168]研究了简单协作场景下的independent q-learning,每个agent使用标准的dqn架构,对于experience replay buffer,数据分配需要遵循一定的假设.</p>
 <p><a href="https://cloud.tencent.com/developer/article/1618396" target="_blank" rel="noopener">多智能体强化学习(MARL)大总结与论文详细解读</a></p>
 <p>Value-Decomposition Networks For Cooperative Multi-Agent Learnin.中心化的方法,即将所有agent的动作状态空间合并,当成一个agent来考虑,能够较好处理环境非平稳问题,<br>也存在不少缺陷比如扩展性差.文章提出vdn方法,基本思路是中心化训练一个联合的q network,联合的网络由所有agent的局部的q networks相加得到,由于实际是学习每个agent的局部模型,因而解耦其复杂相互关系.由于训练完每个agent拥有只基于自己局部观察的q network,实现去中心化,vdn遵循ctde框架,并解决dec-pomdp问题.</p>
@@ -207,6 +207,7 @@
 <p>qmix是vdn算法后续,出发点是vdn做联合q-value分解时只是加和,这种做法会使得局部q函数表达能力下降,没办法捕捉agent之间复杂的相互关系,因而对vdn算法进行修改.具体而言,认为联合q函数及布局q函数还满足一定约束.vdn只是其中一个特例.</p>
 <p>进一步改进:<br>QTRAN: Learning to Factorize with Transformation for Cooperative Multi-Agent Reinforcement learning</p>
 <p><img src="11.png" alt=""></p>
+<p><font color=red>agent建模</font><br>这一类方法主要聚焦于通过对其他智能体的策略、目标、类别等等建模来进行更好的协作或者更快地打败竞争对手.</p>
 <p><img src="12.png" alt=""></p>
 ]]></content>
       <categories>
