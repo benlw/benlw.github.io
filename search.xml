@@ -13,14 +13,16 @@
 <p><img src="experiment.gif" alt=""></p>
 <p>注:</p>
 <ol>
-<li><p><a href="https://dartsim.github.io/" target="_blank" rel="noopener">DART: Dynamic Animation and Robotics Toolkit</a>:The library provides data structures and algorithms for kinematic and dynamic applications in robotics and computer animation.</p>
-</li>
-<li><p>Vrep:</p>
-<p>bullet物理引擎(t = 24s,time step = 50ms):</p>
-</li>
+<li><a href="https://dartsim.github.io/" target="_blank" rel="noopener">DART: Dynamic Animation and Robotics Toolkit</a>:The library provides data structures and algorithms for kinematic and dynamic applications in robotics and computer animation.</li>
+<li>Vrep:</li>
 </ol>
+<ul>
+<li>bullet物理引擎(t = 24s,time step = 50ms):</li>
+</ul>
 <p><img src="bullet.gif" alt=""></p>
-<p>  ode隐式格式(t = 24s,time step = 50ms)</p>
+<ul>
+<li>ode隐式格式(t = 24s,time step = 50ms)</li>
+</ul>
 <p><img src="ode.gif" alt=""></p>
 <ol start="3">
 <li><a href="note.pdf">这是我的笔记</a></li>
