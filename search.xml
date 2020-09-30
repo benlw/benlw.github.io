@@ -7,9 +7,10 @@
 <p><a href="paper.pdf">点我，这里是PDF文档</a></p>
 <p>论文代码地址:<a href="https://github.com/jslee02/wafr2016" target="_blank" rel="noopener">GitHub - jslee02/wafr2016: Implementation of “A Linear-Time Variational Integrator for Multibody Systems”</a></p>
 <p>代码编译:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">make -j8 experiments examples</span><br><span class="line">cd &lt;wafr2016_root_dir&gt;&#x2F;build&#x2F;bin</span><br><span class="line">.&#x2F;dm_passivePendulum</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd build</span><br><span class="line">make -j8 experiments examples</span><br><span class="line">cd &lt;wafr2016_root_dir&gt;&#x2F;build&#x2F;bin</span><br><span class="line">.&#x2F;dm_passivePendulum</span><br></pre></td></tr></table></figure>
 
-<p>代码运行结果:</p>
+<p>代码运行结果(<code>numLinks = 6</code>,<code>gravity(0.0, -9.81, 0.0)</code>,<code>setTimeStep(1.0/1000);</code>):</p>
+<p><img src="experiment.gif" alt=""></p>
 <p>注:</p>
 <ol>
 <li><p><a href="https://dartsim.github.io/" target="_blank" rel="noopener">DART: Dynamic Animation and Robotics Toolkit</a>:The library provides data structures and algorithms for kinematic and dynamic applications in robotics and computer animation.</p>
