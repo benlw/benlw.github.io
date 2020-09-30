@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://5imcs.com/"/>
-  <updated>2020-08-06T00:25:18.367Z</updated>
+  <updated>2020-09-30T03:14:25.767Z</updated>
   <id>https://5imcs.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>读论文a linear-time VI</title>
+    <link href="https://5imcs.com/posts/e25dfb89/"/>
+    <id>https://5imcs.com/posts/e25dfb89/</id>
+    <published>2020-09-23T04:24:00.000Z</published>
+    <updated>2020-09-30T03:14:25.767Z</updated>
+    
+    <content type="html"><![CDATA[<p>论文预印地址:<a href="https://arxiv.org/abs/1609.02898" target="_blank" rel="noopener">[1609.02898] A Linear-Time Variational Integrator for Multibody Systems</a><br><a href="paper.pdf">点我，这里是PDF文档</a></p><p>论文代码地址:<a href="https://github.com/jslee02/wafr2016" target="_blank" rel="noopener">GitHub - jslee02/wafr2016: Implementation of “A Linear-Time Variational Integrator for Multibody Systems”</a></p><p><img src="paper.pdf" alt=""></p><p><img src="note.pdf" alt=""></p><p>论文相关资源:</p><ol><li><a href="https://dartsim.github.io/" target="_blank" rel="noopener">DART: Dynamic Animation and Robotics Toolkit</a>:The library provides data structures and algorithms for kinematic and dynamic applications in robotics and computer animation.</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;论文预印地址:&lt;a href=&quot;https://arxiv.org/abs/1609.02898&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;[1609.02898] A Linear-Time Variational Integrator for Mu
+      
+    
+    </summary>
+    
+    
+      <category term="VI" scheme="https://5imcs.com/categories/VI/"/>
+    
+    
+      <category term="动力学" scheme="https://5imcs.com/tags/%E5%8A%A8%E5%8A%9B%E5%AD%A6/"/>
+    
+  </entry>
   
   <entry>
     <title>强化学习论文(multi-agent RL综述篇)</title>
@@ -155,9 +181,9 @@
       <category term="optimal control" scheme="https://5imcs.com/categories/optimal-control/"/>
     
     
-      <category term="Matlab" scheme="https://5imcs.com/tags/Matlab/"/>
-    
       <category term="仿真" scheme="https://5imcs.com/tags/%E4%BB%BF%E7%9C%9F/"/>
+    
+      <category term="Matlab" scheme="https://5imcs.com/tags/Matlab/"/>
     
   </entry>
   
@@ -214,9 +240,9 @@
       <category term="trajectory planning" scheme="https://5imcs.com/categories/trajectory-planning/"/>
     
     
-      <category term="Matlab" scheme="https://5imcs.com/tags/Matlab/"/>
-    
       <category term="仿真" scheme="https://5imcs.com/tags/%E4%BB%BF%E7%9C%9F/"/>
+    
+      <category term="Matlab" scheme="https://5imcs.com/tags/Matlab/"/>
     
   </entry>
   
