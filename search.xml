@@ -1,25 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>A Linear-Time VI</title>
-    <url>/posts/2a36b0c1/</url>
-    <content><![CDATA[<p>论文预印地址:<a href="https://arxiv.org/abs/1609.02898" target="_blank" rel="noopener">[1609.02898] A Linear-Time Variational Integrator for Multibody Systems</a></p>
-<p>论文代码地址:<a href="https://github.com/jslee02/wafr2016" target="_blank" rel="noopener">GitHub - jslee02/wafr2016: Implementation of “A Linear-Time Variational Integrator for Multibody Systems”</a></p>
-<p><img src="paper.pdf" alt=""></p>
-<p><img src="note.pdf" alt=""></p>
-<p>论文相关资源:</p>
-<ol>
-<li><a href="https://dartsim.github.io/" target="_blank" rel="noopener">DART: Dynamic Animation and Robotics Toolkit</a>:The library provides data structures and algorithms for kinematic and dynamic applications in robotics and computer animation.</li>
-</ol>
-]]></content>
-      <categories>
-        <category>VI</category>
-      </categories>
-      <tags>
-        <tag>动力学</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>强化学习论文(multi-agent RL综述篇)</title>
     <url>/posts/5ad812f1/</url>
     <content><![CDATA[<hr>
