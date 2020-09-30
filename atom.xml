@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://5imcs.com/"/>
-  <updated>2020-09-30T03:14:25.767Z</updated>
+  <updated>2020-09-30T03:50:17.556Z</updated>
   <id>https://5imcs.com/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="https://5imcs.com/posts/e25dfb89/"/>
     <id>https://5imcs.com/posts/e25dfb89/</id>
     <published>2020-09-23T04:24:00.000Z</published>
-    <updated>2020-09-30T03:14:25.767Z</updated>
+    <updated>2020-09-30T03:50:17.556Z</updated>
     
-    <content type="html"><![CDATA[<p>论文预印地址:<a href="https://arxiv.org/abs/1609.02898" target="_blank" rel="noopener">[1609.02898] A Linear-Time Variational Integrator for Multibody Systems</a><br><a href="paper.pdf">点我，这里是PDF文档</a></p><p>论文代码地址:<a href="https://github.com/jslee02/wafr2016" target="_blank" rel="noopener">GitHub - jslee02/wafr2016: Implementation of “A Linear-Time Variational Integrator for Multibody Systems”</a></p><p><img src="paper.pdf" alt=""></p><p><img src="note.pdf" alt=""></p><p>论文相关资源:</p><ol><li><a href="https://dartsim.github.io/" target="_blank" rel="noopener">DART: Dynamic Animation and Robotics Toolkit</a>:The library provides data structures and algorithms for kinematic and dynamic applications in robotics and computer animation.</li></ol>]]></content>
+    <content type="html"><![CDATA[<p>论文预印地址:<a href="https://arxiv.org/abs/1609.02898" target="_blank" rel="noopener">[1609.02898] A Linear-Time Variational Integrator for Multibody Systems</a>  </p><p><a href="paper.pdf">点我，这里是PDF文档</a></p><p>论文代码地址:<a href="https://github.com/jslee02/wafr2016" target="_blank" rel="noopener">GitHub - jslee02/wafr2016: Implementation of “A Linear-Time Variational Integrator for Multibody Systems”</a></p><p>代码编译:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">make -j8 experiments examples</span><br><span class="line">cd &lt;wafr2016_root_dir&gt;&#x2F;build&#x2F;bin</span><br><span class="line">.&#x2F;dm_passivePendulum</span><br></pre></td></tr></table></figure><p>代码运行结果:</p><p>注:</p><ol><li><p><a href="https://dartsim.github.io/" target="_blank" rel="noopener">DART: Dynamic Animation and Robotics Toolkit</a>:The library provides data structures and algorithms for kinematic and dynamic applications in robotics and computer animation.</p></li><li><p>Vrep:</p><p>bullet物理引擎(t = 24s,time step = 50ms):</p></li></ol><p><img src="bullet.gif" alt=""></p><p>  ode隐式格式(t = 24s,time step = 50ms)</p><p><img src="ode.gif" alt=""></p><ol start="3"><li><a href="note.pdf">这是我的笔记</a></li></ol>]]></content>
     
     <summary type="html">
     
