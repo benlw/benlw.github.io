@@ -25,7 +25,10 @@
 </ul>
 <p><img src="ode.gif" alt=""></p>
 <ol start="3">
-<li><a href="note.pdf">这是我的笔记</a></li>
+<li><p><a href="note.pdf">这是我的笔记</a></p>
+</li>
+<li><p>另一篇较新的文献: <a href="https://arxiv.org/abs/1904.12756" target="_blank" rel="noopener">Efficient Computation of Higher-Order Variational Integrators in Robotic Simulation and Trajectory Optimization</a></p>
+</li>
 </ol>
 ]]></content>
       <categories>
