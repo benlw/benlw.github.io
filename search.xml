@@ -39,6 +39,36 @@
       </tags>
   </entry>
   <entry>
+    <title>变分积分子(一些数值算例)</title>
+    <url>/posts/f60cbae0/</url>
+    <content><![CDATA[<h4 id="提纲"><a href="#提纲" class="headerlink" title="提纲"></a>提纲</h4><p>目的:根据以下几篇论文提供的算法,尝试动手编写一下Matlab代码,跑几个例子加深一下理解.</p>
+<ol>
+<li>Variational Integrators and the Newmark Algorithm for Conservative and Dissipative Mechanical System,2000, C Kane</li>
+<li>Hamilton–Pontryagin Integrators on Lie Groups,2008, JE Marsden</li>
+<li>Hamel’s formalism and variational integrators on a sphere,2012, DV Zenkov</li>
+<li>几何精确梁</li>
+<li>雪橇</li>
+</ol>
+<h5 id="VI-and-Newmark算法"><a href="#VI-and-Newmark算法" class="headerlink" title="VI and Newmark算法"></a>VI and Newmark算法</h5><p>论文说明了classical newmark algorithm在某种意义上是离散力学的变分版本,这样的算法是辛且动量守恒的.拥有较为出色的全局能量行为.其次论文基于Lagrange-d’alembert原理推导了非保守系统的离散变分算法.</p>
+<p>数值算例主要基于section3,详细见the variational algorithm on $T^{\star}Q$.</p>
+<p>考虑一个nonlinear oscillator, unit mass moving in the plane under influence of the potential $V(q) =q^2(q^2-1)^2.$</p>
+<p>测试算法为 隐/显式newmark算法(h=0.2)以及VI $L_d^{sym,\alpha}$ 和R-K, Benchmark<br>算法采用matlab ode113.为了代码统一,我将其写为对$(q_k,p_{k})$的更新.相对于经典R-K,我调用了fsolve求解DEL方程.结果如下(<a href="note.pdf">点我,相关推导与代码</a>)</p>
+<p><img src="nmk.png" alt=""></p>
+<h5 id="HP-integrators-on-Lie-Groups"><a href="#HP-integrators-on-Lie-Groups" class="headerlink" title="HP integrators on Lie Groups"></a>HP integrators on Lie Groups</h5><p>考虑势能函数$U_{\alpha}=(dist(Q,I)-1)^2-\frac{\alpha}{dist(Q,Q_t)}$</p>
+<p>以Lie-Verlet method(牛顿法计算4.11a式)为例(h=0.125)</p>
+<p><img src="vlv.png" alt=""></p>
+<h5 id="Hamel’s-formalism-and-VI"><a href="#Hamel’s-formalism-and-VI" class="headerlink" title="Hamel’s formalism and VI"></a>Hamel’s formalism and VI</h5><p>待整理</p>
+<h5 id="几何精确梁"><a href="#几何精确梁" class="headerlink" title="几何精确梁"></a>几何精确梁</h5><p>待整理</p>
+<h5 id="雪橇"><a href="#雪橇" class="headerlink" title="雪橇"></a>雪橇</h5><p>待整理</p>
+]]></content>
+      <categories>
+        <category>VI</category>
+      </categories>
+      <tags>
+        <tag>动力学</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>强化学习论文(multi-agent RL综述篇)</title>
     <url>/posts/5ad812f1/</url>
     <content><![CDATA[<hr>
