@@ -66,6 +66,7 @@
             color: #0056b3; /* Match the title color */
         }
         .intro-text {
+            /* margin: 20px auto; */
             max-width: 750px; /* Restricts paragraph width for optimal reading */
             font-size: 1.1em;
             line-height: 1.8;
@@ -79,24 +80,18 @@
                 padding: 10px 5%;
             }
             .video-container video, .image-container img {
-                width: 80%; /* Adjust width to 80% */
+                width: 100%; /* Full width on smaller screens */
                 height: auto; /* Adjust height automatically */
-                margin: 0 auto; /* Center the video */
             }
             td {
-                display: block; /* Stack layout on small screens */
                 padding: 10px 0; /* Adjust padding for stacking */
             }
-            .video-container, .image-container {
-                width: 100%; /* Full width on smaller screens */
-            }
-            .video-description, .image-description {
-                width: 100%; /* Full width on smaller screens */
+            .video-container, .image-container, .video-description, .image-description {
+                width: 100%; /* Stack layout on small screens */
                 padding-left: 0; /* Remove padding for small screens */
-                padding-top: 10px; /* Spacing above description */
             }
         }
-    </style>    
+    </style>
 </head>
 <body>
     <!-- <header>
@@ -120,17 +115,13 @@
             <!-- Insert MP4 video with text description in a table -->
             <table>
                 <tr>
-                    <!-- <td class="video-container">
+                    <td class="video-container">
                         <video controls loop autoplay muted>
                             <source src="control_gains_24.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
-                    </td> -->
-                    <td class="image-container">
-                        <img src="control_gains_24.gif" alt="Simulation Animation" style="width: 50%;">
                     </td>
-                    <!-- <td class="video-description"> -->
-                    <td class="image-description">    
+                    <td class="video-description">
                         <p>受控系统的运动曲线被约束在一个曲率阱中，直观地解释了曲率阱如何吸引摆向其底部移动.</p>
                         <p>It is shown that the motion curve of the closed loop system are trapped in a "curvature well".</p>
                     </td>
