@@ -63,10 +63,17 @@
                     </td>
                 </tr>                 -->
                 <tr>
+                    <!-- <td class="image-container">
+                        <button onclick="toggleImage()">点击切换</button> 
+                        <img src="curvature_vs_control_gains.png" alt="Control Gains Image" style="width: 80%;" id="image">
+                        <img src="curvature_vs_control_gains.gif" alt="Simulation Animation" style="display: none; width: 80%;" id="animation">
+                    </td> -->
                     <td class="image-container">
-                        <button onclick="toggleImage()">点击切换</button>
-                        <img src="curvature_vs_control_gains.gif" alt="Simulation Animation" style="width: 80%;" id="animation">
-                        <img src="curvature_vs_control_gains.png" alt="Control Gains Image" style="display: none; width: 80%;" id="image">
+                        <!-- <button onclick="toggleImage('image_curvature', 'animation_curvature')">点击切换</button> -->
+                        <button id="toggleButton_curvature" onclick="toggleImage('image_curvature', 'animation_curvature', 'toggleButton_curvature')" data-text="显示 PNG">显示 GIF</button>
+                        <!-- 默认显示PNG，GIF隐藏 -->
+                        <img src="curvature_vs_control_gains.png" alt="Control Gains Image" style="width: 80%;" id="image_curvature">
+                        <img src="curvature_vs_control_gains.gif" alt="Simulation Animation" style="display: none; width: 80%;" id="animation_curvature" data-gif="curvature_vs_control_gains.gif">
                     </td>
                     <td class="image-description" style="vertical-align: top;">
                         <p>研究发现，当 $ \nu > M/m $ 时，出现了具有正曲率的曲率阱，随着 $ \nu $ 增加，这些“阱”变得更宽、更深.</p>
@@ -93,8 +100,15 @@
             </table> -->
             <table>
                 <tr>
-                    <td class="image-container">
+                    <!-- <td class="image-container">
                         <img src="geb_hinged_on_cart_under_gravity.gif" alt="Uncontrolled Flexible Pendulum Under Gravity" alt="Simulation Animation" loading="lazy">
+                    </td> -->
+                    <td class="image-container">
+                        <!-- <button onclick="toggleImage('image_geb', 'animation_geb')">点击切换</button> -->
+                        <button id="toggleButton_geb" onclick="toggleImage('image_geb', 'animation_geb', 'toggleButton_geb')" data-text="显示 PNG">显示 GIF</button>
+                        <!-- 默认显示PNG，GIF隐藏 -->
+                        <img src="geb_hinged_on_cart_under_gravity.png" alt="Uncontrolled Flexible Pendulum Under Gravity" style="width: 80%;" id="image_geb">
+                        <img src="geb_hinged_on_cart_under_gravity.gif" alt="Uncontrolled Flexible Pendulum Under Gravity" style="display: none;" id="animation_geb" data-gif="geb_hinged_on_cart_under_gravity.gif" loading="lazy">
                     </td>
                     <td class="image-description">
                         <p>不施加控制，柔性摆在重力作用下自然下落. </p>
@@ -107,8 +121,15 @@
                     </td>  
                 </tr>
                 <tr>
-                    <td class="image-container">
+                    <!-- <td class="image-container">
                         <img src="geb_hinged_on_cart.gif" alt="Simulation Animation" loading="lazy">
+                    </td> -->
+                    <td class="image-container">
+                        <!-- <button onclick="toggleImage('image_geb_with_control', 'animation_geb_with_control')">点击切换</button> -->
+                        <button id="toggleButton_geb_with_control" onclick="toggleImage('image_geb_with_control', 'animation_geb_with_control', 'toggleButton_geb_with_control')" data-text="显示 PNG">显示 GIF</button>
+                        <!-- 默认显示PNG，GIF隐藏 -->
+                        <img src="geb_hinged_on_cart.png" alt="Simulation Animation" style="width: 80%;" id="image_geb_with_control">
+                        <img src="geb_hinged_on_cart.gif" alt="Simulation Animation" style="display: none;" id="animation_geb_with_control" data-gif="geb_hinged_on_cart.gif">
                     </td>
                     <td class="image-description">
                         <p>利用几何力学中新发展的场论Hamel形式，我们将受控Lagrange方法推广至无穷维力学系统，并对小车-柔性倒立摆系统构建了实时的镇定算法.</p>
@@ -122,16 +143,33 @@
 
     <footer>
         <p>Benliang Wang, a humble student at Beijing Institute of Technology (2024)</p> <!--  humble doctoral student 😊 -->
-        <p>Email: <a href="mailto:xinben4@gmail.com">xinben4@gmail.com</a> (<a href="mailto:xinben4@bit.edu.cn">xinben4@bit.edu.cn</a>) / Tel: +1 913-717-8681</p>
+        <!-- <p>Email: <a href="mailto:xinben4@gmail.com">xinben4@gmail.com</a> (<a href="mailto:xinben4@bit.edu.cn">xinben4@bit.edu.cn</a>) 😊 Tel: +1 913-717-8681</p> -->
+        <p>
+            <a href="mailto:xinben4@gmail.com" class="contact-link">
+              <span class="fas fa-envelope"></span> xinben4@gmail.com
+            </a>
+            &nbsp;
+            <a href="mailto:xinben4@bit.edu.cn" class="contact-link">
+              xinben4@bit.edu.cn
+            </a>
+            &nbsp;
+            <!-- <br> -->
+            <a href="tel:+19137178681" class="contact-link">
+              <span class="fas fa-phone"></span> +1 913-717-8681
+            </a>
+        </p>
         <div class="social-links">
             <!-- More projects  -->
             <a href="http://5imcs.com" target="_blank">
                 <i class="fas fa-home"></i> <!-- Home icon -->
             </a>
+            <a href="https://grassyiyi.com/Luv/" target="_blank"><i class="fas fa-heart"></i></a>
             <!-- and social media  -->
             <a href="https://github.com/benlw" target="_blank"><i class="fab fa-github"></i></a>
             <a href="https://stackoverflow.com/" target="_blank"><i class="fab fa-stack-overflow"></i></a>
-            <a href="https://www.zhihu.com/" target="_blank"><i class="fab fa-zhihu"></i></a>
+            <a href="https://zhihu.com/" target="_blank"><i class="fab fa-zhihu"></i></a>
+            <!-- <a href="https://5imcs.com/rss" target="_blank"><i class="fas fa-rss"></i></a> -->
+            <a href="https://gitee.com/benlw" target="_blank"><i class="fab fa-git"></i></a>
         </div>
     </footer> 
     
