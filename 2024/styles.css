@@ -54,7 +54,7 @@ td {
 }
 
 .image-container img {
-    width: 100%;
+    width: 90%;
     /* Set image width to 100% within its container */
     height: auto;
 }
@@ -68,16 +68,17 @@ td {
 
 .video-description,
 .image-description {
-    width: 40%;
+    width: 42%;
     /* Adjusted for space */
     text-align: left;
     /* Justify text for alignment on both sides */
     padding-left: 20px;
     /* Space between video and text */
+    font-size: 1.0em;
 }
 
 footer {
-    font-size: 0.8em;
+    font-size: 0.9em;
     color: #666;
 }
 
