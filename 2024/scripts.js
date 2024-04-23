@@ -33,3 +33,19 @@ function toggleImage(pngId, gifId, buttonId) {
     button.textContent = '显示 GIF'; // 设置按钮文本为“显示 GIF”
   }
 }
+
+function showAnimation(bgId) {
+  var animation = document.getElementById(bgId);
+  var body = document.body;
+
+  animation.style.display = 'flex';
+  body.style.overflow = 'hidden'; // 禁止滚动
+}
+
+function hideAnimation(bgId) {
+  var animation = document.getElementById(bgId);
+  var body = document.body;
+
+  animation.style.display = 'none';
+  body.style.overflow = ''; // 重新允许滚动
+}
