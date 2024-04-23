@@ -157,6 +157,11 @@ footer {
         max-width: 90%;
         max-height: 90%;
     }
+
+    table, td {
+        width: 100%;
+        font-size: smaller;
+    }
 }
 
 @media (orientation: portrait) {
