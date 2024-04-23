@@ -291,3 +291,7 @@ footer {
     /* font-size:  0.9em; */
 }
 
+.bordered {
+    border: 1px solid #000; /* 边框 */
+    padding: 4px;  
+  }

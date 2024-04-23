@@ -37,21 +37,29 @@
                 <tr>
                     <td colspan="2"
                         style="text-align: left; font-family: 'Times New Roman', Times, serif; padding: 5px 10px; font-size: 16px;">
-                        <p> <strong>例. 车摆系统的曲率塑形镇定.</strong>  &nbsp;
-                            我们仅对小车施加控制$u$
-                            使摆保持垂直，期望平衡状态 $\phi=\dot{\phi}=\dot{s}=0$. 经曲率塑形计算
+                        <p>
+                            本文针对非线性力学系统的镇定问题提出了一种曲率塑形控制方法. 
+                        </p>
+                        <p> <strong><span class="bordered">例. 车摆系统的曲率塑形控制.</span></strong> &nbsp;
+                            我们仅对小车施加控制$u$使摆保持垂直. 经计算
                             \begin{equation}\label{eq: sec2_control_law_invertp_detailed}
                             u=\frac{\nu \beta \sin \phi\left(\alpha \dot{\phi}^{2}-D \cos
                             \phi\right)}{\alpha-\frac{\beta^{2}}{\gamma}(1+\nu) \cos ^{2} \phi},
                             \end{equation}
-                            我们使用Cartan活动标架法计算伪黎曼流形 $\left(Q, \tilde{g}_{J}\right)$的截面曲率 $K$
+                            系统截面曲率$K$
                             \begin{equation}\label{eq:sec2_curvature_ex1}
                             K(\phi)=\frac{\gamma D\left[\beta^{2}(\nu+1) D \sin ^{4} \phi+\left(\beta^{2}(\nu+1)-\alpha
                             \gamma\right)(e \cos (\phi)-D)\right]}{2(e-D \cos (\phi))^{3}\left(\alpha
                             \gamma-\beta^{2}(\nu+1) \cos ^{2}(\phi)\right)^{2}} . % \tag{40}
                             \end{equation}
                             其中 $\alpha=m l^{2}, \beta=m l, \gamma=M+m$，以及 $D=m g l$.</p>
-                        <p>为了验证控制律有效性以及控制增益系数$\nu$是如何影响曲率的，我们使用Mathematica进行了模拟.
+                        <p> 根据<strong><span class="bordered">曲率稳定性判据</span></strong>，平衡点 $\phi=\dot{\phi}=\dot{s}=0$
+                            的稳定性条件是
+                            \begin{equation}
+                            \nu>\frac{\alpha \gamma-\beta^{2}}{\beta^{2}}=\frac{M}{m} %\tag{41}
+                            \end{equation}
+                        </p>
+                        <p> 为了验证控制律有效性以及控制增益系数$\nu$是如何影响曲率的，我们使用Mathematica进行了模拟.
                             车摆系统参数如下：摆质量 $m=0.14 \mathrm{~kg}$，小车质量 $M=0.44 \mathrm{~kg}$，摆长 $l=0.215 \mathrm{~m}$，重力加速度
                             $g=9.8 \mathrm{~m} / \mathrm{s}^{2}$. </p>
                     </td>
@@ -119,7 +127,8 @@
                         </div>
                     </td>
                     <td class="image-description">
-                        <p>研究发现，当 $ \nu > M/m $ 时，出现了具有正曲率的曲率阱，随着 $ \nu $ 增加，这些阱变得更宽、更深.</p>
+                        <p>研究发现，当 $ \nu > M/m $ 时，出现了具有正曲率的曲率阱，随着 $ \nu $ 增加，这些阱变得更宽、更深.
+                        </p>
                         <p>It is shown that the "curvature well" with positive curvatures appear when $ \nu > M/m $ and
                             become wider and deeper as $ \nu $ increases within the domain.</p>
                     </td>
