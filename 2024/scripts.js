@@ -2,8 +2,9 @@ window.MathJax = {
   tex: {
     inlineMath: [['$', '$']],
     displayMath: [['$$', '$$'], ['\\[', '\\]']],
-    tags: 'ams',
-    linebreaks: { automatic: true }, // 启用自动断行
+    processEscapes: true,
+    processEnvironments: true,
+    tags: 'ams' 
   },
   svg: {
     fontCache: 'global'
@@ -14,9 +15,7 @@ window.MathJax = {
   options: {
     renderActions: {
       addMenu: [0, '', '']
-    },
-    scale: 0.9, // 调整基本缩放
-    minScaleAdjust: 90, // 最小缩放比例，用于小屏设备
+    }
   }
 };
 
