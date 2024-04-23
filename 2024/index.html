@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ben's Academic Homepage</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"> <!-- FontAwesome CDN --> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <!-- FontAwesome CDN -->
     <script src="scripts.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.js" integrity="sha384-+BSz3oj3ILMYvOBr16U9i0H4RZRmGyQQ+1q9eqr8T3skmAFrJk8GmgwgqlCZdNSo" crossorigin="anonymous"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.js"
+        integrity="sha384-+BSz3oj3ILMYvOBr16U9i0H4RZRmGyQQ+1q9eqr8T3skmAFrJk8GmgwgqlCZdNSo"
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body> 
+
+<body>
     <header>
         <h1>Ben's Research</h1>
         <p class="intro-text">
-            Applied Math, Geometric Mechanics and Machine Learning. 
+            Applied Math, Geometric Mechanics and Machine Learning.
         </p>
     </header>
-    
+
     <main>
         <section>
             <h2>Curvature Shaping Control</h2>
-            <!-- <p>Visualization.</p> --> 
+            <!-- <p>Visualization.</p> -->
             <table>
                 <tr>
                     <!-- <td class="video-container">
@@ -30,55 +35,104 @@
                         </video>
                     </td> -->
                     <td class="image-container">
-                        <img src="control_gains_24_optimize.webp" alt="Simulation Animation" style="width: 54%;" loading="lazy" onclick="showAnimation('control_gains_24')">
+                        <img src="control_gains_24_optimize.webp" alt="Simulation Animation" style="width: 54%;"
+                            loading="lazy" onclick="showAnimation('control_gains_24', 'progressBar_control_gains_24')">
                         <div class="fullscreen-bg" id="control_gains_24" onclick="hideAnimation('control_gains_24')">
-                          <img src="control_gains_24.gif" alt="Simulation Animation"  loading="lazy">
+                            <img src="control_gains_24.gif" alt="Simulation Animation" loading="lazy">
+                            <div class="loading-overlay">
+                                <div class="loading-message">
+                                    <!-- 正在加载，请稍候。加载可能较慢，点击任意处退出. -->
+                                    Loading in progress, please wait. The loading process may be slow, click anywhere to
+                                    exit.
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" id="progressBar_control_gains_24"></div>
+                                </div>
+                            </div>
                         </div>
                     </td>
                     <!-- <td class="video-description"> -->
-                    <td class="image-description">    
+                    <td class="image-description">
                         <p>受控系统的运动曲线被约束在一个曲率阱中，直观地解释了曲率阱如何吸引摆向其底部移动.</p>
-                        <p>It is shown that the motion curve of the closed loop system are trapped in a "curvature well".</p>
+                        <!-- <p class="red-text">点击 GIF 可进入大图。</p> -->
+                        <p>It is shown that the motion curve of the closed loop system are trapped in a "curvature
+                            well".</p>
+                        <p class="red-text">
+                            <span style="font-style: italic;">Click on the GIF to view it in full size.</span>
+                        </p>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2"> 
-                    </td>  
-                </tr> 
-                <tr> 
-                    <td class="image-container"> 
-                        <button id="toggleButton_curvature" onclick="toggleImage('image_curvature', 'animation_curvature', 'toggleButton_curvature')" data-text="显示 PNG">显示 GIF</button> 
-                        <img src="curvature_vs_control_gains_op.webp" alt="Control Gains Image" style="width: 70%;" id="image_curvature">
+                    <td colspan="2">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="image-container">
+                        <button id="toggleButton_curvature"
+                            onclick="toggleImage('image_curvature', 'animation_curvature', 'toggleButton_curvature')"
+                            data-text="显示 PNG">显示 GIF</button>
+                        <img src="curvature_vs_control_gains_op.webp" alt="Control Gains Image" style="width: 70%;"
+                            id="image_curvature">
                         <!-- <a href="curvature_vs_control_gains.gif">
                         <img src="curvature_vs_control_gains.webp" alt="Simulation Animation" style="display: none; width: 70%;" 
                         id="animation_curvature" data-gif="curvature_vs_control_gains.webp">
                         </a> -->
-                        <img src="curvature_vs_control_gains.webp" alt="Simulation Animation" style="display: none; width: 72%;" id="animation_curvature" data-gif="curvature_vs_control_gains.webp" onclick="showAnimation('curvature_vs_control_gains')">
-                        <div class="fullscreen-bg" id="curvature_vs_control_gains" onclick="hideAnimation('curvature_vs_control_gains')">
-                          <img src="curvature_vs_control_gains.gif" alt="Simulation Animation"  loading="lazy">
+                        <img src="curvature_vs_control_gains.webp" alt="Simulation Animation"
+                            style="display: none; width: 72%;" id="animation_curvature"
+                            data-gif="curvature_vs_control_gains.webp"
+                            onclick="showAnimation('curvature_vs_control_gains','progressBar_curvature_vs_control_gains')">
+                        <div class="fullscreen-bg" id="curvature_vs_control_gains"
+                            onclick="hideAnimation('curvature_vs_control_gains')">
+                            <img src="curvature_vs_control_gains.gif" alt="Simulation Animation" loading="lazy">
+                            <div class="loading-overlay">
+                                <div class="loading-message">
+                                    <!-- 正在加载，请稍候。加载可能较慢，点击任意处退出. -->
+                                    Loading in progress, please wait. The loading process may be slow, click anywhere to
+                                    exit.
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" id="progressBar_curvature_vs_control_gains"></div>
+                                </div>
+                            </div>
                         </div>
                     </td>
                     <td class="image-description" style="vertical-align: top;">
                         <p>研究发现，当 $ \nu > M/m $ 时，出现了具有正曲率的曲率阱，随着 $ \nu $ 增加，这些阱变得更宽、更深.</p>
-                        <p>It is shown that the "curvature well" with positive curvatures appear when $ \nu > M/m $ and become wider and deeper as $ \nu $ increases within the domain.</p>
+                        <p>It is shown that the "curvature well" with positive curvatures appear when $ \nu > M/m $ and
+                            become wider and deeper as $ \nu $ increases within the domain.</p>
                     </td>
                 </tr>
             </table>
         </section>
 
         <section>
-            <h2>Stabilization of a Geometrically Exact Beam Hinged on a Cart</h2> 
+            <h2>Stabilization of a Geometrically Exact Beam Hinged on a Cart</h2>
             <table>
-                <tr> 
-                    <td class="image-container"> 
+                <tr>
+                    <td class="image-container">
                         <!-- <button id="toggleButton_geb" onclick="toggleImage('image_geb', 'animation_geb', 'toggleButton_geb')" data-text="显示 PNG">显示 GIF</button>  -->
                         <!-- <a href="geb_hinged_on_cart_under_gravity.gif">
                         <img src="geb_hinged_on_cart_under_gravity_op.webp" alt="Uncontrolled Flexible Pendulum Under Gravity" style="width: 80%;" id="image_geb">
                         </a> -->
-                        <!-- <img src="geb_hinged_on_cart_under_gravity.gif" alt="Uncontrolled Flexible Pendulum Under Gravity" style="display: none;" id="animation_geb" data-gif="geb_hinged_on_cart_under_gravity.gif" loading="lazy"> --> 
-                        <img src="geb_hinged_on_cart_under_gravity_op.webp" alt="Uncontrolled Flexible Pendulum Under Gravity" style="width: 80%;" loading="lazy" onclick="showAnimation('geb_hinged_on_cart_under_gravity')">
-                        <div class="fullscreen-bg" id="geb_hinged_on_cart_under_gravity" onclick="hideAnimation('geb_hinged_on_cart_under_gravity')">
-                        <img src="geb_hinged_on_cart_under_gravity.gif" alt="Uncontrolled Flexible Pendulum Under Gravity" loading="lazy">
+                        <!-- <img src="geb_hinged_on_cart_under_gravity.gif" alt="Uncontrolled Flexible Pendulum Under Gravity" style="display: none;" id="animation_geb" data-gif="geb_hinged_on_cart_under_gravity.gif" loading="lazy"> -->
+                        <img src="geb_hinged_on_cart_under_gravity_op.webp"
+                            alt="Uncontrolled Flexible Pendulum Under Gravity" style="width: 80%;" loading="lazy"
+                            onclick="showAnimation('geb_hinged_on_cart_under_gravity','progressBar_under_gravity')">
+                        <div class="fullscreen-bg" id="geb_hinged_on_cart_under_gravity"
+                            onclick="hideAnimation('geb_hinged_on_cart_under_gravity')">
+                            <img src="geb_hinged_on_cart_under_gravity.gif"
+                                alt="Uncontrolled Flexible Pendulum Under Gravity" loading="lazy">
+                            <div class="loading-overlay">
+                                <div class="loading-message">
+                                    <!-- 正在加载，请稍候。加载可能较慢，点击任意处退出. -->
+                                    Loading in progress, please wait. The loading process may be slow, click anywhere to
+                                    exit.
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" id="progressBar_under_gravity"></div>
+                                </div>
+                            </div>
+                        </div>
                         </div>
                     </td>
                     <td class="image-description">
@@ -89,44 +143,64 @@
                 <tr>
                     <td colspan="2">
                         <!-- <hr> -->
-                    </td>  
+                    </td>
                 </tr>
-                <tr> 
-                    <td class="image-container"> 
-                        <button id="toggleButton_geb_with_control" onclick="toggleImage('image_geb_with_control', 'animation_geb_with_control', 'toggleButton_geb_with_control')" data-text="显示 PNG">显示 GIF</button> 
-                        <img src="geb_hinged_on_cart_op.webp" alt="Simulation Animation" style="width: 80%;" id="image_geb_with_control">
+                <tr>
+                    <td class="image-container">
+                        <button id="toggleButton_geb_with_control"
+                            onclick="toggleImage('image_geb_with_control', 'animation_geb_with_control', 'toggleButton_geb_with_control')"
+                            data-text="显示 PNG">显示 GIF</button>
+                        <img src="geb_hinged_on_cart_op.webp" alt="Simulation Animation" style="width: 80%;"
+                            id="image_geb_with_control">
                         <!-- <a href="geb_hinged_on_cart.gif">
                         <img src="geb_hinged_on_cart.webp" alt="Simulation Animation" style="display: none;" id="animation_geb_with_control" data-gif="geb_hinged_on_cart.webp"  loading="lazy">
                         </a> -->
-                        <img src="geb_hinged_on_cart.webp" alt="Simulation Animation" style="display: none; width: 80%;" id="animation_geb_with_control" data-gif="geb_hinged_on_cart.webp" loading="lazy" onclick="showAnimation('geb_hinged_on_cart')">
-                        <div class="fullscreen-bg" id="geb_hinged_on_cart" onclick="hideAnimation('geb_hinged_on_cart')">
+                        <img src="geb_hinged_on_cart.webp" alt="Simulation Animation" style="display: none; width: 80%;"
+                            id="animation_geb_with_control" data-gif="geb_hinged_on_cart.webp" loading="lazy"
+                            onclick="showAnimation('geb_hinged_on_cart','progressBar_geb_hinged_on_cart')">
+                        <div class="fullscreen-bg" id="geb_hinged_on_cart"
+                            onclick="hideAnimation('geb_hinged_on_cart')">
                             <img src="geb_hinged_on_cart.gif" alt="Simulation Animation" loading="lazy">
+                            <div class="loading-overlay">
+                                <div class="loading-message">
+                                    <!-- 正在加载，请稍候。加载可能较慢，点击任意处退出. -->
+                                    Loading in progress, please wait. The loading process may be slow, click anywhere to
+                                    exit.
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" id="progressBar_geb_hinged_on_cart"></div>
+                                </div>
+                            </div>
+                        </div>
                         </div>
                     </td>
                     <td class="image-description">
                         <p>利用几何力学中新发展的场论Hamel形式，我们将受控Lagrange方法推广至无穷维力学系统，并对小车-柔性倒立摆系统构建了实时的镇定算法.</p>
-                        <p>By employing Hamel's formalism for infinite-dimensional mechanical systems, We have extended the CL method to infinite-dimensional mechanical systems and developed a real-time stabilization algorithm for the cart-flexible inverted pendulum system. </p>
+                        <p>By employing Hamel's formalism for infinite-dimensional mechanical systems, We have extended
+                            the CL method to infinite-dimensional mechanical systems and developed a real-time
+                            stabilization algorithm for the cart-flexible inverted pendulum system. </p>
                     </td>
                 </tr>
             </table>
-            
+
         </section>
     </main>
 
     <footer>
-        <p>Benliang Wang, a humble student at Beijing Institute of Technology (2024)</p> <!--  humble doctoral student 😊 --> 
+        <p>Benliang Wang, a humble student at Beijing Institute of Technology (2024)</p>
+        <!--  humble doctoral student 😊 -->
         <p>
             <a href="mailto:xinben4@gmail.com" class="contact-link">
-              <span class="fas fa-envelope"></span> xinben4@gmail.com
+                <span class="fas fa-envelope"></span> xinben4@gmail.com
             </a>
             &nbsp;
             <a href="mailto:xinben4@bit.edu.cn" class="contact-link">
-              xinben4@bit.edu.cn
+                xinben4@bit.edu.cn
             </a>
             &nbsp;
             <!-- <br> -->
             <a href="tel:+19137178681" class="contact-link">
-              <span class="fas fa-phone"></span> +1 913-717-8681
+                <span class="fas fa-phone"></span> +1 913-717-8681
             </a>
         </p>
         <div class="social-links">
@@ -138,10 +212,11 @@
             <!-- and social media  -->
             <a href="https://github.com/benlw" target="_blank"><i class="fab fa-github"></i></a>
             <a href="https://stackoverflow.com/" target="_blank"><i class="fab fa-stack-overflow"></i></a>
-            <a href="https://zhihu.com/" target="_blank"><i class="fab fa-zhihu"></i></a> 
+            <a href="https://zhihu.com/" target="_blank"><i class="fab fa-zhihu"></i></a>
             <a href="https://gitee.com/benlw" target="_blank"><i class="fab fa-git"></i></a>
         </div>
-    </footer> 
-    
+    </footer>
+
 </body>
+
 </html>
