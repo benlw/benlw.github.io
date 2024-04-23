@@ -34,33 +34,54 @@
                             Your browser does not support the video tag.
                         </video>
                     </td> -->
-                    <td class="image-container">
-                        <img src="control_gains_24_optimize.webp" alt="Simulation Animation" style="width: 54%;"
-                            loading="lazy" onclick="showAnimation('control_gains_24', 'progressBar_control_gains_24')">
-                        <div class="fullscreen-bg" id="control_gains_24" onclick="hideAnimation('control_gains_24')">
-                            <img src="control_gains_24.gif" alt="Simulation Animation" loading="lazy">
-                            <div class="loading-overlay">
-                                <div class="loading-message">
-                                    <!-- 正在加载，请稍候。加载可能较慢，点击任意处退出. -->
-                                    Loading in progress, please wait. The loading process may be slow, click anywhere to
-                                    exit.
-                                </div>
-                                <div class="progress-bar-container">
-                                    <div class="progress-bar" id="progressBar_control_gains_24"></div>
-                                </div>
+                <tr>
+                    <td colspan="2"
+                        style="text-align: left; font-family: 'Times New Roman', Times, serif; padding: 15px 10px; font-size: 16px;">
+                        <p>我们仅对小车施加控制$u$
+                            使摆保持垂直，期望平衡状态 $\phi=\dot{\phi}=\dot{s}=0$. 经曲率塑形计算
+                            \begin{equation}\label{eq: sec2_control_law_invertp_detailed}
+                            u=\frac{\nu \beta \sin \phi\left(\alpha \dot{\phi}^{2}-D \cos
+                            \phi\right)}{\alpha-\frac{\beta^{2}}{\gamma}(1+\nu) \cos ^{2} \phi},
+                            \end{equation}
+                            我们使用Cartan活动标架法计算伪黎曼流形 $\left(Q, \tilde{g}_{J}\right)$的截面曲率 $K$
+                            \begin{equation}\label{eq:sec2_curvature_ex1}
+                            K(\phi)=\frac{\gamma D\left[\beta^{2}(\nu+1) D \sin ^{4} \phi+\left(\beta^{2}(\nu+1)-\alpha
+                            \gamma\right)(e \cos (\phi)-D)\right]}{2(e-D \cos (\phi))^{3}\left(\alpha
+                            \gamma-\beta^{2}(\nu+1) \cos ^{2}(\phi)\right)^{2}} . % \tag{40}
+                            \end{equation}
+                            其中 $\alpha=m l^{2}, \beta=m l, \gamma=M+m$，以及 $D=m g l$.</p>
+                        <p>为了验证控制律有效性以及控制增益系数$\nu$是如何影响曲率的，我们使用Mathematica进行了模拟.
+                            车摆系统参数如下：摆质量 $m=0.14 \mathrm{~kg}$，小车质量 $M=0.44 \mathrm{~kg}$，摆长 $l=0.215 \mathrm{~m}$，重力加速度
+                            $g=9.8 \mathrm{~m} / \mathrm{s}^{2}$. </p>
+                    </td>
+                </tr>
+                <td class="image-container">
+                    <img src="control_gains_24_optimize.webp" alt="Simulation Animation" style="width: 54%;"
+                        loading="lazy" onclick="showAnimation('control_gains_24', 'progressBar_control_gains_24')">
+                    <div class="fullscreen-bg" id="control_gains_24" onclick="hideAnimation('control_gains_24')">
+                        <img src="control_gains_24.gif" alt="Simulation Animation" loading="lazy">
+                        <div class="loading-overlay">
+                            <div class="loading-message">
+                                <!-- 正在加载，请稍候。加载可能较慢，点击任意处退出. -->
+                                Loading in progress, please wait. The loading process may be slow, click anywhere to
+                                exit.
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" id="progressBar_control_gains_24"></div>
                             </div>
                         </div>
-                    </td>
-                    <!-- <td class="video-description"> -->
-                    <td class="image-description">
-                        <p>受控系统的运动曲线被约束在一个曲率阱中，直观地解释了曲率阱如何吸引摆向其底部移动.</p>
-                        <!-- <p class="red-text">点击 GIF 可进入大图。</p> -->
-                        <p>It is shown that the motion curve of the closed loop system are trapped in a "curvature
-                            well".</p>
-                        <p class="red-text">
-                            <span style="font-style: italic;">Click on the GIF to view it in full size.</span>
-                        </p>
-                    </td>
+                    </div>
+                </td>
+                <!-- <td class="video-description"> -->
+                <td class="image-description">
+                    <p>受控系统的运动曲线被约束在一个曲率阱中，直观地解释了曲率阱如何吸引摆向其底部移动.</p>
+                    <!-- <p class="red-text">点击 GIF 可进入大图。</p> -->
+                    <p>It is shown that the motion curve of the closed loop system are trapped in a "curvature
+                        well".</p>
+                    <p class="red-text">
+                        <span>Click on the GIF to view it in full size.</span>
+                    </p>
+                </td>
                 </tr>
                 <tr>
                     <td colspan="2">
@@ -96,7 +117,7 @@
                             </div>
                         </div>
                     </td>
-                    <td class="image-description" style="vertical-align: top;">
+                    <td class="image-description">
                         <p>研究发现，当 $ \nu > M/m $ 时，出现了具有正曲率的曲率阱，随着 $ \nu $ 增加，这些阱变得更宽、更深.</p>
                         <p>It is shown that the "curvature well" with positive curvatures appear when $ \nu > M/m $ and
                             become wider and deeper as $ \nu $ increases within the domain.</p>

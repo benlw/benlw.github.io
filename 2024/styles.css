@@ -68,13 +68,17 @@ td {
 
 .video-description,
 .image-description {
-    width: 42%;
-    /* Adjusted for space */
-    text-align: left;
-    /* Justify text for alignment on both sides */
-    padding-left: 20px;
-    /* Space between video and text */
-    font-size: 1.0em;
+    /* width: 42%; 
+    text-align: left; 
+    padding-left: 20px; 
+    font-size: 1.0em; */
+    width: 42%;            /* 宽度调整为42%，以适应旁边的图片或视频 */
+    text-align: left;   /* 文本两端对齐，增强学术文章的格式规范性 */
+    padding-left: 20px;    /* 在描述和视频或图片之间增加20px的间距 */
+    font-size: 16px;       /* 设置适中的字号以提高可读性 */
+    font-family: 'Times New Roman', Times, serif; /* 使用'Times New Roman'字体，常用于学术文档 */
+    line-height: 1.6;      /* 行高设置为1.6，增强文本的可读性和舒适性 */
+    margin-bottom: 20px;   /* 每个描述块之后增加空间，分隔清晰 */
 }
 
 footer {
