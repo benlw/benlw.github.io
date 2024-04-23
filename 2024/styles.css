@@ -241,8 +241,8 @@ footer {
 .fullscreen-bg img {
     /* transition: opacity 0.5s ease;
     opacity: 0;    */
-    max-width: 70%;
-    max-height: 70%;
+    max-width: 90%;
+    max-height: 90%;
     object-fit: contain;
     /* 这将保证图片按比例缩放 */
     cursor: pointer;
