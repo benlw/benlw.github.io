@@ -72,7 +72,7 @@ function showAnimation(bgId, progressBarId) {
       // 模拟进度条
       let width = 0;
       var interval = setInterval(() => {
-          width += 10;
+          width += 5;
           progressBar.style.width = width + '%';
           if (width >= 100) {
               clearInterval(interval);
