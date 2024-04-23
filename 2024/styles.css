@@ -158,6 +158,7 @@ footer {
         /* Remove padding for small screens */
         padding-top: 10px;
         /* Spacing above description */
+        font-family: 'Times New Roman', Times, serif;
     }
 
     .fullscreen-bg img {
