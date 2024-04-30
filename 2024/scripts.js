@@ -1,13 +1,21 @@
 window.MathJax = {
   tex: {
     inlineMath: [['$', '$']],
-    displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    tags: 'ams' 
   },
   svg: {
     fontCache: 'global'
   },
   loader: {
     load: ['output/svg', 'input/tex']
+  },
+  options: {
+    renderActions: {
+      addMenu: [0, '', '']
+    }
   }
 };
 
@@ -57,30 +65,30 @@ function showAnimation(bgId, progressBarId) {
 
   // 图片加载完成后的操作
   function handleImageLoad() {
-      progressBar.style.width = '100%'; // 设置进度条为100%
-      setTimeout(() => {
-          overlay.style.display = 'none';  // 隐藏覆盖层
-          img.style.display = 'block';  // 显示图片
-      }, 500); // 延迟500毫秒以给予用户视觉反馈
+    progressBar.style.width = '100%'; // 设置进度条为100%
+    setTimeout(() => {
+      overlay.style.display = 'none';  // 隐藏覆盖层
+      img.style.display = 'block';  // 显示图片
+    }, 500); // 延迟500毫秒以给予用户视觉反馈
   }
 
   // 检查图片是否已加载
   if (img.complete && img.naturalHeight !== 0) {
-      handleImageLoad();  // 如果图片已经加载
+    handleImageLoad();  // 如果图片已经加载
   } else {
-      img.onload = handleImageLoad;  // 设置图片加载完成后的操作
-      // 模拟进度条
-      let width = 0;
-      var interval = setInterval(() => {
-          width += 5;
-          progressBar.style.width = width + '%';
-          if (width >= 100) {
-              clearInterval(interval);
-              handleImageLoad();  // 确保图片加载后处理逻辑执行
-          }
-      }, 100);
+    img.onload = handleImageLoad;  // 设置图片加载完成后的操作
+    // 模拟进度条
+    let width = 0;
+    var interval = setInterval(() => {
+      width += 5;
+      progressBar.style.width = width + '%';
+      if (width >= 100) {
+        clearInterval(interval);
+        handleImageLoad();  // 确保图片加载后处理逻辑执行
+      }
+    }, 100);
   }
-} 
+}
 
 // function showAnimation(bgId, progressBarId) {
 //   var animation = document.getElementById(bgId);
@@ -132,13 +140,13 @@ function hideAnimation(bgId) {
 
 function simulateLoadingProgress(progressBar, overlay) {
   var width = 0;
-  var interval = setInterval(function() {
-      if (width >= 100) {
-          clearInterval(interval);
-          overlay.style.display = 'none'; // 隐藏加载覆盖层
-      } else {
-          width++;
-          progressBar.style.width = width + '%';
-      }
+  var interval = setInterval(function () {
+    if (width >= 100) {
+      clearInterval(interval);
+      overlay.style.display = 'none'; // 隐藏加载覆盖层
+    } else {
+      width++;
+      progressBar.style.width = width + '%';
+    }
   }, 100); // 调整时间间隔以匹配实际加载时间
 }
