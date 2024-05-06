@@ -319,10 +319,22 @@ footer {
     padding: 4px;
 }
 
-div.math-container {
-    /* overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    white-space: nowrap;
-    width: 60%; */
+.mirror-list {
+    list-style: none;
+    padding: 0;
+    padding-left: 20px; /* 添加左内边距 */
+    margin: 20px 0;
+}
+
+.mirror-list li {
+    margin-bottom: 10px;
+}
+
+.mirror-list li a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.mirror-list li a:hover {
+    text-decoration: underline;
 }
