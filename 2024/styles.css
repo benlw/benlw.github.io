@@ -324,6 +324,7 @@ footer {
     padding: 0;
     padding-left: 20px; /* 添加左内边距 */
     margin: 20px 0;
+    text-align: center; /* 确保内容左对齐 */
 }
 
 .mirror-list li {
