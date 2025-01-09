@@ -74,8 +74,8 @@
         }
 
         .image-container img {
-            width: 50%; /* Adjusted from 100% to 50% for smaller size */
-            max-width: 400px; /* Ensures the image doesn't exceed 400px */
+            width: 50%;
+            max-width: 400px;
             height: auto;
             border-radius: 4px;
             transition: transform 0.3s ease;
@@ -84,25 +84,6 @@
         .image-container img:hover {
             transform: scale(1.05);
         }
-
-        /* Loading Overlay (Optional) */
-        /* If you no longer need the loading overlay, you can remove the following styles */
-        /*
-        .loading-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.7);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-radius: 8px;
-            display: none; /* Hidden by default */
-        }
-        */
 
         .loading-message {
             font-size: 1.2em;
@@ -133,20 +114,20 @@
         }
 
         footer .social-links {
-            margin-bottom: 10px; /* Space between icons and footer text */
+            margin-bottom: 10px;
         }
 
         footer .social-links a {
             color: #777;
             text-decoration: none;
             margin: 0 10px;
-            font-size: 1.5em; /* Increase icon size for better visibility */
+            font-size: 1.5em;
             transition: color 0.3s ease, transform 0.3s ease;
         }
 
         footer .social-links a:hover {
             color: #333;
-            transform: scale(1.2); /* Slightly enlarge icon on hover */
+            transform: scale(1.2);
         }
 
         /* Responsive Design */
@@ -160,7 +141,7 @@
             }
 
             .image-container img {
-                width: 80%; /* Increase width on smaller screens for better visibility */
+                width: 80%;
             }
         }
     </style>
@@ -175,32 +156,37 @@
     </header>
 
     <main>
+        <!-- 原有动画 -->
         <section>
             <h2>Ltype_fixed.gif Animation</h2>
             <div class="image-container">
                 <img src="Ltype_fixed.gif" alt="Ltype Fixed Animation" loading="lazy">
-                <!--
-                <div class="loading-overlay" id="loading_ltype_fixed">
-                    <div class="loading-message">Loading Animation, please wait...</div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="progressBar_ltype_fixed"></div>
-                    </div>
-                </div>
-                -->
+                <p style="margin-top: 10px; color: #555;">
+                    Right-angle beam fixed at both ends
+                </p>                
+            </div>
+        </section>
+
+        <!-- 新增动画 -->
+        <section>
+            <h2>Coupled_beam_revolute_joint.gif Animation</h2>
+            <div class="image-container">
+                <img src="Coupled_beam_revolute_joint.gif" alt="Coupled Beam Revolute Joint" loading="lazy">
+                <p style="margin-top: 10px; color: #555;">
+                    Coupled beam with revolute joint, rotation with x axis
+                </p>
             </div>
         </section>
     </main>
 
     <footer>
         <div class="social-links">
-            <!-- More projects -->
             <a href="http://5imcs.com/2024" target="_blank" aria-label="Home">
                 <i class="fas fa-home"></i>
             </a>
             <!-- <a href="https://grassyiyi.com/Luv/" target="_blank" aria-label="Love">
                 <i class="fas fa-heart"></i>
             </a> -->
-            <!-- Social Media -->
             <a href="https://github.com/benlw" target="_blank" aria-label="GitHub">
                 <i class="fab fa-github"></i>
             </a>
@@ -215,40 +201,6 @@
             </a>
         </div> 
     </footer>
-
-    <script>
-        // Since we've removed the fullscreen functionality, you can remove these functions
-        /*
-        // Function to show the fullscreen animation with loading overlay
-        function showAnimation(id) {
-            var overlay = document.getElementById(id);
-            var loading = document.getElementById('loading_' + id);
-            var progressBar = document.getElementById('progressBar_' + id);
-
-            overlay.style.display = 'flex';
-            loading.style.display = 'flex';
-            progressBar.style.width = '0%';
-
-            // Simulate loading progress (optional)
-            var width = 0;
-            var loadingInterval = setInterval(function () {
-                if (width >= 100) {
-                    clearInterval(loadingInterval);
-                    loading.style.display = 'none';
-                } else {
-                    width += 10;
-                    progressBar.style.width = width + '%';
-                }
-            }, 300);
-        }
-
-        // Function to hide the fullscreen animation
-        function hideAnimation(id) {
-            var overlay = document.getElementById(id);
-            overlay.style.display = 'none';
-        }
-        */
-    </script>
 </body>
 
 </html>
