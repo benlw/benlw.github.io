@@ -1,132 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ben's Academic Homepage</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <!-- FontAwesome CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    />
     <script src="scripts.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.js"
-        xintegrity="sha384-+BSz3oj3ILMYvOBr16U9i0H4RZRmGyQQ+1q9eqr8T3skmAFrJk8GmgwgqlCZdNSo"
-        crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="styles.css">
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.js"
+      xintegrity="sha384-+BSz3oj3ILMYvOBr16U9i0H4RZRmGyQQ+1q9eqr8T3skmAFrJk8GmgwgqlCZdNSo"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="styles.css" />
     <style>
-        /* This wrapper is now ONLY for layout (centering and width) */
-        .comment-wrapper {
-            max-width: 820px;
-            margin: 40px auto;
-            /* text-align: left; */
-        }
-        
-        /* All visual styles (padding, background, border) are now applied directly to the Cusdis container */
-        #cusdis_thread {
-            background-color: #fdfdfd;
-            border: 1px solid #eaeaea;
-            border-radius: 8px;
-            padding: 20px;
-        }
+      /* This wrapper is now ONLY for layout (centering and width) */
+      .comment-wrapper {
+        max-width: 720px;
+        /* margin: 40px auto; */
+        padding: 20px;
+        background-color: #fdfdfd;
+        border: 1px solid #eaeaea;
+        border-radius: 8px;
+      }
+ 
+      /* .comment-title {
+        font-family: 'Arial', sans-serif;
+        color: #0056b3;
+        margin-top: 10px;
+        margin-bottom: 25px;
+        text-align: left;
+        border-bottom: 2px solid #eaeaea;
+        padding-bottom: 10px;
+      } */
 
-        /* Styling for the research section link */
-        .research-section {
-            text-align: center; /* Center align the content of the research section */
-            padding: 20px 0;
-        }
-        .archive-info {
-            font-size: 1.1em;
-            color: #444;
-            line-height: 1.7;
-            margin-bottom: 25px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+      /* Styling for the research section link */
+      .research-section {
+        text-align: center; /* Center align the content of the research section */
+        padding: 20px 0;
+      }
+      .archive-info {
+        font-size: 1.1em;
+        color: #444;
+        line-height: 1.7;
+        margin-bottom: 25px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
 
-        .archive-link {
-            display: inline-block;
-            padding: 12px 28px;
-            background-color: #f8f9fa;
-            color: #0056b3;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            border: 1px solid #ccc;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
+      .archive-link {
+        display: inline-block;
+        padding: 12px 28px;
+        background-color: #f8f9fa;
+        color: #0056b3;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
 
-        .archive-link:hover, .archive-link:focus {
-            background-color: #e9ecef;
-            border-color: #bbb;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
-        }
+      .archive-link:hover,
+      .archive-link:focus {
+        background-color: #e9ecef;
+        border-color: #bbb;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-        <h1>Ben's Research</h1>
-        <p class="intro-text">
-            Applied Math, Geometric Mechanics and Machine Learning.
-        </p>
+      <h1>Ben's Research</h1>
+      <p class="intro-text">
+        Applied Math, Geometric Mechanics and Machine Learning.
+      </p>
     </header>
 
     <main>
-        <section class="research-section">
-            <h2>Research Highlights</h2>
-            <p class="archive-info">
-                My research for 2025 is currently in progress. For my latest completed works, please see the 2024 archive.
-            </p>
-            <a href="https://5imcs.com/2024" class="archive-link" target="_blank" rel="noopener noreferrer">View 2024 Research Archive</a>
-        </section>
-        
-        <!-- The comment wrapper now only handles layout -->
-        <div class="comment-wrapper">
-            <!-- Cusdis Comment System -->
-            <div id="cusdis_thread"
-              data-host="https://cusdis.com"
-              data-app-id="5b820f54-1069-4b4d-8513-f967e46e4153"
-              data-page-id="homepage-2025"
-              data-page-url="https://5imcs.com/2025"
-              data-page-title="Ben's Academic Homepage"
-            ></div>
-            <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
-        </div>
+      <section class="research-section">
+        <h2>Research Highlights</h2>
+        <p class="archive-info">
+          My research for 2025 is currently in progress. For my latest completed
+          works, please see the 2024 archive.
+        </p>
+        <a
+          href="https://5imcs.com/2024"
+          class="archive-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          >View 2024 Research Archive</a
+        >
+      </section>
+
+      <div class="comment-wrapper">
+        <!-- <h2 class="comment-title">Comments</h2> -->
+        <div
+          id="cusdis_thread"
+          data-host="https://cusdis.com"
+          data-app-id="5b820f54-1069-4b4d-8513-f967e46e4153"
+          data-page-id="homepage-2025"
+          data-page-url="https://5imcs.com/2025"
+          data-page-title="Ben's Academic Homepage"
+        ></div>
+        <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+      </div>
     </main>
 
     <footer>
-        <p>Benliang Wang, a humble student at Beijing Institute of Technology (2025)</p>
-        <!--  humble doctoral student 😊 -->
-        <p>
-            <a href="mailto:xinben4@gmail.com" class="contact-link">
-                <span class="fas fa-envelope"></span> xinben4@gmail.com
-            </a>
-            &nbsp;
-            <a href="mailto:xinben4@bit.edu.cn" class="contact-link">
-                xinben4@bit.edu.cn
-            </a>
-            &nbsp;
-            <!-- <br> -->
-            <a href="tel:+19137178681" class="contact-link">
-                <span class="fas fa-phone"></span> +1 913-717-8681
-            </a>
-        </p>
-        <div class="social-links">
-            <!-- More projects  -->
-            <a href="http://5imcs.com" target="_blank">
-                <i class="fas fa-home"></i> <!-- Home icon -->
-            </a>
-            <a href="https://grassyiyi.com/Luv/" target="_blank"><i class="fas fa-heart"></i></a>
-            <!-- and social media  -->
-            <a href="https://github.com/benlw" target="_blank"><i class="fab fa-github"></i></a>
-            <a href="https://stackoverflow.com/" target="_blank"><i class="fab fa-stack-overflow"></i></a>
-            <a href="https://zhihu.com/" target="_blank"><i class="fab fa-zhihu"></i></a>
-            <a href="https://gitee.com/benlw" target="_blank"><i class="fab fa-git"></i></a>
-        </div>
+      <p>
+        Benliang Wang, a humble student at Beijing Institute of Technology
+        (2025)
+      </p>
+      <p>
+        <a href="mailto:xinben4@gmail.com" class="contact-link">
+          <span class="fas fa-envelope"></span> xinben4@gmail.com
+        </a>
+        &nbsp;
+        <a href="mailto:xinben4@bit.edu.cn" class="contact-link">
+          xinben4@bit.edu.cn
+        </a>
+        &nbsp;
+        <a href="tel:+19137178681" class="contact-link">
+          <span class="fas fa-phone"></span> +1 913-717-8681
+        </a>
+      </p>
+      <div class="social-links">
+        <a href="http://5imcs.com" target="_blank">
+          <i class="fas fa-home"></i>
+        </a>
+        <a href="https://grassyiyi.com/Luv/" target="_blank"
+          ><i class="fas fa-heart"></i
+        ></a>
+        <a href="https://github.com/benlw" target="_blank"
+          ><i class="fab fa-github"></i
+        ></a>
+        <a href="https://stackoverflow.com/" target="_blank"
+          ><i class="fab fa-stack-overflow"></i
+        ></a>
+        <a href="https://zhihu.com/" target="_blank"
+          ><i class="fab fa-zhihu"></i
+        ></a>
+        <a href="https://gitee.com/benlw" target="_blank"
+          ><i class="fab fa-git"></i
+        ></a>
+      </div>
     </footer>
 
-</body>
-
+    <script>
+      window.addEventListener("load", function () {
+        setTimeout(() => {
+          let scrollHeight = document.querySelector("#cusdis_thread iframe")
+            .contentWindow.document.body.scrollHeight;
+          document.querySelector("#cusdis_thread iframe").style.height =
+            scrollHeight + "px";
+        }, 1000);
+      });
+    </script>
+  </body>
 </html>
