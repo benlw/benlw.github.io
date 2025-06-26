@@ -1,0 +1,341 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    /* White background */
+    color: #333;
+    line-height: 1.6;
+}
+
+header,
+footer {
+    background-color: #ffffff;
+    padding: 20px 10%;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    /* Lighter shadow for a softer look */
+}
+
+main {
+    padding: 20px 10%;
+    text-align: center;
+    /* Center aligns all content for a more structured look */
+}
+
+h1,
+h2 {
+    color: #0056b3;
+    margin: 10px 0;
+    /* Reduced margin for a tighter, cleaner header */
+    text-align: left;
+    /* Titles aligned left */
+}
+
+table {
+    width: 90%;
+    max-width: 960px;
+    /* Adjust as needed */
+    margin: 20px auto;
+    /* Center the table */
+    border-collapse: collapse;
+}
+
+td {
+    vertical-align: top;
+    padding: 10px 20px;
+    /* Added horizontal padding for spacing */
+}
+
+.video-container video {
+    width: 60%;
+    /* Set video width to 60% within its container */
+    height: auto;
+}
+
+.image-container img {
+    width: 90%;
+    /* Set image width to 100% within its container */
+    height: auto;
+}
+
+.video-container,
+.image-container {
+    margin: 0;
+    /* Remove margin for table alignment */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.video-description,
+.image-description {
+    /* width: 42%; 
+    text-align: left; 
+    padding-left: 20px; 
+    font-size: 1.0em; */
+    width: 42%;
+    /* 宽度调整为42%，以适应旁边的图片或视频 */
+    text-align: left;
+    /* 文本两端对齐，增强学术文章的格式规范性 */
+    padding-left: 20px;
+    /* 在描述和视频或图片之间增加20px的间距 */
+    font-size: 16px;
+    /* 设置适中的字号以提高可读性 */
+    font-family: 'Times New Roman', Times, serif;
+    /* 使用'Times New Roman'字体，常用于学术文档 */
+    line-height: 1.6;
+    /* 行高设置为1.6，增强文本的可读性和舒适性 */
+    margin-bottom: 20px;
+    /* 每个描述块之后增加空间，分隔清晰 */
+}
+
+footer {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.social-links a {
+    margin: 0 10px;
+    font-size: 24px;
+    color: #0056b3;
+    /* 标题颜色 */
+    transition: transform 0.3s ease;
+    /* 添加过渡效果 */
+}
+
+.social-links a:hover {
+    transform: scale(1.1);
+    /* 鼠标悬停时放大图标到原来的1.1倍 */
+}
+
+.intro-text {
+    max-width: 750px;
+    /* Restricts paragraph width for optimal reading */
+    font-size: 1.1em;
+    line-height: 1.8;
+    text-align: left;
+    /* Text aligned left for descriptions */
+}
+
+@media (max-width: 768px) {
+
+    header,
+    footer {
+        padding: 10px 5%;
+    }
+
+    main {
+        padding: 10px 5%;
+    }
+
+    .video-container video,
+    .image-container img {
+        width: 80%;
+        /* Adjust width to 80% */
+        height: auto;
+        /* Adjust height automatically */
+        margin: 0 auto;
+        /* Center the video */
+    }
+
+    td {
+        display: block;
+        /* Stack layout on small screens */
+        padding: 10px 0;
+        /* Adjust padding for stacking */
+    }
+
+    .video-container,
+    .image-container {
+        width: 100%;
+        /* Full width on smaller screens */
+    }
+
+    .video-description,
+    .image-description {
+        width: 100%;
+        /* Full width on smaller screens */
+        padding-left: 0;
+        /* Remove padding for small screens */
+        padding-top: 10px;
+        /* Spacing above description */
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    .fullscreen-bg img {
+        max-width: 90%;
+        max-height: 90%;
+    }
+
+    table,
+    td {
+        width: 100%;
+        font-size: smaller;
+    }
+
+    mjx-container {
+        font-size: 90% !important;
+    }
+
+    .math-container {
+        font-size: 86%;
+    }
+}
+
+@media (orientation: portrait) {
+    .fullscreen-bg img {
+        max-width: 95%;
+    }
+}
+
+@media (orientation: landscape) {
+    .fullscreen-bg img {
+        max-height: 90%;
+    }
+}
+
+.image-container img {
+    display: block;
+    /* 使得图片始终按块级元素处理，自然居中 */
+    margin-left: auto;
+    /* 左右自动边距 */
+    margin-right: auto;
+}
+
+.image-container button {
+    display: block;
+    margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 72px;
+    padding: 6px 0;
+    /* 为按钮添加一些填充，使其更易点击 */
+    background-color: #f8f9fa;
+    /* 浅灰色背景 */
+    color: #333;
+    /* 深色文字 */
+    border: 1px solid #908e8e;
+    /* 细边框增加定义 */
+    cursor: pointer;
+    /* 鼠标悬停时显示指针 */
+    font-size: 14px;
+    /* 适当的文字大小 */
+    border-radius: 6px;
+    /* 圆角边缘 */
+    transition: background-color 0.3s, color 0.3s;
+    /* 平滑过渡效果 */
+}
+
+.image-container button:hover {
+    background-color: #e2e6ea;
+    /* 鼠标悬停时的背景颜色 */
+    color: #0056b3;
+    /* 鼠标悬停时文字颜色变深 */
+}
+
+.contact-link {
+    text-decoration: none;
+    /* 移除下划线 */
+    color: inherit;
+    /* 链接颜色和周围文本保持一致 */
+}
+
+.contact-link:hover,
+.contact-link:focus {
+    text-decoration: underline;
+    /* 鼠标悬停或聚焦时添加下划线，可选 */
+}
+
+.fullscreen-bg {
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    overflow: hidden;
+    /* 防止全屏时内容滚动 */
+}
+
+.fullscreen-bg img {
+    /* transition: opacity 0.5s ease;
+    opacity: 0;    */
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    /* 这将保证图片按比例缩放 */
+    cursor: pointer;
+    /* 鼠标变为小手 */
+}
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    /* 半透明背景 */
+    color: #333;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 10;
+    /* 确保这不是最高的z-index */
+}
+
+.progress-bar-container {
+    width: 80%;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #4CAF50;
+    /* 绿色 */
+    width: 0%;
+    /* 默认无填充 */
+    border-radius: 10px;
+}
+
+.red-text {
+    color: red;
+    /* font-size:  0.9em; */
+}
+
+.bordered {
+    border: 1px solid #000;
+    /* 边框 */
+    padding: 4px;
+}
+
+.mirror-list {
+    list-style: none;
+    padding: 0;
+    padding-left: 20px; /* 添加左内边距 */
+    margin: 20px 0;
+    text-align: center; /* 确保内容左对齐 */
+}
+
+.mirror-list li {
+    margin-bottom: 10px;
+}
+
+.mirror-list li a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.mirror-list li a:hover {
+    text-decoration: underline;
+}
