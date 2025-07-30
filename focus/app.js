@@ -125,8 +125,8 @@ function App() {
 
     return (
       <div className="min-h-screen flex items-center justify-center p-4 relative" data-name="app" data-file="app.js">
-        <div className="glass-card p-8 w-full max-w-md text-center relative z-10">
-          <h1 className="text-2xl font-bold mb-8 text-shadow">番茄计时器</h1>
+        <div className="glass-card p-4 md:p-8 w-full max-w-md text-center relative z-10">
+          <h1 className="text-xl md:text-2xl font-bold mb-6 md:mb-8 text-shadow">番茄计时器</h1>
           
           <Timer 
             timeLeft={timeLeft}

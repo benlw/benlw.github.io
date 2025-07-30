@@ -69,7 +69,7 @@
         }
         
         .sound-button {
-            @apply glass-card p-4 text-center cursor-pointer transition-all duration-300 hover:bg-white/20 active:scale-95;
+            @apply glass-card p-3 text-center cursor-pointer transition-all duration-300 hover:bg-white/20 active:scale-95;
         }
         
         .sound-button.active {
@@ -78,7 +78,7 @@
         }
         
         .timer-button {
-            @apply px-8 py-3 rounded-full font-semibold transition-all duration-300 backdrop-blur-sm;
+            @apply px-6 py-2 rounded-full font-semibold transition-all duration-300 backdrop-blur-sm text-sm;
         }
         
         .timer-button.primary {
@@ -87,6 +87,15 @@
         
         .timer-button.secondary {
             @apply bg-white/20 text-white border border-white/30 hover:bg-white/30;
+        }
+        
+        @media (min-width: 768px) {
+            .timer-button {
+                @apply px-8 py-3 text-base;
+            }
+            .sound-button {
+                @apply p-4;
+            }
         }
     }
 
