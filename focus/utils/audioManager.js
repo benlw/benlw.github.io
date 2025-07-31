@@ -51,19 +51,28 @@ const audioManager = {
 
   playSound(soundId, volume = 0.5) {
     try {
+      console.log(`Attempting to play sound: ${soundId}`);
+      
       if (this.sounds[soundId]) {
-        this.sounds[soundId].pause();
-        this.sounds[soundId].currentTime = 0;
+        if (this.sounds[soundId].audio) {
+          this.sounds[soundId].audio.pause();
+          this.sounds[soundId].audio.currentTime = 0;
+        } else if (this.sounds[soundId].stop) {
+          this.sounds[soundId].stop();
+        }
+        delete this.sounds[soundId];
       }
       
       // Try to use audio files with fallback sources
       if (this.soundUrls[soundId]) {
         const sources = Array.isArray(this.soundUrls[soundId]) ? this.soundUrls[soundId] : [this.soundUrls[soundId]];
+        console.log(`Trying audio sources for ${soundId}:`, sources);
         this.tryAudioSources(sources, 0, soundId, volume);
         return;
       }
       
       // Fallback to synthetic sounds
+      console.log(`No audio sources found for ${soundId}, using synthetic sound`);
       this.playSyntheticSound(soundId, volume);
     } catch (error) {
       console.error('Error playing sound:', error);
