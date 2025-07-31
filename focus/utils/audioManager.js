@@ -1,32 +1,121 @@
 const audioManager = {
   sounds: {},
   
-  // Sound URLs - using placeholder URLs that would work with actual audio files
+  // High-quality ambient sound URLs from multiple sources
   soundUrls: {
-    'rain': 'https://www.soundjay.com/misc/sounds/rain-01.wav',
-    'heavy-rain': 'https://www.soundjay.com/misc/sounds/rain-02.wav',
-    'ocean': 'https://www.soundjay.com/misc/sounds/ocean-01.wav',
-    'wind': 'https://www.soundjay.com/misc/sounds/wind-01.wav',
-    'stream': 'https://www.soundjay.com/misc/sounds/stream-01.wav',
-    'fire': 'https://www.soundjay.com/misc/sounds/fire-01.wav',
-    'birds': 'https://www.soundjay.com/misc/sounds/birds-01.wav',
-    'owl': 'https://www.soundjay.com/misc/sounds/owl-01.wav',
-    'night-birds': 'https://www.soundjay.com/misc/sounds/night-birds-01.wav',
-    'cafe': 'https://www.soundjay.com/misc/sounds/cafe-01.wav',
-    'library': 'https://www.soundjay.com/misc/sounds/library-01.wav',
-    'white-noise': 'https://www.soundjay.com/misc/sounds/white-noise-01.wav'
+    'rain': [
+      'assets/audio/rain.mp3',
+      'https://www.soundjay.com/misc/sounds/rain-01.wav',
+      'https://cdn.pixabay.com/audio/2022/05/13/audio_c610b0b0f4.mp3'
+    ],
+    'ocean': [
+      'assets/audio/ocean.mp3',
+      'https://www.soundjay.com/misc/sounds/ocean-01.wav',
+      'https://cdn.pixabay.com/audio/2022/06/07/audio_14c2135bdc.mp3'
+    ],
+    'wind': [
+      'assets/audio/wind.mp3',
+      'https://www.soundjay.com/misc/sounds/wind-01.wav',
+      'https://cdn.pixabay.com/audio/2022/03/10/audio_5123451a5c.mp3'
+    ],
+    'fire': [
+      'assets/audio/fire.mp3',
+      'https://www.soundjay.com/misc/sounds/fire-01.wav',
+      'https://cdn.pixabay.com/audio/2021/08/04/audio_12b0c7443c.mp3'
+    ],
+    'birds': [
+      'assets/audio/birds.mp3',
+      'https://www.soundjay.com/misc/sounds/birds-01.wav',
+      'https://cdn.pixabay.com/audio/2022/03/09/audio_e2b1b4c7b4.mp3'
+    ],
+    'cafe': [
+      'assets/audio/cafe.mp3',
+      'https://www.soundjay.com/misc/sounds/cafe-01.wav',
+      'https://cdn.pixabay.com/audio/2023/02/28/audio_c9b6069d1c.mp3'
+    ],
+    'library': [
+      'assets/audio/library.mp3',
+      'https://www.soundjay.com/misc/sounds/library-01.wav',
+      'https://cdn.pixabay.com/audio/2022/11/22/audio_af1f5bf4f2.mp3'
+    ],
+    'white-noise': [
+      'assets/audio/white-noise.mp3',
+      'https://www.soundjay.com/misc/sounds/white-noise-01.wav',
+      'https://cdn.pixabay.com/audio/2022/03/12/audio_c610b0b0f4.mp3'
+    ],
+    'brown-noise': [
+      'assets/audio/brown-noise.mp3',
+      'https://cdn.pixabay.com/audio/2023/01/15/audio_8b2cf8b8e1.mp3'
+    ]
   },
 
   playSound(soundId, volume = 0.5) {
     try {
       if (this.sounds[soundId]) {
-        this.sounds[soundId].stop();
+        this.sounds[soundId].pause();
+        this.sounds[soundId].currentTime = 0;
       }
       
+      // Try to use audio files with fallback sources
+      if (this.soundUrls[soundId]) {
+        const sources = Array.isArray(this.soundUrls[soundId]) ? this.soundUrls[soundId] : [this.soundUrls[soundId]];
+        this.tryAudioSources(sources, 0, soundId, volume);
+        return;
+      }
+      
+      // Fallback to synthetic sounds
+      this.playSyntheticSound(soundId, volume);
+    } catch (error) {
+      console.error('Error playing sound:', error);
+      this.playSyntheticSound(soundId, volume);
+    }
+  },
+
+  tryAudioSources(sources, index, soundId, volume) {
+    if (index >= sources.length) {
+      // All sources failed, use synthetic sound
+      this.playSyntheticSound(soundId, volume);
+      return;
+    }
+
+    const audio = new Audio(sources[index]);
+    audio.loop = true;
+    audio.volume = volume;
+    audio.crossOrigin = 'anonymous';
+    
+    audio.addEventListener('canplaythrough', () => {
+      audio.play().then(() => {
+        this.sounds[soundId] = {
+          audio,
+          stop: () => {
+            audio.pause();
+            audio.currentTime = 0;
+          },
+          setVolume: (vol) => {
+            audio.volume = vol;
+          }
+        };
+      }).catch(() => {
+        this.tryAudioSources(sources, index + 1, soundId, volume);
+      });
+    });
+
+    audio.addEventListener('error', () => {
+      this.tryAudioSources(sources, index + 1, soundId, volume);
+    });
+
+    // Set a timeout to try next source if loading takes too long
+    setTimeout(() => {
+      if (!this.sounds[soundId] || !this.sounds[soundId].audio) {
+        this.tryAudioSources(sources, index + 1, soundId, volume);
+      }
+    }, 3000);
+  },
+
+  playSyntheticSound(soundId, volume = 0.5) {
+    try {
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
       const gainNode = audioContext.createGain();
-      
-      // Create more realistic ambient sounds using multiple oscillators and noise
       let soundNodes = [];
       
       if (soundId === 'rain') {
@@ -370,7 +459,14 @@ const audioManager = {
   stopSound(soundId) {
     try {
       if (this.sounds[soundId]) {
-        this.sounds[soundId].stop();
+        if (this.sounds[soundId].audio) {
+          // Real audio file
+          this.sounds[soundId].audio.pause();
+          this.sounds[soundId].audio.currentTime = 0;
+        } else {
+          // Synthetic sound
+          this.sounds[soundId].stop();
+        }
         delete this.sounds[soundId];
       }
     } catch (error) {
@@ -380,8 +476,14 @@ const audioManager = {
 
   setVolume(soundId, volume) {
     try {
-      if (this.sounds[soundId] && this.sounds[soundId].setVolume) {
-        this.sounds[soundId].setVolume(volume);
+      if (this.sounds[soundId]) {
+        if (this.sounds[soundId].audio) {
+          // Real audio file
+          this.sounds[soundId].audio.volume = volume;
+        } else if (this.sounds[soundId].setVolume) {
+          // Synthetic sound
+          this.sounds[soundId].setVolume(volume);
+        }
       }
     } catch (error) {
       console.error('Error setting volume:', error);

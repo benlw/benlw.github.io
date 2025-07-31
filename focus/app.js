@@ -40,6 +40,10 @@ function App() {
     const [isRunning, setIsRunning] = React.useState(false);
     const [activeSounds, setActiveSounds] = React.useState(new Set());
     const [showSettings, setShowSettings] = React.useState(false);
+    const [showYouTube, setShowYouTube] = React.useState(false);
+    const [showBilibili, setShowBilibili] = React.useState(false);
+    const [youtubeUrl, setYoutubeUrl] = React.useState('');
+    const [bilibiliUrl, setBilibiliUrl] = React.useState('');
     const [settings, setSettings] = React.useState({
       workTime: 25,
       shortBreak: 5,
@@ -144,18 +148,50 @@ function App() {
             />
           </div>
           
-          <button
-            onClick={() => setShowSettings(!showSettings)}
-            className="timer-button secondary mt-6"
-          >
-            设置
-          </button>
+          <div className="grid grid-cols-2 gap-2 mt-6">
+            <button
+              onClick={() => setShowSettings(!showSettings)}
+              className="timer-button secondary"
+            >
+              设置
+            </button>
+            <button
+              onClick={() => setShowYouTube(!showYouTube)}
+              className="timer-button secondary"
+            >
+              YouTube
+            </button>
+            <button
+              onClick={() => setShowBilibili(!showBilibili)}
+              className="timer-button secondary col-span-2"
+            >
+              Bilibili
+            </button>
+          </div>
           
           {showSettings && (
             <Settings 
               settings={settings}
               onSettingsChange={handleSettingsChange}
               onClose={() => setShowSettings(false)}
+            />
+          )}
+          
+          {showYouTube && (
+            <YouTubePlayer
+              youtubeUrl={youtubeUrl}
+              onUrlChange={setYoutubeUrl}
+              volume={settings.volume}
+              onClose={() => setShowYouTube(false)}
+            />
+          )}
+          
+          {showBilibili && (
+            <BilibiliPlayer
+              bilibiliUrl={bilibiliUrl}
+              onUrlChange={setBilibiliUrl}
+              volume={settings.volume}
+              onClose={() => setShowBilibili(false)}
             />
           )}
         </div>
