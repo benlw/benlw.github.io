@@ -74,42 +74,52 @@ const audioManager = {
   tryAudioSources(sources, index, soundId, volume) {
     if (index >= sources.length) {
       // All sources failed, use synthetic sound
+      console.log(`All audio sources failed for ${soundId}, using synthetic sound`);
       this.playSyntheticSound(soundId, volume);
       return;
     }
 
-    const audio = new Audio(sources[index]);
+    const audio = new Audio();
     audio.loop = true;
     audio.volume = volume;
-    audio.crossOrigin = 'anonymous';
+    audio.preload = 'auto';
+    
+    const handleSuccess = () => {
+      console.log(`Successfully loaded audio for ${soundId} from source ${index}`);
+      this.sounds[soundId] = {
+        audio,
+        stop: () => {
+          audio.pause();
+          audio.currentTime = 0;
+        },
+        setVolume: (vol) => {
+          audio.volume = vol;
+        }
+      };
+    };
+
+    const handleError = () => {
+      console.log(`Failed to load ${soundId} from source ${index}: ${sources[index]}`);
+      this.tryAudioSources(sources, index + 1, soundId, volume);
+    };
     
     audio.addEventListener('canplaythrough', () => {
-      audio.play().then(() => {
-        this.sounds[soundId] = {
-          audio,
-          stop: () => {
-            audio.pause();
-            audio.currentTime = 0;
-          },
-          setVolume: (vol) => {
-            audio.volume = vol;
-          }
-        };
-      }).catch(() => {
-        this.tryAudioSources(sources, index + 1, soundId, volume);
-      });
-    });
+      audio.play().then(handleSuccess).catch(handleError);
+    }, { once: true });
 
-    audio.addEventListener('error', () => {
-      this.tryAudioSources(sources, index + 1, soundId, volume);
-    });
+    audio.addEventListener('error', handleError, { once: true });
+    audio.addEventListener('abort', handleError, { once: true });
 
+    // Set source and start loading
+    audio.src = sources[index];
+    
     // Set a timeout to try next source if loading takes too long
     setTimeout(() => {
       if (!this.sounds[soundId] || !this.sounds[soundId].audio) {
-        this.tryAudioSources(sources, index + 1, soundId, volume);
+        console.log(`Timeout loading ${soundId} from source ${index}`);
+        handleError();
       }
-    }, 3000);
+    }, 5000);
   },
 
   playSyntheticSound(soundId, volume = 0.5) {

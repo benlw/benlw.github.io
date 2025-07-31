@@ -74,10 +74,14 @@ function BilibiliPlayer({ bilibiliUrl, onUrlChange, volume, onClose }) {
                   id="bilibili-player"
                   src={embedUrl}
                   width="100%"
-                  height="200"
+                  height={isMiniMode ? "120" : "200"}
                   frameBorder="0"
                   allowFullScreen
-                  className="rounded-lg"
+                  className="rounded-lg w-full"
+                  style={{
+                    minHeight: isMiniMode ? '120px' : '200px',
+                    maxWidth: '100%'
+                  }}
                 ></iframe>
                 
                 <div className="flex gap-2">
