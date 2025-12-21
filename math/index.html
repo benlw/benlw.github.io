@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>趣味数学可视化教学</title>
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --accent: #FF6B6B;
+            --success: #2ECC71;
+            --bg: #F0F4F8;
+            --card-bg: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Rounded Mplus 1c', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* 顶部导航与模式切换 */
+        header {
+            width: 100%;
+            padding: 15px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .mode-btn {
+            padding: 8px 20px;
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            background: transparent;
+            color: var(--primary);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 600px;
+            width: 90%;
+            background: var(--card-bg);
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        /* 可视化区域：十格阵 */
+        .visual-stage {
+            display: flex;
+            flex-direction: column; /* 手机端垂直排列 */
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            min-height: 160px;
+        }
+        
+        @media (min-width: 500px) {
+            .visual-stage { flex-direction: row; justify-content: center; }
+        }
+
+        .ten-frame-wrapper {
+            position: relative;
+        }
+
+        .ten-frame {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            width: 160px;
+            height: 70px;
+            border: 3px solid #333;
+            background: #fff;
+            padding: 5px;
+            gap: 5px;
+            border-radius: 8px;
+        }
+
+        .cell {
+            border: 1px solid #eee;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            transition: transform 0.8s ease-in-out, opacity 0.5s;
+            z-index: 10;
+        }
+
+        .dot.blue { background-color: var(--primary); box-shadow: 1px 1px 0 #2c5e96; }
+        .dot.red { background-color: var(--accent); box-shadow: 1px 1px 0 #a83232; }
+        .dot.faded { opacity: 0.2; transform: scale(0.8); } /* 减法消除效果 */
+
+        .operator-sign { font-size: 2rem; color: #888; font-weight: bold; }
+
+        /* 算式与输入 */
+        .math-equation {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #2c3e50;
+            margin: 10px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="number"] {
+            width: 80px;
+            font-size: 2.5rem;
+            text-align: center;
+            border: 3px solid #ddd;
+            border-radius: 12px;
+            outline: none;
+            color: var(--primary);
+        }
+        
+        input[type="number"]:focus { border-color: var(--primary); }
+        input[type="number"].correct { border-color: var(--success); background-color: #e8f8f5; }
+        input[type="number"].wrong { border-color: var(--accent); background-color: #fdedec; }
+
+        /* 按钮组 */
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 15px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.1s;
+        }
+        
+        .btn:active { transform: scale(0.96); }
+        
+        .btn-check { background-color: var(--success); color: white; grid-column: span 2; font-size: 1.3rem; }
+        .btn-hint { background-color: #F1C40F; color: #333; }
+        .btn-next { background-color: var(--primary); color: white; }
+
+        .message { height: 30px; margin-top: 10px; font-weight: bold; color: #555; }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <button class="mode-btn active" onclick="setMode('add')">➕ 加法训练</button>
+    <button class="mode-btn" onclick="setMode('sub')">➖ 减法训练</button>
+</header>
+
+<div class="container">
+    <div class="message" id="msgArea">准备好了吗？</div>
+
+    <div class="visual-stage">
+        <div class="ten-frame-wrapper">
+            <div class="ten-frame" id="frame1"></div>
+        </div>
+        
+        <div class="operator-sign" id="visualOp">+</div>
+        
+        <div class="ten-frame-wrapper">
+            <div class="ten-frame" id="frame2"></div>
+        </div>
+    </div>
+
+    <div class="math-equation">
+        <span id="num1">0</span>
+        <span id="opSymbol">+</span>
+        <span id="num2">0</span>
+        <span>=</span>
+        <input type="number" id="answerInput" placeholder="?" inputmode="numeric">
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-check" onclick="checkAnswer()">提交答案</button>
+        <button class="btn btn-hint" id="hintBtn" onclick="showVisualHint()">💡 演示怎么算</button>
+        <button class="btn btn-next" onclick="generateProblem()">🎲 下一题</button>
+    </div>
+</div>
+
+<script>
+    // --- 状态管理 ---
+    let state = {
+        mode: 'add', // 'add' or 'sub'
+        n1: 0,
+        n2: 0,
+        ans: 0,
+        isAnimating: false
+    };
+
+    // --- 音效系统 (Web Audio API) ---
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        if (type === 'correct') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(500, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+        } else if (type === 'wrong') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+            osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+        }
+    }
+
+    // --- 核心逻辑 ---
+    function setMode(mode) {
+        state.mode = mode;
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+        generateProblem();
+    }
+
+    function generateProblem() {
+        state.isAnimating = false;
+        resetUI();
+
+        if (state.mode === 'add') {
+            // 加法：倾向于出进位加法 (和 > 10)
+            state.n1 = rand(6, 9); 
+            state.n2 = rand(11 - state.n1, 9); // 保证 n1+n2 >= 11 (凑十练习)
+            // 偶尔出简单题防止疲劳
+            if (Math.random() > 0.7) state.n2 = rand(1, 10 - state.n1); 
+            
+            state.ans = state.n1 + state.n2;
+            document.getElementById('opSymbol').textContent = '+';
+            document.getElementById('visualOp').textContent = '+';
+            renderDots(state.n1, state.n2, 'add');
+
+        } else {
+            // 减法：倾向于退位减法 (被减数 > 10, 减数使个位不够减)
+            state.n1 = rand(11, 18);
+            let maxSub = state.n1 - 9; // 保证结果 >= 9 (简单逻辑)
+            // 这里为了演示退位，我们要减去比个位大的数
+            // 例如 13 (3)，要减去 4,5,6...
+            let onesPlace = state.n1 % 10;
+            state.n2 = rand(onesPlace + 1, 9); // 确保产生退位
+            
+            // 偶尔出简单不退位
+            if (Math.random() > 0.7) {
+                state.n1 = rand(5, 10);
+                state.n2 = rand(1, state.n1);
+            }
+
+            state.ans = state.n1 - state.n2;
+            document.getElementById('opSymbol').textContent = '-';
+            document.getElementById('visualOp').textContent = ''; // 减法不需要中间符号
+            renderDots(state.n1, 0, 'sub'); // 减法初始只画被减数
+        }
+
+        document.getElementById('num1').textContent = state.n1;
+        document.getElementById('num2').textContent = state.n2;
+    }
+
+    function checkAnswer() {
+        const input = document.getElementById('answerInput');
+        const val = parseInt(input.value);
+        const msg = document.getElementById('msgArea');
+
+        if (isNaN(val)) return;
+
+        if (val === state.ans) {
+            input.classList.add('correct');
+            msg.textContent = "🎉 太棒了！答对了！";
+            msg.style.color = "#27ae60";
+            playSound('correct');
+        } else {
+            input.classList.add('wrong');
+            msg.textContent = "🤔 好像不太对，点“演示”看看？";
+            msg.style.color = "#e74c3c";
+            playSound('wrong');
+            input.value = '';
+            setTimeout(() => input.classList.remove('wrong'), 500);
+        }
+    }
+
+    // --- 可视化渲染引擎 ---
+    function renderDots(c1, c2, type) {
+        // 清空
+        fillGrid('frame1', 0);
+        fillGrid('frame2', 0);
+
+        if (type === 'add') {
+            fillGrid('frame1', c1, 'blue');
+            fillGrid('frame2', c2, 'red');
+        } else {
+            // 减法：先把总数分布在两个格子里 (方便看穿 10 + N)
+            // 比如 13：Frame1 填10个，Frame2 填3个
+            let frame1Count = Math.min(c1, 10);
+            let frame2Count = c1 - frame1Count;
+            fillGrid('frame1', frame1Count, 'blue');
+            fillGrid('frame2', frame2Count, 'blue');
+        }
+    }
+
+    function fillGrid(id, count, color) {
+        const el = document.getElementById(id);
+        el.innerHTML = '';
+        for(let i=0; i<10; i++) {
+            let cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.id = `${id}-c${i}`; // 用于定位
+            if (i < count) {
+                let dot = document.createElement('div');
+                dot.className = `dot ${color}`;
+                dot.id = `${id}-d${i}`; // 用于动画
+                cell.appendChild(dot);
+            }
+            el.appendChild(cell);
+        }
+    }
+
+    // --- 动画教学逻辑 ---
+    function showVisualHint() {
+        if (state.isAnimating) return;
+        state.isAnimating = true;
+
+        if (state.mode === 'add') {
+            // 加法凑十动画
+            let needed = 10 - state.n1;
+            if (state.n2 < needed) {
+                document.getElementById('msgArea').textContent = "不需要凑十，直接数数哦";
+                state.isAnimating = false;
+                return;
+            }
+            
+            document.getElementById('msgArea').textContent = `把 ${needed} 个红点移过去凑成 10！`;
+
+            for(let i=0; i<needed; i++) {
+                let dot = document.getElementById(`frame2-d${i}`);
+                let targetCell = document.getElementById(`frame1-c${state.n1 + i}`);
+                moveElement(dot, targetCell, i*200);
+            }
+        } else {
+            // 减法消除动画 (破十法：先减个位，再减十位；或者平十法)
+            // 这里演示简单的“划掉”逻辑
+            document.getElementById('msgArea').textContent = `拿走 ${state.n2} 个点...`;
+            
+            let count = 0;
+            // 倒序删除：先删 frame2 的，再删 frame1 的
+            // 逻辑：先找 frame2 里的点
+            let dotsToRemove = [];
+            
+            // 收集 Frame 2 的点
+            for (let i = 9; i >= 0; i--) {
+                let d = document.getElementById(`frame2-d${i}`);
+                if(d) dotsToRemove.push(d);
+            }
+            // 收集 Frame 1 的点
+            for (let i = 9; i >= 0; i--) {
+                let d = document.getElementById(`frame1-d${i}`);
+                if(d) dotsToRemove.push(d);
+            }
+
+            // 执行消除
+            for(let i=0; i < state.n2; i++) {
+                if(dotsToRemove[i]) {
+                    setTimeout(() => {
+                        dotsToRemove[i].classList.add('faded');
+                        playSound('wrong'); // 用短促音效模拟消除声
+                    }, i * 300);
+                }
+            }
+        }
+    }
+
+    // 通用移动动画
+    function moveElement(el, targetParent, delay) {
+        setTimeout(() => {
+            let start = el.getBoundingClientRect();
+            let end = targetParent.getBoundingClientRect();
+            let dx = (end.left + end.width/2) - (start.left + start.width/2);
+            let dy = (end.top + end.height/2) - (start.top + start.height/2);
+            el.style.transform = `translate(${dx}px, ${dy}px)`;
+        }, delay);
+    }
+
+    function resetUI() {
+        document.getElementById('answerInput').value = '';
+        document.getElementById('answerInput').classList.remove('correct', 'wrong');
+        document.getElementById('msgArea').textContent = '';
+        document.getElementById('msgArea').style.color = '#555';
+    }
+
+    function rand(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // 初始化
+    generateProblem();
+
+    // 回车提交
+    document.getElementById('answerInput').addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') checkAnswer();
+    });
+</script>
+</body>
+</html>
