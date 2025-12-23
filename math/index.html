@@ -349,6 +349,42 @@
             .math-equation { font-size: 2.4rem; }
             .answer-input { width: 80px; font-size: 2.2rem; }
         }
+
+        @media (max-width: 540px), (max-height: 760px) {
+            header { padding: calc(8px + env(safe-area-inset-top)) 10px 8px; }
+            .nav-container { gap: 8px; }
+            .mode-btn {
+                padding: 8px 10px;
+                min-width: 96px;
+                font-size: 0.82rem;
+                border-radius: 16px;
+                min-height: 42px;
+            }
+
+            .container { margin-top: 12px; padding: 14px 12px 16px; width: min(94%, 720px); }
+            .visual-stage { margin: 12px 0; min-height: 140px; }
+            .visual { gap: 12px; }
+            .operator-sign { font-size: 1.6rem; }
+
+            .ten-frame { width: 140px; height: 62px; }
+            .dot { width: 20px; height: 20px; }
+            .dot.small { width: 11px; height: 11px; }
+
+            .tens-rack { height: 60px; }
+            .ten-rod { width: 14px; height: 52px; }
+            .ones-frame { width: 150px; height: 104px; }
+
+            .math-equation { font-size: 2.1rem; }
+            .answer-input { width: 72px; font-size: 2rem; }
+
+            .controls { gap: 10px; margin-top: 14px; }
+            .btn { padding: 12px; font-size: 1rem; }
+
+            .keypad { gap: 8px; margin-top: 14px; max-width: 320px; }
+            .key-btn { padding: 10px 8px; font-size: 1.2rem; }
+            .key-btn.key-submit { font-size: 1.1rem; }
+            .message { height: 24px; margin-top: 6px; }
+        }
     </style>
 </head>
 <body>
@@ -408,7 +444,6 @@
     </div>
 
     <div class="controls">
-        <button class="btn btn-check" id="checkBtn">提交答案</button>
         <button class="btn btn-hint" id="hintBtn">💡 演示怎么算</button>
         <button class="btn btn-next" id="nextBtn">🎲 下一题</button>
     </div>
@@ -478,7 +513,6 @@
     const arrayGridEl = document.getElementById('arrayGrid');
     const keypadEl = document.getElementById('keypad');
     const hintBtn = document.getElementById('hintBtn');
-    const checkBtn = document.getElementById('checkBtn');
     const nextBtn = document.getElementById('nextBtn');
 
     const visuals = {
@@ -897,7 +931,7 @@
             if (dot && targetCell) moveElement(dot, targetCell, i * 180);
         }
 
-        const moveDelay = needed * 180 + 400;
+        const moveDelay = needed * 180 + 900;
         setTimeout(() => {
             const leftover = ones2 - needed;
             fillOnesFrame(ones1El, 10, 'blue', 'ones1');
@@ -913,13 +947,28 @@
                     fillTensRack(tens1El, tens1 + 1, 'blue');
                     const newRod = tens1El.lastElementChild;
                     if (newRod) newRod.classList.add('pop');
-                    fillOnesFrame(ones1El, leftover, 'blue', 'ones1');
+                    fillOnesFrame(ones1El, 0, 'blue', 'ones1');
+                    fillOnesFrame(ones2El, leftover, 'red', 'ones2');
                     fillTensRack(tens2El, 0, 'red');
-                    fillOnesFrame(ones2El, 0, 'red', 'ones2');
-                    setTimeout(() => {
-                        setMessage('再把剩下的点和十位一起数数');
+
+                    if (leftover > 0) {
+                        setMessage('把右边剩下的点搬过来');
+                        for (let i = 0; i < leftover; i++) {
+                            const dot = document.getElementById(`ones2-d${i}`);
+                            const targetCell = document.getElementById(`ones1-c${i}`);
+                            if (dot && targetCell) moveElement(dot, targetCell, i * 160);
+                        }
+                        const moveLeftDelay = leftover * 160 + 900;
+                        setTimeout(() => {
+                            fillOnesFrame(ones1El, leftover, 'blue', 'ones1');
+                            fillOnesFrame(ones2El, 0, 'red', 'ones2');
+                            setMessage('再把剩下的点和十位一起数数');
+                            state.isAnimating = false;
+                        }, moveLeftDelay);
+                    } else {
+                        setMessage('再把十位一起数数');
                         state.isAnimating = false;
-                    }, 500);
+                    }
                 }, fadeDelay + 200);
             }, 900);
         }, moveDelay);
@@ -1113,7 +1162,6 @@
     document.querySelectorAll('.mode-btn').forEach((btn) => {
         btn.addEventListener('click', () => setMode(btn.dataset.mode));
     });
-    checkBtn.addEventListener('click', checkAnswer);
     hintBtn.addEventListener('click', showVisualHint);
     nextBtn.addEventListener('click', generateProblem);
     keypadEl.addEventListener('click', (e) => {
