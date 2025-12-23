@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>王孝满数学课堂</title>
+    <title>趣味数学可视化教学</title>
     <style>
         :root {
             --primary: #4A90E2;
@@ -11,6 +11,10 @@
             --success: #2ECC71;
             --bg: #F0F4F8;
             --card-bg: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
@@ -22,28 +26,45 @@
             align-items: center;
             min-height: 100vh;
             color: #333;
+            overflow-x: hidden;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        [hidden] {
+            display: none !important;
         }
 
         /* 顶部导航与模式切换 */
         header {
             width: 100%;
-            padding: 15px;
+            padding: calc(12px + env(safe-area-inset-top)) 12px 12px;
             background: white;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             display: flex;
             justify-content: center;
-            gap: 20px;
+        }
+
+        .nav-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            max-width: 920px;
         }
 
         .mode-btn {
-            padding: 8px 20px;
+            padding: 12px 18px;
             border: 2px solid var(--primary);
-            border-radius: 20px;
+            border-radius: 18px;
             background: transparent;
             color: var(--primary);
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
+            min-width: 132px;
+            min-height: 44px;
+            font-size: 0.95rem;
         }
 
         .mode-btn.active {
@@ -53,28 +74,39 @@
 
         /* 主容器 */
         .container {
-            max-width: 600px;
-            width: 90%;
+            max-width: 720px;
+            width: min(92%, 720px);
             background: var(--card-bg);
-            margin-top: 20px;
-            padding: 20px;
+            margin-top: 18px;
+            padding: 20px 18px 24px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             text-align: center;
         }
 
-        /* 可视化区域：十格阵 */
+        /* 可视化区域 */
         .visual-stage {
             display: flex;
-            flex-direction: column; /* 手机端垂直排列 */
             align-items: center;
-            gap: 15px;
+            justify-content: center;
+            gap: 16px;
             margin: 20px 0;
-            min-height: 160px;
+            min-height: 170px;
+            width: 100%;
+            overflow: hidden;
         }
-        
-        @media (min-width: 500px) {
-            .visual-stage { flex-direction: row; justify-content: center; }
+
+        .visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        @media (min-width: 560px) {
+            .visual { flex-wrap: nowrap; }
         }
 
         .ten-frame-wrapper {
@@ -103,18 +135,128 @@
         }
 
         .dot {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             transition: transform 0.8s ease-in-out, opacity 0.5s;
             z-index: 10;
         }
 
+        .dot.small {
+            width: 12px;
+            height: 12px;
+        }
+
         .dot.blue { background-color: var(--primary); box-shadow: 1px 1px 0 #2c5e96; }
         .dot.red { background-color: var(--accent); box-shadow: 1px 1px 0 #a83232; }
-        .dot.faded { opacity: 0.2; transform: scale(0.8); } /* 减法消除效果 */
+        .dot.faded { opacity: 0.2; }
+
+        .dot.pulse {
+            animation: dotPulse 0.6s ease-in-out 2;
+        }
+
+        @keyframes dotPulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.0); }
+            50% { box-shadow: 0 0 0 6px rgba(255, 107, 107, 0.3); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.0); }
+        }
+
+        .frame-glow {
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.25);
+            border-color: var(--accent);
+        }
 
         .operator-sign { font-size: 2rem; color: #888; font-weight: bold; }
+
+        /* 进阶：十位棒 + 个位框 */
+        .base10-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tens-rack {
+            display: flex;
+            gap: 6px;
+            align-items: flex-end;
+            height: 70px;
+        }
+
+        .ten-rod {
+            width: 16px;
+            height: 60px;
+            border-radius: 6px;
+            background: var(--primary);
+            box-shadow: inset -2px -2px 0 rgba(0,0,0,0.15);
+        }
+
+        .ten-rod.red {
+            background: var(--accent);
+        }
+
+        .ten-rod.pop {
+            animation: rodPop 0.5s ease-out;
+        }
+
+        @keyframes rodPop {
+            0% { transform: translateY(10px) scale(0.7); opacity: 0.2; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        .ones-frame {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            width: 160px;
+            height: 120px;
+            border: 2px solid #333;
+            padding: 4px;
+            gap: 4px;
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        .ones-frame::after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            right: 6px;
+            top: 50%;
+            height: 2px;
+            background: #e6e6e6;
+        }
+
+        .ones-cell {
+            border: 1px solid #eee;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 乘除法阵列 */
+        .array-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .array-row {
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .array-row.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         /* 算式与输入 */
         .math-equation {
@@ -128,19 +270,21 @@
             gap: 10px;
         }
 
-        input[type="number"] {
-            width: 80px;
+        .answer-input {
+            width: 90px;
             font-size: 2.5rem;
             text-align: center;
             border: 3px solid #ddd;
             border-radius: 12px;
             outline: none;
             color: var(--primary);
+            background: #fff;
+            caret-color: transparent;
         }
-        
-        input[type="number"]:focus { border-color: var(--primary); }
-        input[type="number"].correct { border-color: var(--success); background-color: #e8f8f5; }
-        input[type="number"].wrong { border-color: var(--accent); background-color: #fdedec; }
+
+        .answer-input:focus { border-color: var(--primary); }
+        .answer-input.correct { border-color: var(--success); background-color: #e8f8f5; }
+        .answer-input.wrong { border-color: var(--accent); background-color: #fdedec; }
 
         /* 按钮组 */
         .controls {
@@ -159,36 +303,99 @@
             font-weight: bold;
             transition: transform 0.1s;
         }
-        
+
         .btn:active { transform: scale(0.96); }
-        
+
         .btn-check { background-color: var(--success); color: white; grid-column: span 2; font-size: 1.3rem; }
         .btn-hint { background-color: #F1C40F; color: #333; }
         .btn-next { background-color: var(--primary); color: white; }
 
         .message { height: 30px; margin-top: 10px; font-weight: bold; color: #555; }
 
+        /* 内置数字键盘 */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 22px auto 0;
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .key-btn {
+            padding: 12px 10px;
+            font-size: 1.4rem;
+            border-radius: 12px;
+            border: 2px solid #e1e8f0;
+            background: #f7f9fc;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        .key-btn:active { transform: scale(0.97); }
+
+        .key-btn.key-clear { background: #ffe9d6; border-color: #ffd4ad; }
+        .key-btn.key-back { background: #ffe0e0; border-color: #ffc2c2; }
+        .key-btn.key-submit {
+            background: var(--success);
+            color: white;
+            border-color: #22b765;
+            grid-column: span 3;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 480px) {
+            .math-equation { font-size: 2.4rem; }
+            .answer-input { width: 80px; font-size: 2.2rem; }
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <button class="mode-btn active" onclick="setMode('add')">➕ 加法训练</button>
-    <button class="mode-btn" onclick="setMode('sub')">➖ 减法训练</button>
+    <div class="nav-container">
+        <button class="mode-btn active" data-mode="add">➕ 20内加法</button>
+        <button class="mode-btn" data-mode="sub">➖ 20内减法</button>
+        <button class="mode-btn" data-mode="add-adv">🚀 进阶加法 20-50</button>
+        <button class="mode-btn" data-mode="sub-adv">🚀 进阶减法 20-50</button>
+        <button class="mode-btn" data-mode="mul">✖️ 乘法</button>
+        <button class="mode-btn" data-mode="div">➗ 除法</button>
+    </div>
 </header>
 
 <div class="container">
     <div class="message" id="msgArea">准备好了吗？</div>
 
     <div class="visual-stage">
-        <div class="ten-frame-wrapper">
-            <div class="ten-frame" id="frame1"></div>
+        <div class="visual visual-tenframes" data-visual="tenframes">
+            <div class="ten-frame-wrapper">
+                <div class="ten-frame" id="frame1"></div>
+            </div>
+
+            <div class="operator-sign" id="visualOp">+</div>
+
+            <div class="ten-frame-wrapper">
+                <div class="ten-frame" id="frame2"></div>
+            </div>
         </div>
-        
-        <div class="operator-sign" id="visualOp">+</div>
-        
-        <div class="ten-frame-wrapper">
-            <div class="ten-frame" id="frame2"></div>
+
+        <div class="visual visual-base10" data-visual="base10" hidden>
+            <div class="base10-group">
+                <div class="tens-rack" id="tens1"></div>
+                <div class="ones-frame" id="ones1"></div>
+            </div>
+
+            <div class="operator-sign" id="visualOpBase10">+</div>
+
+            <div class="base10-group">
+                <div class="tens-rack" id="tens2"></div>
+                <div class="ones-frame" id="ones2"></div>
+            </div>
+        </div>
+
+        <div class="visual visual-array" data-visual="array" hidden>
+            <div class="array-grid" id="arrayGrid"></div>
         </div>
     </div>
 
@@ -197,35 +404,49 @@
         <span id="opSymbol">+</span>
         <span id="num2">0</span>
         <span>=</span>
-        <input type="number" id="answerInput" placeholder="?" inputmode="numeric">
+        <input type="text" id="answerInput" class="answer-input" placeholder="?" inputmode="none" autocomplete="off" readonly>
     </div>
 
     <div class="controls">
-        <button class="btn btn-check" onclick="checkAnswer()">提交答案</button>
-        <button class="btn btn-hint" id="hintBtn" onclick="showVisualHint()">💡 演示怎么算</button>
-        <button class="btn btn-next" onclick="generateProblem()">🎲 下一题</button>
+        <button class="btn btn-check" id="checkBtn">提交答案</button>
+        <button class="btn btn-hint" id="hintBtn">💡 演示怎么算</button>
+        <button class="btn btn-next" id="nextBtn">🎲 下一题</button>
+    </div>
+
+    <div class="keypad" id="keypad" aria-label="数字键盘">
+        <button class="key-btn" data-key="1">1</button>
+        <button class="key-btn" data-key="2">2</button>
+        <button class="key-btn" data-key="3">3</button>
+        <button class="key-btn" data-key="4">4</button>
+        <button class="key-btn" data-key="5">5</button>
+        <button class="key-btn" data-key="6">6</button>
+        <button class="key-btn" data-key="7">7</button>
+        <button class="key-btn" data-key="8">8</button>
+        <button class="key-btn" data-key="9">9</button>
+        <button class="key-btn key-clear" data-key="clear">清空</button>
+        <button class="key-btn" data-key="0">0</button>
+        <button class="key-btn key-back" data-key="back">⌫</button>
+        <button class="key-btn key-submit" data-key="submit">提交</button>
     </div>
 </div>
 
 <script>
-    // --- 状态管理 ---
-    let state = {
-        mode: 'add', // 'add' or 'sub'
+    const state = {
+        mode: 'add',
         n1: 0,
         n2: 0,
         ans: 0,
         isAnimating: false
     };
 
-    // --- 音效系统 (Web Audio API) ---
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSound(type) {
-        if(audioCtx.state === 'suspended') audioCtx.resume();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-        
+
         if (type === 'correct') {
             osc.type = 'sine';
             osc.frequency.setValueAtTime(500, audioCtx.currentTime);
@@ -241,12 +462,89 @@
         }
     }
 
-    // --- 核心逻辑 ---
+    const msgEl = document.getElementById('msgArea');
+    const inputEl = document.getElementById('answerInput');
+    const num1El = document.getElementById('num1');
+    const num2El = document.getElementById('num2');
+    const opSymbolEl = document.getElementById('opSymbol');
+    const visualOpEl = document.getElementById('visualOp');
+    const visualOpBase10El = document.getElementById('visualOpBase10');
+    const frame1El = document.getElementById('frame1');
+    const frame2El = document.getElementById('frame2');
+    const tens1El = document.getElementById('tens1');
+    const tens2El = document.getElementById('tens2');
+    const ones1El = document.getElementById('ones1');
+    const ones2El = document.getElementById('ones2');
+    const arrayGridEl = document.getElementById('arrayGrid');
+    const keypadEl = document.getElementById('keypad');
+    const hintBtn = document.getElementById('hintBtn');
+    const checkBtn = document.getElementById('checkBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    const visuals = {
+        tenframes: document.querySelector('[data-visual="tenframes"]'),
+        base10: document.querySelector('[data-visual="base10"]'),
+        array: document.querySelector('[data-visual="array"]')
+    };
+
+    const ONES_CELL_COUNT = 20;
+
+    function setMessage(text, color) {
+        msgEl.textContent = text || '';
+        msgEl.style.color = color || '#555';
+    }
+
     function setMode(mode) {
         state.mode = mode;
-        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
+        setActiveModeButton(mode);
         generateProblem();
+    }
+
+    function setActiveModeButton(mode) {
+        document.querySelectorAll('.mode-btn').forEach((btn) => {
+            btn.classList.toggle('active', btn.dataset.mode === mode);
+        });
+    }
+
+    function getVisualKey(mode) {
+        if (mode === 'add' || mode === 'sub') return 'tenframes';
+        if (mode === 'add-adv' || mode === 'sub-adv') return 'base10';
+        return 'array';
+    }
+
+    function setVisualByMode(mode) {
+        const target = getVisualKey(mode);
+        Object.keys(visuals).forEach((key) => {
+            visuals[key].hidden = key !== target;
+        });
+    }
+
+    function getOperator(mode) {
+        if (mode === 'add' || mode === 'add-adv') return '+';
+        if (mode === 'sub' || mode === 'sub-adv') return '-';
+        if (mode === 'mul') return '×';
+        if (mode === 'div') return '÷';
+        return '+';
+    }
+
+    function updateEquation() {
+        num1El.textContent = state.n1;
+        num2El.textContent = state.n2;
+        opSymbolEl.textContent = getOperator(state.mode);
+
+        if (state.mode === 'add') {
+            visualOpEl.textContent = '+';
+        } else {
+            visualOpEl.textContent = '';
+        }
+
+        if (state.mode === 'add-adv') {
+            visualOpBase10El.textContent = '+';
+        } else if (state.mode === 'sub-adv') {
+            visualOpBase10El.textContent = '-';
+        } else {
+            visualOpBase10El.textContent = '';
+        }
     }
 
     function generateProblem() {
@@ -254,183 +552,582 @@
         resetUI();
 
         if (state.mode === 'add') {
-            // 加法：倾向于出进位加法 (和 > 10)
-            state.n1 = rand(6, 9); 
-            state.n2 = rand(11 - state.n1, 9); // 保证 n1+n2 >= 11 (凑十练习)
-            // 偶尔出简单题防止疲劳
-            if (Math.random() > 0.7) state.n2 = rand(1, 10 - state.n1); 
-            
-            state.ans = state.n1 + state.n2;
-            document.getElementById('opSymbol').textContent = '+';
-            document.getElementById('visualOp').textContent = '+';
-            renderDots(state.n1, state.n2, 'add');
+            generateAddWithin20();
+        } else if (state.mode === 'sub') {
+            generateSubWithin20();
+        } else if (state.mode === 'add-adv') {
+            generateAdvAdd();
+        } else if (state.mode === 'sub-adv') {
+            generateAdvSub();
+        } else if (state.mode === 'mul') {
+            generateMul();
+        } else if (state.mode === 'div') {
+            generateDiv();
+        }
 
+        updateEquation();
+        setVisualByMode(state.mode);
+        renderCurrent();
+    }
+
+    function generateAddWithin20() {
+        let n1 = rand(6, 9);
+        let n2 = rand(11 - n1, 9);
+        if (Math.random() > 0.7) n2 = rand(1, 10 - n1);
+        state.n1 = n1;
+        state.n2 = n2;
+        state.ans = n1 + n2;
+    }
+
+    function generateSubWithin20() {
+        let n1;
+        let n2;
+        if (Math.random() < 0.7) {
+            n1 = rand(11, 19);
+            while (n1 % 10 === 9) n1 = rand(11, 19);
+            const ones = n1 % 10;
+            n2 = rand(ones + 1, 9);
         } else {
-            // 减法：倾向于退位减法 (被减数 > 10, 减数使个位不够减)
-            state.n1 = rand(11, 18);
-            let maxSub = state.n1 - 9; // 保证结果 >= 9 (简单逻辑)
-            // 这里为了演示退位，我们要减去比个位大的数
-            // 例如 13 (3)，要减去 4,5,6...
-            let onesPlace = state.n1 % 10;
-            state.n2 = rand(onesPlace + 1, 9); // 确保产生退位
-            
-            // 偶尔出简单不退位
-            if (Math.random() > 0.7) {
-                state.n1 = rand(5, 10);
-                state.n2 = rand(1, state.n1);
+            n1 = rand(6, 19);
+            while (n1 % 10 === 0) n1 = rand(6, 19);
+            const ones = n1 % 10;
+            n2 = rand(1, Math.min(9, ones));
+        }
+        state.n1 = n1;
+        state.n2 = n2;
+        state.ans = n1 - n2;
+    }
+
+    function generateAdvAdd() {
+        let n1;
+        let n2;
+        const wantCarry = Math.random() < 0.7;
+        if (wantCarry) {
+            for (let i = 0; i < 20; i++) {
+                n1 = rand(20, 45);
+                const ones = n1 % 10;
+                const needed = 10 - ones;
+                const maxAdd = Math.min(9, 50 - n1);
+                if (needed >= 1 && needed <= maxAdd) {
+                    n2 = rand(needed, maxAdd);
+                    break;
+                }
             }
-
-            state.ans = state.n1 - state.n2;
-            document.getElementById('opSymbol').textContent = '-';
-            document.getElementById('visualOp').textContent = ''; // 减法不需要中间符号
-            renderDots(state.n1, 0, 'sub'); // 减法初始只画被减数
         }
-
-        document.getElementById('num1').textContent = state.n1;
-        document.getElementById('num2').textContent = state.n2;
+        if (!Number.isInteger(n2)) {
+            n1 = rand(20, 49);
+            const maxAdd = Math.min(9, 50 - n1);
+            n2 = rand(1, Math.max(1, maxAdd));
+        }
+        state.n1 = n1;
+        state.n2 = n2;
+        state.ans = n1 + n2;
     }
 
-    function checkAnswer() {
-        const input = document.getElementById('answerInput');
-        const val = parseInt(input.value);
-        const msg = document.getElementById('msgArea');
-
-        if (isNaN(val)) return;
-
-        if (val === state.ans) {
-            input.classList.add('correct');
-            msg.textContent = "🎉 太棒了！答对了！";
-            msg.style.color = "#27ae60";
-            playSound('correct');
+    function generateAdvSub() {
+        let n1 = rand(29, 50);
+        let ones = n1 % 10;
+        let n2;
+        const wantBorrow = Math.random() < 0.7;
+        if (wantBorrow) {
+            for (let i = 0; i < 10 && ones === 9; i++) {
+                n1 = rand(29, 50);
+                ones = n1 % 10;
+            }
+            if (ones === 9) {
+                n1 = 48;
+                ones = 8;
+            }
+            n2 = rand(ones + 1, 9);
         } else {
-            input.classList.add('wrong');
-            msg.textContent = "🤔 好像不太对，点“演示”看看？";
-            msg.style.color = "#e74c3c";
-            playSound('wrong');
-            input.value = '';
-            setTimeout(() => input.classList.remove('wrong'), 500);
+            while (ones === 0) {
+                n1 = rand(29, 50);
+                ones = n1 % 10;
+            }
+            const maxSub = Math.min(9, ones);
+            n2 = rand(1, maxSub);
         }
+        state.n1 = n1;
+        state.n2 = n2;
+        state.ans = n1 - n2;
     }
 
-    // --- 可视化渲染引擎 ---
-    function renderDots(c1, c2, type) {
-        // 清空
-        fillGrid('frame1', 0);
-        fillGrid('frame2', 0);
+    function generateMul() {
+        const n1 = rand(2, 5);
+        const n2 = rand(2, 5);
+        state.n1 = n1;
+        state.n2 = n2;
+        state.ans = n1 * n2;
+    }
 
-        if (type === 'add') {
-            fillGrid('frame1', c1, 'blue');
-            fillGrid('frame2', c2, 'red');
-        } else {
-            // 减法：先把总数分布在两个格子里 (方便看穿 10 + N)
-            // 比如 13：Frame1 填10个，Frame2 填3个
-            let frame1Count = Math.min(c1, 10);
-            let frame2Count = c1 - frame1Count;
-            fillGrid('frame1', frame1Count, 'blue');
-            fillGrid('frame2', frame2Count, 'blue');
+    function generateDiv() {
+        const divisor = rand(2, 5);
+        const quotient = rand(2, 5);
+        state.n1 = divisor * quotient;
+        state.n2 = divisor;
+        state.ans = quotient;
+    }
+
+    function renderCurrent() {
+        const visualKey = getVisualKey(state.mode);
+        if (visualKey === 'tenframes') renderTenFrames();
+        if (visualKey === 'base10') renderBase10();
+        if (visualKey === 'array') renderArray(true);
+    }
+
+    function renderTenFrames() {
+        if (state.mode === 'add') {
+            fillGrid('frame1', state.n1, 'blue');
+            fillGrid('frame2', state.n2, 'red');
+            return;
+        }
+
+        const frame1Count = Math.min(state.n1, 10);
+        const frame2Count = Math.max(state.n1 - 10, 0);
+        fillGrid('frame1', frame1Count, 'blue');
+        fillGrid('frame2', frame2Count, 'blue');
+    }
+
+    function renderBase10() {
+        renderBase10Group(tens1El, ones1El, state.n1, 'blue', 'ones1');
+        renderBase10Group(tens2El, ones2El, state.n2, 'red', 'ones2');
+    }
+
+    function renderBase10Group(tensEl, onesEl, number, color, prefix) {
+        const tens = Math.floor(number / 10);
+        const ones = number % 10;
+        fillTensRack(tensEl, tens, color);
+        fillOnesFrame(onesEl, ones, color, prefix);
+    }
+
+    function renderArray(showAll) {
+        arrayGridEl.innerHTML = '';
+        const rows = state.mode === 'mul' ? state.n1 : state.ans;
+        const cols = state.n2;
+        for (let r = 0; r < rows; r++) {
+            const row = document.createElement('div');
+            row.className = `array-row${showAll ? ' show' : ''}`;
+            row.id = `array-r${r}`;
+            for (let c = 0; c < cols; c++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot blue';
+                row.appendChild(dot);
+            }
+            arrayGridEl.appendChild(row);
         }
     }
 
     function fillGrid(id, count, color) {
         const el = document.getElementById(id);
         el.innerHTML = '';
-        for(let i=0; i<10; i++) {
-            let cell = document.createElement('div');
+        for (let i = 0; i < 10; i++) {
+            const cell = document.createElement('div');
             cell.className = 'cell';
-            cell.id = `${id}-c${i}`; // 用于定位
+            cell.id = `${id}-c${i}`;
             if (i < count) {
-                let dot = document.createElement('div');
+                const dot = document.createElement('div');
                 dot.className = `dot ${color}`;
-                dot.id = `${id}-d${i}`; // 用于动画
+                dot.id = `${id}-d${i}`;
                 cell.appendChild(dot);
             }
             el.appendChild(cell);
         }
     }
 
-    // --- 动画教学逻辑 ---
+    function fillTensRack(el, count, color) {
+        el.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+            const rod = document.createElement('div');
+            rod.className = `ten-rod${color === 'red' ? ' red' : ''}`;
+            rod.id = `${el.id}-r${i}`;
+            el.appendChild(rod);
+        }
+    }
+
+    function fillOnesFrame(el, count, color, prefix) {
+        el.innerHTML = '';
+        for (let i = 0; i < ONES_CELL_COUNT; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'ones-cell';
+            cell.id = `${prefix}-c${i}`;
+            if (i < count) {
+                const dot = document.createElement('div');
+                dot.className = `dot small ${color}`;
+                dot.id = `${prefix}-d${i}`;
+                cell.appendChild(dot);
+            }
+            el.appendChild(cell);
+        }
+    }
+
+    function fillOnesFrameBorrowed(el, onesCount, color, prefix) {
+        el.innerHTML = '';
+        for (let i = 0; i < ONES_CELL_COUNT; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'ones-cell';
+            cell.id = `${prefix}-c${i}`;
+            const inOnes = i < onesCount;
+            const inBorrow = i >= 10 && i < 20;
+            if (inOnes || inBorrow) {
+                const dot = document.createElement('div');
+                dot.className = `dot small ${color}`;
+                dot.id = `${prefix}-d${i}`;
+                cell.appendChild(dot);
+            }
+            el.appendChild(cell);
+        }
+    }
+
+    function checkAnswer() {
+        const val = parseInt(inputEl.value, 10);
+        if (Number.isNaN(val)) return;
+
+        if (val === state.ans) {
+            inputEl.classList.add('correct');
+            setMessage('🎉 太棒了！答对了！', '#27ae60');
+            playSound('correct');
+        } else {
+            inputEl.classList.add('wrong');
+            setMessage('🤔 好像不太对，点“演示”看看？', '#e74c3c');
+            playSound('wrong');
+            inputEl.value = '';
+            setTimeout(() => inputEl.classList.remove('wrong'), 500);
+        }
+    }
+
     function showVisualHint() {
         if (state.isAnimating) return;
         state.isAnimating = true;
 
-        if (state.mode === 'add') {
-            // 加法凑十动画
-            let needed = 10 - state.n1;
-            if (state.n2 < needed) {
-                document.getElementById('msgArea').textContent = "不需要凑十，直接数数哦";
-                state.isAnimating = false;
-                return;
-            }
-            
-            document.getElementById('msgArea').textContent = `把 ${needed} 个红点移过去凑成 10！`;
-
-            for(let i=0; i<needed; i++) {
-                let dot = document.getElementById(`frame2-d${i}`);
-                let targetCell = document.getElementById(`frame1-c${state.n1 + i}`);
-                moveElement(dot, targetCell, i*200);
-            }
+        if (state.mode === 'mul' || state.mode === 'div') {
+            renderArray(false);
         } else {
-            // 减法消除动画 (破十法：先减个位，再减十位；或者平十法)
-            // 这里演示简单的“划掉”逻辑
-            document.getElementById('msgArea').textContent = `拿走 ${state.n2} 个点...`;
-            
-            let count = 0;
-            // 倒序删除：先删 frame2 的，再删 frame1 的
-            // 逻辑：先找 frame2 里的点
-            let dotsToRemove = [];
-            
-            // 收集 Frame 2 的点
-            for (let i = 9; i >= 0; i--) {
-                let d = document.getElementById(`frame2-d${i}`);
-                if(d) dotsToRemove.push(d);
-            }
-            // 收集 Frame 1 的点
-            for (let i = 9; i >= 0; i--) {
-                let d = document.getElementById(`frame1-d${i}`);
-                if(d) dotsToRemove.push(d);
-            }
+            renderCurrent();
+        }
 
-            // 执行消除
-            for(let i=0; i < state.n2; i++) {
-                if(dotsToRemove[i]) {
+        if (state.mode === 'add') animateAddWithin20();
+        if (state.mode === 'sub') animateSubWithin20();
+        if (state.mode === 'add-adv') animateAdvAdd();
+        if (state.mode === 'sub-adv') animateAdvSub();
+        if (state.mode === 'mul') animateMul();
+        if (state.mode === 'div') animateDiv();
+    }
+
+    function animateAddWithin20() {
+        const needed = 10 - state.n1;
+        if (state.n2 < needed) {
+            setMessage('不需要凑十，直接数数哦');
+            state.isAnimating = false;
+            return;
+        }
+
+        setMessage(`把 ${needed} 个红点移过去凑成 10！`);
+        for (let i = 0; i < needed; i++) {
+            const dot = document.getElementById(`frame2-d${i}`);
+            const targetCell = document.getElementById(`frame1-c${state.n1 + i}`);
+            if (dot && targetCell) moveElement(dot, targetCell, i * 200);
+        }
+        const endDelay = needed * 200 + 500;
+        setTimeout(() => {
+            setMessage('凑成10后，再数一数一共有多少');
+            state.isAnimating = false;
+        }, endDelay);
+    }
+
+    function animateSubWithin20() {
+        const ones = state.n1 % 10;
+        const needsBorrow = state.n1 > 9 && ones < state.n2;
+
+        if (!needsBorrow) {
+            setMessage(`拿走 ${state.n2} 个点...`);
+            const dots = collectDots('frame2', 9).concat(collectDots('frame1', 9));
+            const delay = fadeDots(dots, state.n2, 0, 260);
+            setTimeout(() => {
+                setMessage('再数一数还剩多少');
+                state.isAnimating = false;
+            }, delay + 200);
+            return;
+        }
+
+        setMessage('个位不够，借1个十，变成10个点');
+        frame1El.classList.add('frame-glow');
+        const moveCount = 10 - ones;
+        for (let i = 0; i < moveCount; i++) {
+            const dot = document.getElementById(`frame1-d${9 - i}`);
+            const targetCell = document.getElementById(`frame2-c${ones + i}`);
+            if (dot && targetCell) moveElement(dot, targetCell, i * 180);
+        }
+
+        const borrowDelay = moveCount * 180 + 400;
+        setTimeout(() => {
+            frame1El.classList.remove('frame-glow');
+            fillGrid('frame1', ones, 'blue');
+            fillGrid('frame2', 10, 'blue');
+            setMessage(`借到10个点，现在拿走 ${state.n2} 个`);
+            const dots = collectDots('frame2', 9);
+            const delay = fadeDots(dots, state.n2, 0, 260);
+            setTimeout(() => {
+                setMessage('再数一数还剩多少');
+                state.isAnimating = false;
+            }, delay + 200);
+        }, borrowDelay);
+    }
+
+    function animateAdvAdd() {
+        const ones1 = state.n1 % 10;
+        const ones2 = state.n2 % 10;
+        const sum = ones1 + ones2;
+
+        if (sum < 10) {
+            setMessage(`个位够加，先算 ${ones1} + ${ones2}`);
+            pulseDots('ones1', ones1);
+            pulseDots('ones2', ones2);
+            setTimeout(() => {
+                setMessage('再和十位一起数一数');
+                state.isAnimating = false;
+            }, 700);
+            return;
+        }
+
+        const needed = 10 - ones1;
+        setMessage(`从右边拿 ${needed} 个，凑成10`);
+        for (let i = 0; i < needed; i++) {
+            const dot = document.getElementById(`ones2-d${i}`);
+            const targetCell = document.getElementById(`ones1-c${ones1 + i}`);
+            if (dot && targetCell) moveElement(dot, targetCell, i * 180);
+        }
+
+        const moveDelay = needed * 180 + 400;
+        setTimeout(() => {
+            const leftover = ones2 - needed;
+            fillOnesFrame(ones1El, 10, 'blue', 'ones1');
+            fillOnesFrame(ones2El, leftover, 'red', 'ones2');
+            setMessage('看，左边凑成了一组10个点');
+            pulseDotsRange('ones1', 0, 9);
+            setTimeout(() => {
+                setMessage('这10个点可以换成1根十棒');
+                const dots = collectDotsRange('ones1', 0, 9);
+                const fadeDelay = fadeDots(dots, 10, 0, 80);
+                setTimeout(() => {
+                    const tens1 = Math.floor(state.n1 / 10);
+                    fillTensRack(tens1El, tens1 + 1, 'blue');
+                    const newRod = tens1El.lastElementChild;
+                    if (newRod) newRod.classList.add('pop');
+                    fillOnesFrame(ones1El, leftover, 'blue', 'ones1');
+                    fillTensRack(tens2El, 0, 'red');
+                    fillOnesFrame(ones2El, 0, 'red', 'ones2');
                     setTimeout(() => {
-                        dotsToRemove[i].classList.add('faded');
-                        playSound('wrong'); // 用短促音效模拟消除声
-                    }, i * 300);
-                }
-            }
+                        setMessage('再把剩下的点和十位一起数数');
+                        state.isAnimating = false;
+                    }, 500);
+                }, fadeDelay + 200);
+            }, 900);
+        }, moveDelay);
+    }
+
+    function animateAdvSub() {
+        const ones1 = state.n1 % 10;
+        const ones2 = state.n2 % 10;
+
+        if (ones1 >= ones2) {
+            setMessage(`个位够减，先减 ${ones2}`);
+            const dots = collectDots('ones1', ONES_CELL_COUNT - 1);
+            const delay = fadeDots(dots, ones2, 0, 240);
+            setTimeout(() => {
+                setMessage('再数一数还剩多少');
+                state.isAnimating = false;
+            }, delay + 200);
+            return;
+        }
+
+        setMessage('个位不够，借1根十棒');
+        const tens1 = Math.floor(state.n1 / 10);
+        const borrowRod = tens1El.lastElementChild;
+        const borrowDelay = borrowRod ? animateBorrowDots(borrowRod, 'ones1', 10, 10, 120) : 400;
+        setTimeout(() => {
+            fillTensRack(tens1El, tens1 - 1, 'blue');
+            fillOnesFrameBorrowed(ones1El, ones1, 'blue', 'ones1');
+            setMessage(`借到10个点，从这里拿走 ${ones2} 个`);
+            const dots = collectDotsRange('ones1', 10, 19);
+            const delay = fadeDots(dots, ones2, 0, 240);
+            setTimeout(() => {
+                setMessage('再数一数还剩多少');
+                state.isAnimating = false;
+            }, delay + 200);
+        }, borrowDelay);
+    }
+
+    function animateMul() {
+        const rows = document.querySelectorAll('.array-row');
+        setMessage(`${state.n1} 行，每行 ${state.n2} 个`);
+        rows.forEach((row, idx) => {
+            setTimeout(() => row.classList.add('show'), idx * 240);
+        });
+        const delay = rows.length * 240 + 400;
+        setTimeout(() => {
+            setMessage('数数看一共有多少');
+            state.isAnimating = false;
+        }, delay);
+    }
+
+    function animateDiv() {
+        const rows = document.querySelectorAll('.array-row');
+        setMessage(`把 ${state.n1} 平均分成每组 ${state.n2} 个`);
+        rows.forEach((row, idx) => {
+            setTimeout(() => row.classList.add('show'), idx * 240);
+        });
+        const delay = rows.length * 240 + 400;
+        setTimeout(() => {
+            setMessage('看看能分成几组');
+            state.isAnimating = false;
+        }, delay);
+    }
+
+    function collectDots(prefix, maxIndex) {
+        const dots = [];
+        for (let i = maxIndex; i >= 0; i--) {
+            const dot = document.getElementById(`${prefix}-d${i}`);
+            if (dot) dots.push(dot);
+        }
+        return dots;
+    }
+
+    function collectDotsRange(prefix, startIndex, endIndex) {
+        const dots = [];
+        for (let i = endIndex; i >= startIndex; i--) {
+            const dot = document.getElementById(`${prefix}-d${i}`);
+            if (dot) dots.push(dot);
+        }
+        return dots;
+    }
+
+    function fadeDots(dots, count, startDelay, interval) {
+        const limit = Math.min(count, dots.length);
+        for (let i = 0; i < limit; i++) {
+            setTimeout(() => {
+                dots[i].classList.add('faded');
+                playSound('wrong');
+            }, startDelay + i * interval);
+        }
+        return startDelay + limit * interval;
+    }
+
+    function pulseDots(prefix, count) {
+        for (let i = 0; i < count; i++) {
+            const dot = document.getElementById(`${prefix}-d${i}`);
+            if (!dot) continue;
+            dot.classList.add('pulse');
+            setTimeout(() => dot.classList.remove('pulse'), 600);
         }
     }
 
-    // 通用移动动画
+    function pulseDotsRange(prefix, startIndex, endIndex) {
+        for (let i = startIndex; i <= endIndex; i++) {
+            const dot = document.getElementById(`${prefix}-d${i}`);
+            if (!dot) continue;
+            dot.classList.add('pulse');
+            setTimeout(() => dot.classList.remove('pulse'), 600);
+        }
+    }
+
+    function animateBorrowDots(startEl, targetPrefix, startIndex, count, delayStep) {
+        const startRect = startEl.getBoundingClientRect();
+        const startX = startRect.left + startRect.width / 2;
+        const startY = startRect.top + startRect.height / 2;
+        const tempDots = [];
+
+        for (let i = 0; i < count; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'dot small blue';
+            dot.style.position = 'fixed';
+            dot.style.left = `${startX - 6}px`;
+            dot.style.top = `${startY - 6}px`;
+            dot.style.zIndex = 999;
+            dot.style.pointerEvents = 'none';
+            document.body.appendChild(dot);
+            const targetCell = document.getElementById(`${targetPrefix}-c${startIndex + i}`);
+            if (targetCell) moveElement(dot, targetCell, i * delayStep);
+            tempDots.push(dot);
+        }
+
+        const totalDelay = count * delayStep + 700;
+        setTimeout(() => {
+            tempDots.forEach((dot) => dot.remove());
+        }, totalDelay);
+        return totalDelay;
+    }
+
     function moveElement(el, targetParent, delay) {
         setTimeout(() => {
-            let start = el.getBoundingClientRect();
-            let end = targetParent.getBoundingClientRect();
-            let dx = (end.left + end.width/2) - (start.left + start.width/2);
-            let dy = (end.top + end.height/2) - (start.top + start.height/2);
+            const start = el.getBoundingClientRect();
+            const end = targetParent.getBoundingClientRect();
+            const dx = (end.left + end.width / 2) - (start.left + start.width / 2);
+            const dy = (end.top + end.height / 2) - (start.top + start.height / 2);
             el.style.transform = `translate(${dx}px, ${dy}px)`;
         }, delay);
     }
 
     function resetUI() {
-        document.getElementById('answerInput').value = '';
-        document.getElementById('answerInput').classList.remove('correct', 'wrong');
-        document.getElementById('msgArea').textContent = '';
-        document.getElementById('msgArea').style.color = '#555';
+        inputEl.value = '';
+        inputEl.classList.remove('correct', 'wrong');
+        setMessage('准备好了吗？');
+        [frame1El, frame2El, ones1El, ones2El, tens1El, tens2El].forEach((el) => {
+            if (el) el.classList.remove('frame-glow');
+        });
+    }
+
+    function setInputValue(value) {
+        inputEl.value = value;
+        inputEl.classList.remove('correct', 'wrong');
+    }
+
+    function getMaxInputLength() {
+        return Math.max(2, String(state.ans).length);
+    }
+
+    function handleKeypadInput(key) {
+        if (key === 'submit') {
+            checkAnswer();
+            return;
+        }
+        if (key === 'clear') {
+            setInputValue('');
+            return;
+        }
+        if (key === 'back') {
+            setInputValue(inputEl.value.slice(0, -1));
+            return;
+        }
+        if (!/^\d$/.test(key)) return;
+
+        let current = inputEl.value;
+        if (current.length >= getMaxInputLength()) return;
+        if (current === '0') current = '';
+        setInputValue(current + key);
     }
 
     function rand(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    // 初始化
-    generateProblem();
-
-    // 回车提交
-    document.getElementById('answerInput').addEventListener('keypress', (e) => {
-        if(e.key === 'Enter') checkAnswer();
+    document.querySelectorAll('.mode-btn').forEach((btn) => {
+        btn.addEventListener('click', () => setMode(btn.dataset.mode));
     });
+    checkBtn.addEventListener('click', checkAnswer);
+    hintBtn.addEventListener('click', showVisualHint);
+    nextBtn.addEventListener('click', generateProblem);
+    keypadEl.addEventListener('click', (e) => {
+        const key = e.target.dataset.key;
+        if (key) handleKeypadInput(key);
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key >= '0' && e.key <= '9') handleKeypadInput(e.key);
+        if (e.key === 'Backspace') handleKeypadInput('back');
+        if (e.key === 'Enter') handleKeypadInput('submit');
+    });
+
+    generateProblem();
 </script>
 </body>
 </html>
