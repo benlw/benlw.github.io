@@ -25,6 +25,8 @@ const imageDatabase = {
     "objects": [
         "images/objects/book.png",
         "images/objects/china.png",
+        "images/objects/christmas-tree.png",
+        "images/objects/christmas.jpg",
         "images/objects/desktop.png",
         "images/objects/fan.png",
         "images/objects/hat.png",
