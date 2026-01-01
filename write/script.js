@@ -174,19 +174,16 @@ async function fetchAIAnalysis(text) {
     分析文本: "${text}"
     请返回且仅返回一个纯 JSON 对象，不要包含任何 markdown 标记。
     **重要要求**：
-    1. 拼音必须准确，特别注意多音字在当前语境下的读音。
-    2. "characters" 数组必须包含输入文本中的**每一个**中文字符。例如输入"草莓"，数组里必须有两个对象，分别是"草"和"莓"。不要遗漏任何字。
+    1. "characters" 数组必须包含输入文本中的**每一个**中文字符。例如输入"草莓"，数组里必须有两个对象，分别是"草"和"莓"。不要遗漏任何字。
     
     格式如下：
     {
         "corrected_text": "纠正后的文本（如果输入有明显同音错误），否则原样返回",
-        "pinyin_full": "整个词/句的拼音",
         "definition": "用简单易懂的话给小朋友解释这个词的意思",
         "sentence": "一个简单的造句，包含这个词",
         "characters": [
             {
-                "char": "单字",
-                "pinyin": "该字在上下文中的准确拼音"
+                "char": "单字"
             }
         ]
     }
@@ -245,42 +242,47 @@ async function fetchAIAnalysis(text) {
 
 // --- Rendering ---
 function renderResults(data) {
+    const { pinyin } = pinyinPro;
+    
+    // Generate accurate pinyin for the whole corrected text using pinyin-pro
+    // This handles polyphones correctly based on context
+    const fullText = data.corrected_text || elements.userInput.value.trim();
+    const pinyinArray = pinyin(fullText, { 
+        type: 'array', 
+        toneType: 'symbol',
+        nonZh: 'removed' 
+    });
+    const fullPinyinString = pinyin(fullText, { toneType: 'symbol' });
+
     // 1. Render Explanation
     elements.aiContent.innerHTML = `
-        <p><strong class="text-primary text-lg">${data.corrected_text}</strong> <span class="text-gray-500">(${data.pinyin_full})</span></p>
+        <p><strong class="text-primary text-lg">${fullText}</strong> <span class="text-gray-500">(${fullPinyinString})</span></p>
         <p class="mt-2"><strong>📖 意思:</strong> ${data.definition}</p>
         <p class="mt-1"><strong>🗣️ 造句:</strong> ${data.sentence}</p>
     `;
 
     // 2. Render Character Cards
     // Ensure order matches the INPUT text, not just AI's return order (though they should match)
-    const originalText = elements.userInput.value.trim();
     // Filter to only Chinese characters from original input to maintain order
-    const charsToRender = originalText.split('').filter(c => /[一-龥]/.test(c));
-
-    if (charsToRender.length === 0) {
-        // If input had no Chinese, fallback to AI's characters
-        data.characters.forEach(c => {
-             if (/[一-龥]/.test(c.char)) charsToRender.push(c.char);
-        });
-    }
+    const charsToRender = fullText.split('').filter(c => /[一-龥]/.test(c));
 
     charsToRender.forEach((charChar, index) => {
-        // Find data from AI result for this character
-        // We look for the first match that hasn't been used, or just match by char
-        const charData = data.characters.find(c => c.char === charChar) || { char: charChar, pinyin: '' };
+        // Get pinyin from our locally generated array
+        // Note: pinyinArray length should match charsToRender length if nonZh was removed
+        const charPinyin = pinyinArray[index] || '';
         
         const card = document.createElement('div');
-        // Compact padding for mobile (p-2), normal for desktop (md:p-4)
-        card.className = 'bg-white rounded-xl shadow p-2 md:p-4 flex flex-col items-center gap-2';
+        // Compact padding for mobile (p-1), normal for desktop (md:p-4)
+        // Flex sizing: w-[calc(50%-0.5rem)] ensures 2 items fit perfectly with gap-2.
+        card.className = 'bg-white rounded-xl shadow p-1 md:p-4 flex flex-col items-center gap-1 md:gap-2 w-[calc(50%-0.5rem)] md:w-auto';
         
         const charId = `hanzi-${index}`;
         
-        // Use AI provided pinyin as primary
+        // Use locally generated pinyin
         card.innerHTML = `
-            <div class="text-2xl font-bold text-gray-600 font-sans">${charData.pinyin || ''}</div>
-            <div id="${charId}" class="hanzi-container"></div>
-            <button id="btn-${charId}" class="animate-btn mt-2 px-4 py-1 bg-gray-300 text-white rounded-full text-sm transition-colors cursor-not-allowed" disabled>
+            <div class="text-xl md:text-2xl text-gray-600 font-sans mt-1">${charPinyin}</div>
+            <div id="${charId}" class="hanzi-container w-full"></div>
+            <button id="btn-${charId}" class="animate-btn my-1 px-3 py-1 bg-gray-300 text-white rounded-full text-xs md:text-sm transition-colors cursor-not-allowed" disabled>
                 加载中...
             </button>
         `;

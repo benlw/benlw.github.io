@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Hanzi Writer -->
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+    <!-- Pinyin Pro (Lightweight pinyin library) -->
+    <script src="https://unpkg.com/pinyin-pro"></script>
     <!-- Google Fonts for a friendlier look -->
     <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -17,7 +19,7 @@
                 extend: {
                     fontFamily: {
                         'cartoon': ['"ZCOOL KuaiLe"', 'cursive'],
-                        'sans': ['"Noto Sans SC"', 'sans-serif'],
+                        'sans': ['ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans SC"', 'sans-serif'],
                     },
                     colors: {
                         'primary': '#FF9F43', // Warm orange
@@ -32,9 +34,9 @@
 <body class="bg-blue-50 min-h-screen flex flex-col items-center font-sans">
 
     <!-- Header -->
-    <header class="w-full bg-white shadow-md p-3 flex justify-between items-center sticky top-0 z-10">
-        <h1 class="text-xl md:text-3xl font-cartoon text-primary">王孝满汉字小课堂 ✏️</h1>
-        <button id="settings-btn" class="p-2 text-gray-500 hover:text-gray-700">
+    <header class="w-full bg-white shadow-md p-3 relative flex justify-center items-center sticky top-0 z-10">
+        <h1 class="text-xl md:text-3xl font-cartoon text-primary text-center">王孝满汉字小课堂 ✏️</h1>
+        <button id="settings-btn" class="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 text-gray-500 hover:text-gray-700">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
     </header>
@@ -46,7 +48,7 @@
         <div class="bg-white rounded-2xl shadow-lg p-3 md:p-6 flex flex-col gap-2 md:gap-4">
             <div class="relative w-full">
                 <input type="text" id="user-input" placeholder="按话筒说话，或输入汉字/词语" autocomplete="off"
-                    class="w-full text-lg md:text-xl p-3 pr-10 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors text-center font-bold text-gray-700">
+                    class="w-full text-base md:text-xl p-3 pr-10 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors text-center font-bold text-gray-700">
                 <button id="voice-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-gray-100 hover:bg-red-100 rounded-full text-gray-500 hover:text-red-500 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
                 </button>
@@ -63,7 +65,7 @@
         <div id="result-container" class="hidden flex flex-col gap-6">
             
             <!-- Cards Container -->
-            <div id="cards-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
+            <div id="cards-grid" class="flex flex-wrap justify-center gap-2 md:gap-6">
                 <!-- Character cards will be injected here -->
             </div>
 
@@ -77,11 +79,6 @@
 
         </div>
     </main>
-
-    <!-- Footer -->
-    <footer class="w-full text-center p-4 text-gray-400 text-sm">
-        Built for learning 🇨🇳
-    </footer>
 
     <!-- Settings Modal -->
     <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex justify-center items-center p-4">
