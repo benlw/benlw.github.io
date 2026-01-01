@@ -20,6 +20,10 @@ const elements = {
     voiceBtn: document.getElementById('voice-btn'),
     searchBtn: document.getElementById('search-btn'),
     
+    // New Overlay Elements
+    listeningOverlay: document.getElementById('listening-overlay'),
+    cancelVoiceBtn: document.getElementById('cancel-voice'),
+    
     resultContainer: document.getElementById('result-container'),
     cardsGrid: document.getElementById('cards-grid'),
     aiContent: document.getElementById('ai-content'),
@@ -57,8 +61,14 @@ function setupEventListeners() {
     });
 
     // Voice
-    elements.voiceBtn.addEventListener('click', toggleVoiceRecognition);
+    elements.voiceBtn.addEventListener('click', startVoiceRecognition);
+    
+    // Cancel Voice
+    elements.cancelVoiceBtn.addEventListener('click', stopVoiceRecognition);
 }
+
+// Global recognition instance to allow stopping
+let recognition = null;
 
 // --- Settings Logic ---
 function toggleModal(show) {
@@ -90,42 +100,68 @@ function saveSettings() {
 }
 
 // --- Voice Recognition ---
-function toggleVoiceRecognition() {
+function startVoiceRecognition() {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
         alert('您的浏览器不支持语音识别，请使用 Chrome 或 Edge。');
         return;
     }
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
+    recognition = new SpeechRecognition();
 
     recognition.lang = 'zh-CN';
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
     recognition.onstart = () => {
-        elements.voiceBtn.classList.add('listening');
+        // Show Overlay
+        elements.listeningOverlay.classList.remove('hidden');
         setStatus('正在听...', 'text-primary');
     };
 
     recognition.onend = () => {
-        elements.voiceBtn.classList.remove('listening');
-        setStatus('', '');
+        // Hide Overlay logic handled in result/error/stop
+        // If it ends naturally without result, we might want to hide it
+        // But usually we hide it on result or error.
+        // Let's safe guard:
+        if (!elements.listeningOverlay.classList.contains('hidden')) {
+             stopVoiceRecognition(); 
+        }
     };
 
     recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         elements.userInput.value = transcript;
         setStatus(`识别结果: ${transcript}`, 'text-gray-500');
+        
+        // Hide overlay immediately
+        elements.listeningOverlay.classList.add('hidden');
+        
+        // Auto-search!
+        setTimeout(() => handleSearch(), 500);
     };
 
     recognition.onerror = (event) => {
         console.error("Voice Error:", event.error);
         setStatus('语音识别错误: ' + event.error, 'text-red-500');
-        elements.voiceBtn.classList.remove('listening');
+        stopVoiceRecognition();
+        
+        // If error is 'no-speech', user might want to try again, but let's just close
+        if (event.error === 'no-speech') {
+            alert("没听到声音，请再试一次~");
+        }
     };
 
     recognition.start();
+}
+
+function stopVoiceRecognition() {
+    if (recognition) {
+        recognition.stop();
+        recognition = null;
+    }
+    elements.listeningOverlay.classList.add('hidden');
+    setStatus('', '');
 }
 
 // --- Main Logic: Search & AI ---
@@ -273,8 +309,8 @@ function renderResults(data) {
         
         const card = document.createElement('div');
         // Compact padding for mobile (p-1), normal for desktop (md:p-4)
-        // Flex sizing: w-[calc(50%-0.5rem)] ensures 2 items fit perfectly with gap-2.
-        card.className = 'bg-white rounded-xl shadow p-1 md:p-4 flex flex-col items-center gap-1 md:gap-2 w-[calc(50%-0.5rem)] md:w-auto';
+        // Flex sizing: w-[calc(50%-0.375rem)] ensures 2 items fit perfectly with gap-1.5.
+        card.className = 'bg-white rounded-xl shadow p-1 md:p-4 flex flex-col items-center gap-1 md:gap-2 w-[calc(50%-0.375rem)] md:w-auto';
         
         const charId = `hanzi-${index}`;
         
@@ -314,7 +350,7 @@ function renderResults(data) {
                 height: initialSize,
                 padding: 5, // Reduced padding to make character larger
                 strokeColor: '#333',
-                radicalColor: '#FF9F43', 
+                radicalColor: '#3B82F6', // Academic Blue
                 showOutline: true,
                 outlineColor: '#ddd',
                 // Custom loader with Fallback
