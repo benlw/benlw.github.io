@@ -299,10 +299,18 @@ function renderResults(data) {
             const characterToLoad = charChar;
             console.log(`Initializing HanziWriter for: '${characterToLoad}'`);
 
+            // Calculate size based on container, but default to 200 if hidden/zero
+            const container = document.getElementById(charId);
+            if (!container) return; // Safety check
+            
+            // Get precise width. Accessing getBoundingClientRect might be more accurate for sub-pixel rendering
+            const rect = container.getBoundingClientRect();
+            const initialSize = rect.width || container.clientWidth || 200;
+
             const writer = HanziWriter.create(charId, characterToLoad, {
-                width: 200,
-                height: 200,
-                padding: 10,
+                width: initialSize,
+                height: initialSize,
+                padding: 5, // Reduced padding to make character larger
                 strokeColor: '#333',
                 radicalColor: '#FF9F43', 
                 showOutline: true,
@@ -335,7 +343,10 @@ function renderResults(data) {
                 }
             });
 
-            state.writers.push(writer);
+            state.writers.push({ writer, id: charId });
+            
+            // Start observing for resize
+            resizeObserver.observe(container);
 
             const btn = document.getElementById(`btn-${charId}`);
             
@@ -360,6 +371,29 @@ function renderResults(data) {
         }, 50);
     });
 }
+
+// --- Window Resize Handling ---
+// Use ResizeObserver for more accurate element-level resizing
+const resizeObserver = new ResizeObserver(entries => {
+    for (const entry of entries) {
+        const container = entry.target;
+        // Find the writer associated with this container
+        const writerItem = state.writers.find(item => item.id === container.id);
+        
+        if (writerItem && writerItem.writer) {
+            const newSize = entry.contentRect.width;
+            if (newSize > 0) {
+                // Determine if we need to resize. Rounding to avoid jitter.
+                // Accessing internal width isn't direct, but we can just call resize.
+                // It's cheap enough.
+                writerItem.writer.resize(newSize, newSize);
+            }
+        }
+    }
+});
+
+// We need to observe containers as they are created. 
+// So we'll move the observe call into the render loop.
 
 // --- Helpers ---
 function setStatus(msg, classes) {
