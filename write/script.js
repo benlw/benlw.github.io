@@ -253,18 +253,32 @@ function renderResults(data) {
     `;
 
     // 2. Render Character Cards
-    data.characters.forEach((charData, index) => {
-        // Skip punctuation or non-Chinese chars roughly using unicode range
-        if (!/[一-龥]/.test(charData.char)) return;
+    // Ensure order matches the INPUT text, not just AI's return order (though they should match)
+    const originalText = elements.userInput.value.trim();
+    // Filter to only Chinese characters from original input to maintain order
+    const charsToRender = originalText.split('').filter(c => /[一-龥]/.test(c));
 
+    if (charsToRender.length === 0) {
+        // If input had no Chinese, fallback to AI's characters
+        data.characters.forEach(c => {
+             if (/[一-龥]/.test(c.char)) charsToRender.push(c.char);
+        });
+    }
+
+    charsToRender.forEach((charChar, index) => {
+        // Find data from AI result for this character
+        // We look for the first match that hasn't been used, or just match by char
+        const charData = data.characters.find(c => c.char === charChar) || { char: charChar, pinyin: '' };
+        
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-xl shadow p-4 flex flex-col items-center gap-2';
+        // Compact padding for mobile (p-2), normal for desktop (md:p-4)
+        card.className = 'bg-white rounded-xl shadow p-2 md:p-4 flex flex-col items-center gap-2';
         
         const charId = `hanzi-${index}`;
         
         // Use AI provided pinyin as primary
         card.innerHTML = `
-            <div class="text-2xl font-bold text-gray-600 font-sans">${charData.pinyin}</div>
+            <div class="text-2xl font-bold text-gray-600 font-sans">${charData.pinyin || ''}</div>
             <div id="${charId}" class="hanzi-container"></div>
             <button id="btn-${charId}" class="animate-btn mt-2 px-4 py-1 bg-gray-300 text-white rounded-full text-sm transition-colors cursor-not-allowed" disabled>
                 加载中...
@@ -282,8 +296,8 @@ function renderResults(data) {
             }
 
             // Ensure we are only passing a single character
-            const characterToLoad = charData.char.charAt(0);
-            console.log(`Initializing HanziWriter for: '${characterToLoad}' (Original: '${charData.char}')`);
+            const characterToLoad = charChar;
+            console.log(`Initializing HanziWriter for: '${characterToLoad}'`);
 
             const writer = HanziWriter.create(charId, characterToLoad, {
                 width: 200,
@@ -293,35 +307,39 @@ function renderResults(data) {
                 radicalColor: '#FF9F43', 
                 showOutline: true,
                 outlineColor: '#ddd',
-                // Explicitly use jsdelivr, which is usually fast, but we handle errors below
+                // Custom loader with Fallback
                 charDataLoader: function(char, onComplete) {
-                    const url = `https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/${encodeURIComponent(char)}.json`;
-                    console.log(`Loading data from: ${url}`);
-                    fetch(url)
-                        .then(res => {
-                            if (!res.ok) throw new Error(`Network response was not ok (${res.status})`);
-                            return res.json();
-                        })
+                    const loadFromSource = (baseUrl) => {
+                        const url = `${baseUrl}${encodeURIComponent(char)}.json`;
+                        console.log(`Trying to load data from: ${url}`);
+                        return fetch(url)
+                            .then(res => {
+                                if (!res.ok) throw new Error(`Status ${res.status}`);
+                                return res.json();
+                            });
+                    };
+
+                    // Try jsdelivr first
+                    loadFromSource('https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/')
                         .then(onComplete)
-                        .catch(err => {
-                            console.error("Failed to load char data:", char, err);
-                            document.getElementById(charId).innerHTML = `<p class="text-red-400 text-xs">加载失败: ${char}</p>`;
+                        .catch(err1 => {
+                            console.warn(`JsDelivr failed for ${char}, trying unpkg...`, err1);
+                            // Try unpkg as fallback
+                            loadFromSource('https://unpkg.com/hanzi-writer-data@2.0/')
+                                .then(onComplete)
+                                .catch(err2 => {
+                                    console.error(`All sources failed for ${char}`, err2);
+                                    document.getElementById(charId).innerHTML = `<p class="text-red-400 text-xs">加载失败</p>`;
+                                });
                         });
                 }
             });
 
             state.writers.push(writer);
 
-            // Wait for data to load before enabling the button
-            // HanziWriter loads data lazily, so we force a load check
-            // writer.quiz() or writer.animateCharacter() triggers load, 
-            // but we can also hook into 'onLoadCharDataSuccess' if we initialized differently.
-            // Since .create() returns a writer immediately but loads async, we'll try a different approach:
-            // We'll set up the button to call animate, but catch errors.
-            
             const btn = document.getElementById(`btn-${charId}`);
             
-            // Enable button immediately but handle the "loading" state during click
+            // Enable button immediately
             btn.disabled = false;
             btn.classList.remove('bg-gray-300', 'cursor-not-allowed');
             btn.classList.add('bg-secondary', 'hover:bg-blue-600');
