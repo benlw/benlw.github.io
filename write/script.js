@@ -3,6 +3,8 @@ const state = {
     apiKey: localStorage.getItem('sf_api_key') || '',
     apiBase: localStorage.getItem('sf_api_base') || 'https://api.siliconflow.cn/v1',
     modelId: localStorage.getItem('sf_model_id') || 'Qwen/Qwen2.5-7B-Instruct',
+    speed: parseFloat(localStorage.getItem('sf_speed')) || 1,
+    showOutline: localStorage.getItem('sf_show_outline') !== 'false', // Default true
     writers: [] // Store HanziWriter instances
 };
 
@@ -15,6 +17,9 @@ const elements = {
     apiKeyInput: document.getElementById('api-key'),
     apiBaseInput: document.getElementById('api-base'),
     modelIdInput: document.getElementById('model-id'),
+    // New Settings Inputs
+    animSpeedInput: document.getElementById('anim-speed'),
+    showOutlineInput: document.getElementById('show-outline'),
     
     userInput: document.getElementById('user-input'),
     voiceBtn: document.getElementById('voice-btn'),
@@ -37,6 +42,8 @@ function init() {
     elements.apiKeyInput.value = state.apiKey;
     elements.apiBaseInput.value = state.apiBase;
     elements.modelIdInput.value = state.modelId;
+    elements.animSpeedInput.value = state.speed;
+    elements.showOutlineInput.checked = state.showOutline;
 
     // Check if API key is missing
     if (!state.apiKey) {
@@ -80,6 +87,8 @@ function saveSettings() {
     // Remove trailing slash if user added it
     let base = elements.apiBaseInput.value.trim().replace(/\/+$/, '');
     const model = elements.modelIdInput.value.trim();
+    const speed = parseFloat(elements.animSpeedInput.value);
+    const showOutline = elements.showOutlineInput.checked;
 
     if (!key) {
         alert('请输入 API Key');
@@ -89,12 +98,16 @@ function saveSettings() {
     localStorage.setItem('sf_api_key', key);
     localStorage.setItem('sf_api_base', base);
     localStorage.setItem('sf_model_id', model);
+    localStorage.setItem('sf_speed', speed);
+    localStorage.setItem('sf_show_outline', showOutline);
 
     state.apiKey = key;
     state.apiBase = base;
     state.modelId = model;
+    state.speed = speed;
+    state.showOutline = showOutline;
 
-    console.log("Settings saved:", { base, model }); // Don't log key
+    console.log("Settings saved:", { base, model, speed, showOutline }); // Don't log key
     toggleModal(false);
     setStatus('设置已保存', 'text-green-500');
 }
@@ -318,9 +331,14 @@ function renderResults(data) {
         card.innerHTML = `
             <div class="text-xl md:text-2xl text-gray-600 font-sans mt-1">${charPinyin}</div>
             <div id="${charId}" class="hanzi-container w-full"></div>
-            <button id="btn-${charId}" class="animate-btn my-1 px-3 py-1 bg-gray-300 text-white rounded-full text-xs md:text-sm transition-colors cursor-not-allowed" disabled>
-                加载中...
-            </button>
+            <div class="flex gap-2 my-1">
+                <button id="btn-animate-${charId}" class="px-3 py-1 bg-gray-300 text-white rounded-full text-xs md:text-sm transition-colors cursor-not-allowed" disabled>
+                    演示
+                </button>
+                <button id="btn-quiz-${charId}" class="px-3 py-1 bg-gray-300 text-white rounded-full text-xs md:text-sm transition-colors cursor-not-allowed" disabled>
+                    练习
+                </button>
+            </div>
         `;
 
         elements.cardsGrid.appendChild(card);
@@ -351,8 +369,12 @@ function renderResults(data) {
                 padding: 5, // Reduced padding to make character larger
                 strokeColor: '#333',
                 radicalColor: '#3B82F6', // Academic Blue
-                showOutline: true,
+                showOutline: state.showOutline, // Use setting
                 outlineColor: '#ddd',
+                strokeAnimationSpeed: state.speed, // Use setting (1 is normal, 0.5 is slow)
+                delayBetweenStrokes: 1000 / state.speed, // Adjust delay based on speed too
+                highlightOnComplete: true, // Flash color when done
+                lenient: true, // Be a bit more forgiving with stroke placement
                 // Custom loader with Fallback
                 charDataLoader: function(char, onComplete) {
                     const loadFromSource = (baseUrl) => {
@@ -386,25 +408,64 @@ function renderResults(data) {
             // Start observing for resize
             resizeObserver.observe(container);
 
-            const btn = document.getElementById(`btn-${charId}`);
+            const btnAnimate = document.getElementById(`btn-animate-${charId}`);
+            const btnQuiz = document.getElementById(`btn-quiz-${charId}`);
             
-            // Enable button immediately
-            btn.disabled = false;
-            btn.classList.remove('bg-gray-300', 'cursor-not-allowed');
-            btn.classList.add('bg-secondary', 'hover:bg-blue-600');
-            btn.textContent = '写给我看';
+            // Enable buttons
+            const enableButtons = () => {
+                btnAnimate.disabled = false;
+                btnAnimate.classList.remove('bg-gray-300', 'cursor-not-allowed');
+                btnAnimate.classList.add('bg-secondary', 'hover:bg-blue-300');
+                
+                btnQuiz.disabled = false;
+                btnQuiz.classList.remove('bg-gray-300', 'cursor-not-allowed');
+                btnQuiz.classList.add('bg-primary', 'hover:bg-blue-600');
+            };
 
-            const animate = () => {
-                btn.disabled = true;
+            enableButtons();
+
+            // Animate Logic
+            btnAnimate.onclick = () => {
+                writer.cancelQuiz(); // Stop any ongoing quiz
+                btnAnimate.disabled = true;
+                btnQuiz.disabled = true;
                 writer.animateCharacter({
                     onComplete: () => {
-                        btn.disabled = false;
+                        enableButtons();
                     }
                 });
             };
 
-            btn.onclick = animate;
-            document.getElementById(charId).onclick = animate;
+            // Quiz Logic
+            btnQuiz.onclick = () => {
+                writer.hideCharacter(); // Hide existing strokes
+                writer.showOutline();   // Ensure outline is visible
+                
+                // Visual feedback that quiz started
+                btnQuiz.textContent = '练习中...';
+                btnQuiz.classList.add('ring-2', 'ring-offset-2', 'ring-primary');
+                
+                writer.quiz({
+                    onComplete: (summaryData) => {
+                        console.log("Quiz complete!", summaryData);
+                        btnQuiz.textContent = '练习';
+                        btnQuiz.classList.remove('ring-2', 'ring-offset-2', 'ring-primary');
+                        
+                        // Reward animation!
+                        writer.animateCharacter({
+                            loop: false,
+                            onComplete: () => enableButtons()
+                        });
+                    },
+                    onHighlightComplete: (strokeData) => {
+                        // Optional: play sound or small effect on each stroke
+                    }
+                });
+            };
+            
+            // Default click on container acts as Animate (simple mode)
+            // But now we have Practice, maybe let's keep click as Animate or toggle?
+            // Let's stick to buttons for clarity.
             
         }, 50);
     });
