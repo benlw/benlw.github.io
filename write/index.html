@@ -77,6 +77,21 @@
             <button id="cancel-voice" class="mt-12 px-6 py-2 border border-white text-white rounded-full hover:bg-white hover:text-black transition-colors">取消</button>
         </div>
 
+        <!-- Breakdown Overlay -->
+        <div id="breakdown-overlay" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden flex flex-col items-center pt-10 pb-4 px-4">
+            <div class="w-full max-w-4xl flex justify-between items-center mb-6 text-white relative">
+                <h2 id="breakdown-title" class="text-2xl font-cartoon pl-2">笔画分解</h2>
+                <button id="close-breakdown" class="p-2 hover:bg-gray-800 rounded-full transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            
+            <!-- Scrollable Content -->
+            <div id="breakdown-content" class="flex-grow w-full overflow-y-auto flex flex-wrap justify-center content-start gap-4 pb-10">
+                <!-- Breakdown steps will be injected here -->
+            </div>
+        </div>
+
         <!-- Result Area -->
         <div id="result-container" class="hidden flex flex-col gap-6">
             

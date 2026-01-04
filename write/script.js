@@ -29,6 +29,12 @@ const elements = {
     listeningOverlay: document.getElementById('listening-overlay'),
     cancelVoiceBtn: document.getElementById('cancel-voice'),
     
+    // Breakdown Overlay Elements
+    breakdownOverlay: document.getElementById('breakdown-overlay'),
+    breakdownContent: document.getElementById('breakdown-content'),
+    breakdownTitle: document.getElementById('breakdown-title'),
+    closeBreakdownBtn: document.getElementById('close-breakdown'),
+    
     resultContainer: document.getElementById('result-container'),
     cardsGrid: document.getElementById('cards-grid'),
     aiContent: document.getElementById('ai-content'),
@@ -72,6 +78,12 @@ function setupEventListeners() {
     
     // Cancel Voice
     elements.cancelVoiceBtn.addEventListener('click', stopVoiceRecognition);
+    
+    // Close Breakdown
+    elements.closeBreakdownBtn.addEventListener('click', () => {
+        elements.breakdownOverlay.classList.add('hidden');
+        elements.breakdownContent.innerHTML = ''; // Clear memory
+    });
 }
 
 // Global recognition instance to allow stopping
@@ -335,6 +347,9 @@ function renderResults(data) {
                 <button id="btn-animate-${charId}" class="px-3 py-1 bg-gray-300 text-white rounded-full text-xs md:text-sm transition-colors cursor-not-allowed" disabled>
                     演示
                 </button>
+                <button id="btn-breakdown-${charId}" class="px-3 py-1 bg-gray-300 text-white rounded-full text-xs md:text-sm transition-colors cursor-not-allowed" disabled>
+                    分解
+                </button>
                 <button id="btn-quiz-${charId}" class="px-3 py-1 bg-gray-300 text-white rounded-full text-xs md:text-sm transition-colors cursor-not-allowed" disabled>
                     练习
                 </button>
@@ -362,45 +377,39 @@ function renderResults(data) {
             // Get precise width. Accessing getBoundingClientRect might be more accurate for sub-pixel rendering
             const rect = container.getBoundingClientRect();
             const initialSize = rect.width || container.clientWidth || 200;
+            
+            // Common data loader
+            const charDataLoader = function(char, onComplete) {
+                const loadFromSource = (baseUrl) => {
+                    const url = `${baseUrl}${encodeURIComponent(char)}.json`;
+                    return fetch(url).then(res => {
+                        if (!res.ok) throw new Error(`Status ${res.status}`);
+                        return res.json();
+                    });
+                };
+                // Try jsdelivr first, then unpkg
+                loadFromSource('https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/')
+                    .then(onComplete)
+                    .catch(err1 => {
+                        loadFromSource('https://unpkg.com/hanzi-writer-data@2.0/')
+                            .then(onComplete)
+                            .catch(err2 => console.error("Data load failed", err2));
+                    });
+            };
 
             const writer = HanziWriter.create(charId, characterToLoad, {
                 width: initialSize,
                 height: initialSize,
-                padding: 5, // Reduced padding to make character larger
+                padding: 5, 
                 strokeColor: '#333',
-                radicalColor: '#3B82F6', // Academic Blue
-                showOutline: state.showOutline, // Use setting
+                radicalColor: '#3B82F6', 
+                showOutline: state.showOutline, 
                 outlineColor: '#ddd',
-                strokeAnimationSpeed: state.speed, // Use setting (1 is normal, 0.5 is slow)
-                delayBetweenStrokes: 1000 / state.speed, // Adjust delay based on speed too
-                highlightOnComplete: true, // Flash color when done
-                lenient: true, // Be a bit more forgiving with stroke placement
-                // Custom loader with Fallback
-                charDataLoader: function(char, onComplete) {
-                    const loadFromSource = (baseUrl) => {
-                        const url = `${baseUrl}${encodeURIComponent(char)}.json`;
-                        console.log(`Trying to load data from: ${url}`);
-                        return fetch(url)
-                            .then(res => {
-                                if (!res.ok) throw new Error(`Status ${res.status}`);
-                                return res.json();
-                            });
-                    };
-
-                    // Try jsdelivr first
-                    loadFromSource('https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/')
-                        .then(onComplete)
-                        .catch(err1 => {
-                            console.warn(`JsDelivr failed for ${char}, trying unpkg...`, err1);
-                            // Try unpkg as fallback
-                            loadFromSource('https://unpkg.com/hanzi-writer-data@2.0/')
-                                .then(onComplete)
-                                .catch(err2 => {
-                                    console.error(`All sources failed for ${char}`, err2);
-                                    document.getElementById(charId).innerHTML = `<p class="text-red-400 text-xs">加载失败</p>`;
-                                });
-                        });
-                }
+                strokeAnimationSpeed: state.speed, 
+                delayBetweenStrokes: 1000 / state.speed, 
+                highlightOnComplete: true, 
+                lenient: true, 
+                charDataLoader: charDataLoader
             });
 
             state.writers.push({ writer, id: charId });
@@ -410,63 +419,102 @@ function renderResults(data) {
 
             const btnAnimate = document.getElementById(`btn-animate-${charId}`);
             const btnQuiz = document.getElementById(`btn-quiz-${charId}`);
+            const btnBreakdown = document.getElementById(`btn-breakdown-${charId}`);
             
             // Enable buttons
             const enableButtons = () => {
-                btnAnimate.disabled = false;
-                btnAnimate.classList.remove('bg-gray-300', 'cursor-not-allowed');
-                btnAnimate.classList.add('bg-secondary', 'hover:bg-blue-300');
+                const buttons = [btnAnimate, btnQuiz, btnBreakdown];
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.remove('bg-gray-300', 'cursor-not-allowed');
+                });
                 
-                btnQuiz.disabled = false;
-                btnQuiz.classList.remove('bg-gray-300', 'cursor-not-allowed');
+                btnAnimate.classList.add('bg-secondary', 'hover:bg-blue-300');
+                btnBreakdown.classList.add('bg-green-400', 'hover:bg-green-500'); 
                 btnQuiz.classList.add('bg-primary', 'hover:bg-blue-600');
             };
 
+            // Enable buttons immediately
             enableButtons();
 
             // Animate Logic
             btnAnimate.onclick = () => {
-                writer.cancelQuiz(); // Stop any ongoing quiz
-                btnAnimate.disabled = true;
-                btnQuiz.disabled = true;
-                writer.animateCharacter({
-                    onComplete: () => {
-                        enableButtons();
-                    }
-                });
+                writer.cancelQuiz();
+                writer.animateCharacter();
             };
 
             // Quiz Logic
             btnQuiz.onclick = () => {
-                writer.hideCharacter(); // Hide existing strokes
-                writer.showOutline();   // Ensure outline is visible
-                
-                // Visual feedback that quiz started
+                writer.hideCharacter();
+                writer.showOutline();
                 btnQuiz.textContent = '练习中...';
                 btnQuiz.classList.add('ring-2', 'ring-offset-2', 'ring-primary');
                 
                 writer.quiz({
-                    onComplete: (summaryData) => {
-                        console.log("Quiz complete!", summaryData);
+                    onComplete: () => {
                         btnQuiz.textContent = '练习';
                         btnQuiz.classList.remove('ring-2', 'ring-offset-2', 'ring-primary');
-                        
-                        // Reward animation!
-                        writer.animateCharacter({
-                            loop: false,
-                            onComplete: () => enableButtons()
-                        });
-                    },
-                    onHighlightComplete: (strokeData) => {
-                        // Optional: play sound or small effect on each stroke
+                        writer.animateCharacter({ loop: false });
                     }
                 });
             };
             
-            // Default click on container acts as Animate (simple mode)
-            // But now we have Practice, maybe let's keep click as Animate or toggle?
-            // Let's stick to buttons for clarity.
+                        // Breakdown Logic (Overlay) - Native SVG Implementation
+                        btnBreakdown.onclick = () => {
+                            // Show Overlay
+                            elements.breakdownOverlay.classList.remove('hidden');
+                            elements.breakdownTitle.innerText = `"${characterToLoad}" 字分解`;
+                            elements.breakdownContent.innerHTML = '<p class="text-gray-400 text-lg w-full text-center mt-10">正在生成笔画...</p>';
+                            
+                            // Fetch Data
+                            HanziWriter.loadCharacterData(characterToLoad, { charDataLoader: charDataLoader }).then(charData => {
+                                elements.breakdownContent.innerHTML = '';
+                                
+                                charData.strokes.forEach((strokePath, i) => {
+                                    const stepContainer = document.createElement('div');
+                                    stepContainer.className = 'flex flex-col items-center bg-white p-2 rounded-xl';
+                                    
+                                    const stepLabel = document.createElement('span');
+                                    stepLabel.className = 'text-lg font-bold text-gray-600 mt-2';
+                                    stepLabel.innerText = `第${i+1}笔`;
+                                    
+                                    // Construct SVG
+                                    // HanziWriter data is typically 1024x1024 coordinate system.
+                                    // We need a specific transform to flip it upright.
+                                    // Standard HanziWriter transform: scale(1, -1) translate(0, -900)
+                                    
+                                    let pathsHtml = '';
+                                    // Accumulate strokes up to i
+                                    for (let k = 0; k <= i; k++) {
+                                        const color = (k === i) ? '#ef4444' : '#333'; // Highlight current
+                                        pathsHtml += `<path d="${charData.strokes[k]}" fill="${color}" />`;
+                                    }
             
+                                                            // Tian Zi Ge Background Lines are handled by .hanzi-container CSS
+                                                            // So SVG needs transparent background to show them
+                                                            const svg = `
+                                                                <svg viewBox="0 0 1024 1024" width="100" height="100" style="background: none; border-radius: 8px;">
+                                                                    <g transform="scale(1, -1) translate(0, -900)">
+                                                                        ${pathsHtml}
+                                                                    </g>
+                                                                </svg>
+                                                            `;                                    
+                                    // Wrapper for Grid (CSS based)
+                                    const gridWrapper = document.createElement('div');
+                                    gridWrapper.className = 'hanzi-container'; // Reuse our CSS class for grid lines!
+                                    gridWrapper.style.width = '100px';
+                                    gridWrapper.style.height = '100px';
+                                    gridWrapper.innerHTML = svg;
+            
+                                    stepContainer.appendChild(gridWrapper);
+                                    stepContainer.appendChild(stepLabel);
+                                    elements.breakdownContent.appendChild(stepContainer);
+                                });
+                            }).catch(err => {
+                                console.error(err);
+                                elements.breakdownContent.innerHTML = `<p class="text-red-400 text-lg w-full text-center mt-10">加载失败: ${err.message}</p>`;
+                            });
+                        };            
         }, 50);
     });
 }
