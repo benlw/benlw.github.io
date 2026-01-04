@@ -80,10 +80,18 @@ function setupEventListeners() {
     elements.cancelVoiceBtn.addEventListener('click', stopVoiceRecognition);
     
     // Close Breakdown
-    elements.closeBreakdownBtn.addEventListener('click', () => {
-        elements.breakdownOverlay.classList.add('hidden');
-        elements.breakdownContent.innerHTML = ''; // Clear memory
+    elements.closeBreakdownBtn.addEventListener('click', closeBreakdown);
+    // Click outside to close
+    elements.breakdownOverlay.addEventListener('click', (e) => {
+        if (e.target === elements.breakdownOverlay) {
+            closeBreakdown();
+        }
     });
+}
+
+function closeBreakdown() {
+    elements.breakdownOverlay.classList.add('hidden');
+    elements.breakdownContent.innerHTML = ''; // Clear memory
 }
 
 // Global recognition instance to allow stopping
@@ -454,6 +462,21 @@ function renderResults(data) {
                     onComplete: () => {
                         btnQuiz.textContent = '练习';
                         btnQuiz.classList.remove('ring-2', 'ring-offset-2', 'ring-primary');
+                        
+                        // Reward: Celebration!
+                        // Fire from left
+                        confetti({
+                            particleCount: 100,
+                            spread: 70,
+                            origin: { y: 0.6, x: 0.1 }
+                        });
+                        // Fire from right
+                        confetti({
+                            particleCount: 100,
+                            spread: 70,
+                            origin: { y: 0.6, x: 0.9 }
+                        });
+
                         writer.animateCharacter({ loop: false });
                     }
                 });
