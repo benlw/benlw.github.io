@@ -36,35 +36,73 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
             z-index: 100;
             flex-shrink: 0;
+        }
+        
+        .high-score-label {
+            font-size: 0.85rem;
+            color: #888;
+            font-weight: bold;
+            margin-top: -3px;
         }
 
         .btn-back {
             text-decoration: none;
-            color: #888;
-            font-size: 1rem;
-            background: #f5f5f5;
-            padding: 6px 16px;
+            color: #666;
+            font-size: 0.9rem;
+            background: #f0f0f0;
+            padding: 4px 12px;
             border-radius: 12px;
             font-weight: bold;
+            margin-bottom: 2px;
         }
 
         .stats {
             display: flex;
-            gap: 30px;
-            font-size: 1.3rem;
+            gap: 20px;
+            font-size: 1.1rem;
             font-weight: 800;
             color: #333;
             background: #eef2f7;
-            padding: 10px 25px;
+            padding: 8px 20px;
             border-radius: 20px;
         }
 
-        .score-box { display: flex; align-items: center; gap: 8px; }
-        .score-box span { color: var(--primary); font-size: 1.6rem; }
+        .score-box { display: flex; align-items: center; gap: 6px; }
+        .score-box span { color: var(--primary); font-size: 1.4rem; }
         .score-box.moves span { color: var(--accent); }
+
+        /* 浮动文字特效 - 强化版 */
+        .float-text {
+            position: absolute;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #ff9f43;
+            /* 描边效果 */
+            -webkit-text-stroke: 2px #fff;
+            text-shadow: 3px 3px 0px rgba(0,0,0,0.2);
+            pointer-events: none;
+            z-index: 300;
+            white-space: nowrap;
+            animation: popInStayOut 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popInStayOut {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(-15deg); opacity: 0; }
+            20% { transform: translate(-50%, -50%) scale(1.2) rotate(5deg); opacity: 1; }
+            40% { transform: translate(-50%, -50%) scale(1.0) rotate(0deg); opacity: 1; }
+            80% { transform: translate(-50%, -100%) scale(1.1) rotate(0deg); opacity: 1; }
+            100% { transform: translate(-50%, -150%) scale(0.5); opacity: 0; }
+        }
+        
+        /* 道具样式 */
+        .tile[data-type="🚀"] { background: #E0F7FA; font-size: 32px; animation: rocketPulse 1s infinite alternate; }
+        .tile[data-type="🌟"] { background: #333; color: gold; font-size: 34px; animation: spin 3s linear infinite; box-shadow: 0 0 10px gold; }
+        
+        @keyframes rocketPulse { from { transform: scale(1); } to { transform: scale(1.1); } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         /* 游戏区域 */
         #game-container {
@@ -267,6 +305,39 @@
         .answer-display.correct { color: #2ecc71; border-color: #2ecc71; background: #e8f8f5; }
         .answer-display.wrong { color: var(--accent); border-color: var(--accent); background: #fdedec; }
 
+        /* 游戏结算弹窗 */
+        .game-over-modal {
+            background: white;
+            width: 85%;
+            max-width: 340px;
+            padding: 30px 20px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .modal-overlay.active .game-over-modal { transform: scale(1); }
+        
+        .result-title { font-size: 2rem; color: #333; margin: 0 0 10px; }
+        .result-score { font-size: 3rem; color: var(--primary); font-weight: 900; margin: 10px 0; }
+        .result-stars { font-size: 2.5rem; margin: 15px 0 25px; letter-spacing: 5px; }
+        .star.filled { color: #f1c40f; text-shadow: 0 2px 0 #d35400; }
+        .star.empty { color: #e0e0e0; }
+        
+        .btn-restart {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(74, 144, 226, 0.4);
+            font-weight: bold;
+        }
+        .btn-restart:active { transform: scale(0.95); }
+
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .num-btn {
             padding: 15px 0;
@@ -303,6 +374,7 @@
 
 <header>
     <a href="index.html" class="btn-back">🔙 返回课堂</a>
+    <div class="high-score-label">最高分: <span id="highScore">0</span></div>
     <div class="stats">
         <div class="score-box">得分 <span id="score">0</span></div>
         <div class="score-box moves">步数 <span id="moves">20</span></div>
@@ -311,6 +383,18 @@
 
 <div id="game-container">
     <div id="grid"></div>
+</div>
+
+<!-- 游戏结束弹窗 -->
+<div class="modal-overlay" id="gameOverModal">
+    <div class="game-over-modal">
+        <h2 class="result-title" id="endTitle">游戏结束</h2>
+        <div class="result-score" id="endScore">0</div>
+        <div class="result-stars" id="endStars">
+            <span class="star empty">★</span><span class="star empty">★</span><span class="star empty">★</span>
+        </div>
+        <button class="btn-restart" onclick="location.reload()">再玩一次</button>
+    </div>
 </div>
 
 <div class="modal-overlay" id="mathModal">
@@ -343,6 +427,8 @@
     const TYPES = ['🍎', '🍊', '🍇', '🐸', '🐼', '🐯'];
     const SPECIAL_TYPE = '?';
     const BOMB_TYPE = '💣';
+    const ROCKET_TYPE = '🚀';
+    const STAR_TYPE = '🌟';
     
     // 状态变量
     let grid = [];
@@ -352,6 +438,7 @@
     let selectedTile = null;
     let isProcessing = false;
     let hasAnsweredRound = false; // 标记当前回合是否已答题
+    let comboCount = 0; // 连击计数
     
     // 答题状态
     let currentMathAnswer = 0;
@@ -361,8 +448,10 @@
     // DOM元素
     const gridEl = document.getElementById('grid');
     const scoreEl = document.getElementById('score');
+    const highScoreEl = document.getElementById('highScore');
     const movesEl = document.getElementById('moves');
     const modal = document.getElementById('mathModal');
+    const gameOverModal = document.getElementById('gameOverModal');
     const startScreen = document.getElementById('startScreen');
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -524,9 +613,47 @@
         }
     }
 
+    function createParticles(x, y, color, count=8, scale=1) {
+        for(let i=0; i<count; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const bg = color || (['#FF6B6B', '#4A90E2', '#F1C40F', '#2ECC71'][Math.floor(Math.random()*4)]);
+            p.style.background = bg;
+            const size = (Math.random() * 10 + 5) * scale;
+            p.style.width = size + 'px';
+            p.style.height = size + 'px';
+            p.style.left = x + 'px';
+            p.style.top = y + 'px';
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = (Math.random() * 80 + 40) * scale;
+            const tx = Math.cos(angle) * velocity + 'px';
+            const ty = Math.sin(angle) * velocity + 'px';
+            p.style.setProperty('--tx', tx);
+            p.style.setProperty('--ty', ty);
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 800);
+        }
+    }
+
+    function showFloatText(text, x, y) {
+        const el = document.createElement('div');
+        el.className = 'float-text';
+        el.textContent = text;
+        
+        // 随机颜色
+        const colors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#FF9F43', '#A8D8EA'];
+        el.style.color = colors[Math.floor(Math.random() * colors.length)];
+        
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1600); // 延长移除时间
+    }
+
     function startGame(level) {
         currentLevel = level;
         startScreen.classList.add('hidden');
+        updateHighScoreDisplay();
         initGame();
     }
 
@@ -537,6 +664,7 @@
         moves = 20; // 每局20步
         scoreEl.textContent = score;
         movesEl.textContent = moves;
+        comboCount = 0;
 
         // 生成背景格
         for(let i=0; i<ROWS*COLS; i++) {
@@ -561,6 +689,46 @@
             refreshVisuals();
             checkMatchesAndRefill();
         }, 50);
+    }
+
+    function checkGameOver() {
+        if (moves <= 0 && !isProcessing) {
+            const key = `math_crush_level_${currentLevel}_high`;
+            const currentHigh = parseInt(localStorage.getItem(key) || '0');
+            if (score > currentHigh) {
+                localStorage.setItem(key, score);
+            }
+            setTimeout(() => {
+                showGameOver();
+            }, 800);
+            return true;
+        }
+        return false;
+    }
+
+    function showGameOver() {
+        gameOverModal.classList.add('active');
+        document.getElementById('endScore').textContent = score;
+        
+        let stars = 1;
+        if (score > 1000) stars = 2;
+        if (score > 2500) stars = 3;
+        
+        let starsHtml = '';
+        for(let i=0; i<3; i++) {
+            starsHtml += `<span class="star ${i < stars ? 'filled' : 'empty'}">★</span>`;
+        }
+        document.getElementById('endStars').innerHTML = starsHtml;
+        
+        let titles = ['继续加油!', '不错哦!', '太棒了!'];
+        document.getElementById('endTitle').textContent = titles[stars-1];
+        
+        playSound('correct');
+    }
+
+    function updateHighScoreDisplay() {
+        const key = `math_crush_level_${currentLevel}_high`;
+        highScoreEl.textContent = localStorage.getItem(key) || '0';
     }
 
     function getRandomType() {
@@ -601,6 +769,7 @@
 
     async function swapTiles(t1, t2) {
         isProcessing = true;
+        comboCount = 0; // 新的一步，重置连击
         
         // 交换逻辑位置
         const r1 = t1.r, c1 = t1.c;
@@ -637,7 +806,6 @@
         for(let r=0; r<ROWS; r++) {
             for(let c=0; c<COLS-2; c++) {
                 let t1 = grid[r][c], t2 = grid[r][c+1], t3 = grid[r][c+2];
-                // 增加判断：t1.type !== BOMB_TYPE，炸弹不参与自动匹配
                 if(t1 && t2 && t3 && 
                    t1.type !== BOMB_TYPE && 
                    t1.type === t2.type && t2.type === t3.type) {
@@ -678,40 +846,17 @@
         return Array.from(matches);
     }
 
-    function createParticles(x, y, color, count=8, scale=1) {
-        // 创建粒子特效
-        for(let i=0; i<count; i++) {
-            const p = document.createElement('div');
-            p.className = 'particle';
-            
-            // 随机颜色 (如果没指定)
-            const bg = color || (['#FF6B6B', '#4A90E2', '#F1C40F', '#2ECC71'][Math.floor(Math.random()*4)]);
-            p.style.background = bg;
-            
-            // 随机大小
-            const size = (Math.random() * 10 + 5) * scale;
-            p.style.width = size + 'px';
-            p.style.height = size + 'px';
-            
-            // 初始位置
-            p.style.left = x + 'px';
-            p.style.top = y + 'px';
-            
-            // 随机飞溅方向
-            const angle = Math.random() * Math.PI * 2;
-            const velocity = (Math.random() * 80 + 40) * scale;
-            const tx = Math.cos(angle) * velocity + 'px';
-            const ty = Math.sin(angle) * velocity + 'px';
-            
-            p.style.setProperty('--tx', tx);
-            p.style.setProperty('--ty', ty);
-            
-            document.body.appendChild(p);
-            setTimeout(() => p.remove(), 800);
-        }
-    }
-
     async function processMatches(matches) {
+        comboCount++;
+        // 显示 Combo 文字
+        if (comboCount > 1) {
+            const rect = document.getElementById('game-container').getBoundingClientRect();
+            const text = ['Good!', 'Great!', 'Amazing!', 'Unbelievable!'][Math.min(comboCount-2, 3)];
+            showFloatText(text + ` x${comboCount}`, rect.width/2 + rect.left, rect.height/2 + rect.top);
+            
+            score += comboCount * 50; // 连击加分
+        }
+
         // 分类：问号和其他
         let questions = matches.filter(t => t.type === SPECIAL_TYPE);
         let others = matches.filter(t => t.type !== SPECIAL_TYPE);
@@ -744,9 +889,6 @@
                 transformToBomb = [questions[0]];
                 // 剩下的问号作为普通消除
                 others = others.concat(questions.slice(1));
-            } else {
-                // 如果决定不变成炸弹（比如答错逻辑，或者设计变更），那就加回消除列表
-                // 但上面逻辑是答错就全消
             }
         }
 
@@ -794,17 +936,14 @@
             grid[t.r][t.c] = null;
         });
 
-        // 对于变成了炸弹的 tiles，它们现在依然在 grid[r][c] 里，
-        // 且 DOM 也在。不需要做额外处理。
-        // applyGravity 会处理下方的空位，炸弹会自然下落（如果下方有空）。
-
         await applyGravity();
     }
 
     async function explodeBomb(bombTile) {
         if (isProcessing) return;
         isProcessing = true;
-        
+        comboCount++; 
+
         playSound('explode'); // 播放爆炸音效
         
         // 1. 创建巨大震波
@@ -822,11 +961,12 @@
         // 2. 爆炸火花
         createParticles(centerX, centerY, '#FF4500', 30, 2.0);
 
-        // 区域消除逻辑 (3x3)
+        // 区域消除逻辑 (5x5 超级爆炸)
         let toEliminate = new Set();
         
-        for(let r = bombTile.r - 1; r <= bombTile.r + 1; r++) {
-            for(let c = bombTile.c - 1; c <= bombTile.c + 1; c++) {
+        // 范围扩大到半径2 (即 5x5)
+        for(let r = bombTile.r - 2; r <= bombTile.r + 2; r++) {
+            for(let c = bombTile.c - 2; c <= bombTile.c + 2; c++) {
                 if(r >= 0 && r < ROWS && c >= 0 && c < COLS && grid[r][c]) {
                     toEliminate.add(grid[r][c]);
                 }
@@ -844,7 +984,7 @@
         });
         scoreEl.textContent = score;
         
-        // 震动屏幕效果 (加大力度)
+        // 震动屏幕效果
         document.getElementById('game-container').style.transition = 'transform 0.05s';
         document.getElementById('game-container').style.transform = 'translate(5px, 5px) rotate(1deg)';
         setTimeout(() => document.getElementById('game-container').style.transform = 'translate(-5px, -5px) rotate(-1deg)', 50);
@@ -858,7 +998,7 @@
             grid[t.r][t.c] = null;
         });
         
-        moves--; // 引爆算一步吗？算吧
+        moves--; 
         movesEl.textContent = moves;
 
         await applyGravity();
@@ -897,6 +1037,7 @@
             await processMatches(newMatches);
         } else {
             isProcessing = false;
+            checkGameOver();
         }
     }
 
