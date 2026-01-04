@@ -83,7 +83,9 @@ function setupEventListeners() {
     elements.closeBreakdownBtn.addEventListener('click', closeBreakdown);
     // Click outside to close
     elements.breakdownOverlay.addEventListener('click', (e) => {
-        if (e.target === elements.breakdownOverlay) {
+        // Close if clicking the overlay background OR the content container background
+        // But NOT if clicking a child inside the content
+        if (e.target === elements.breakdownOverlay || e.target === elements.breakdownContent) {
             closeBreakdown();
         }
     });
@@ -464,18 +466,22 @@ function renderResults(data) {
                         btnQuiz.classList.remove('ring-2', 'ring-offset-2', 'ring-primary');
                         
                         // Reward: Celebration!
-                        // Fire from left
-                        confetti({
-                            particleCount: 100,
-                            spread: 70,
-                            origin: { y: 0.6, x: 0.1 }
-                        });
-                        // Fire from right
-                        confetti({
-                            particleCount: 100,
-                            spread: 70,
-                            origin: { y: 0.6, x: 0.9 }
-                        });
+                        if (typeof confetti === 'function') {
+                            // Fire from left
+                            confetti({
+                                particleCount: 100,
+                                spread: 70,
+                                origin: { y: 0.6, x: 0.1 }
+                            });
+                            // Fire from right
+                            confetti({
+                                particleCount: 100,
+                                spread: 70,
+                                origin: { y: 0.6, x: 0.9 }
+                            });
+                        } else {
+                            console.warn("Confetti library not loaded");
+                        }
 
                         writer.animateCharacter({ loop: false });
                     }
@@ -556,7 +562,12 @@ const resizeObserver = new ResizeObserver(entries => {
                 // Determine if we need to resize. Rounding to avoid jitter.
                 // Accessing internal width isn't direct, but we can just call resize.
                 // It's cheap enough.
-                writerItem.writer.resize(newSize, newSize);
+                if (typeof writerItem.writer.updateDimensions === 'function') {
+                    writerItem.writer.updateDimensions({ width: newSize, height: newSize });
+                } else {
+                    // Fallback for different versions or just log
+                    console.warn("Writer updateDimensions missing", writerItem.writer);
+                }
             }
         }
     }
