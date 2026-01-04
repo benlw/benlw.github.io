@@ -104,6 +104,20 @@
         @keyframes rocketPulse { from { transform: scale(1); } to { transform: scale(1.1); } }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
+        /* 提示动画 */
+        .tile.hint-anim {
+            animation: hintPulse 1s infinite;
+            z-index: 50;
+            box-shadow: 0 0 15px gold;
+            border: 2px solid gold;
+        }
+        
+        @keyframes hintPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
         /* 游戏区域 */
         #game-container {
             margin-top: 20px;
@@ -437,8 +451,9 @@
     let currentLevel = 1;
     let selectedTile = null;
     let isProcessing = false;
-    let hasAnsweredRound = false; // 标记当前回合是否已答题
-    let comboCount = 0; // 连击计数
+    let hasAnsweredRound = false; 
+    let comboCount = 0; 
+    let hintTimer = null; // 提示计时器
     
     // 答题状态
     let currentMathAnswer = 0;
@@ -558,6 +573,7 @@
                                 selectedTile.el.classList.remove('selected');
                                 selectedTile = null;
                             }
+                            resetHintTimer(); // 滑动操作也重置
                             swapTiles(activeTile, targetTile);
                         }
                     }
@@ -579,6 +595,7 @@
     }
 
     function handleTap(tile) {
+        resetHintTimer();
         if(!selectedTile) {
             selectedTile = tile;
             tile.el.classList.add('selected');
@@ -590,6 +607,16 @@
                     selectedTile.el.classList.remove('selected');
                     selectedTile = null;
                     explodeBomb(tile);
+                    return;
+                } else if(tile.type === ROCKET_TYPE) {
+                    explodeRocket(tile);
+                    selectedTile.el.classList.remove('selected');
+                    selectedTile = null;
+                    return;
+                } else if(tile.type === STAR_TYPE) {
+                    explodeStar(tile);
+                    selectedTile.el.classList.remove('selected');
+                    selectedTile = null;
                     return;
                 }
                 // 普通方块取消选中
@@ -611,6 +638,93 @@
                 }
             }
         }
+    }
+
+    // --- 提示系统 ---
+    function resetHintTimer() {
+        if(hintTimer) clearTimeout(hintTimer);
+        // 清除现有的提示样式
+        document.querySelectorAll('.tile.hint-anim').forEach(el => el.classList.remove('hint-anim'));
+        
+        if (moves > 0 && !isProcessing) {
+            hintTimer = setTimeout(showHint, 5000); // 5秒无操作提示
+        }
+    }
+
+    function showHint() {
+        if(isProcessing || moves <= 0) return;
+        const move = findPotentialMove();
+        if(move) {
+            move.t1.el.classList.add('hint-anim');
+            move.t2.el.classList.add('hint-anim');
+        }
+    }
+
+    function findPotentialMove() {
+        // 简单扫描：只检查右边和下边
+        for(let r=0; r<ROWS; r++) {
+            for(let c=0; c<COLS; c++) {
+                let t = grid[r][c];
+                if(!t) continue;
+                
+                // 检查右边
+                if(c < COLS-1) {
+                    let right = grid[r][c+1];
+                    if(right && isValidSwap(t, right)) return {t1: t, t2: right};
+                }
+                // 检查下边
+                if(r < ROWS-1) {
+                    let bottom = grid[r+1][c];
+                    if(bottom && isValidSwap(t, bottom)) return {t1: t, t2: bottom};
+                }
+            }
+        }
+        return null;
+    }
+
+    function isValidSwap(t1, t2) {
+        // 虚拟交换
+        const type1 = t1.type;
+        const type2 = t2.type;
+        
+        if([BOMB_TYPE, ROCKET_TYPE, STAR_TYPE].includes(type1) || 
+           [BOMB_TYPE, ROCKET_TYPE, STAR_TYPE].includes(type2)) return false;
+
+        // 临时交换类型
+        t1.type = type2;
+        t2.type = type1;
+        
+        // 检查匹配
+        let hasMatch = false;
+        
+        if(checkMatchAt(t1.r, t1.c)) hasMatch = true;
+        if(!hasMatch && checkMatchAt(t2.r, t2.c)) hasMatch = true;
+        
+        // 还原
+        t1.type = type1;
+        t2.type = type2;
+        
+        return hasMatch;
+    }
+
+    function checkMatchAt(r, c) {
+        let t = grid[r][c];
+        if(!t) return false;
+        const type = t.type;
+        
+        // 横向
+        let hCount = 1;
+        let k = c-1; while(k>=0 && grid[r][k] && grid[r][k].type===type) { hCount++; k--; }
+        k = c+1; while(k<COLS && grid[r][k] && grid[r][k].type===type) { hCount++; k++; }
+        if(hCount >= 3) return true;
+        
+        // 纵向
+        let vCount = 1;
+        k = r-1; while(k>=0 && grid[k][c] && grid[k][c].type===type) { vCount++; k--; }
+        k = r+1; while(k<ROWS && grid[k][c] && grid[k][c].type===type) { vCount++; k++; }
+        if(vCount >= 3) return true;
+        
+        return false;
     }
 
     function createParticles(x, y, color, count=8, scale=1) {
@@ -688,6 +802,7 @@
         setTimeout(() => {
             refreshVisuals();
             checkMatchesAndRefill();
+            resetHintTimer(); // 游戏开始，启动计时
         }, 50);
     }
 
@@ -806,6 +921,7 @@
         for(let r=0; r<ROWS; r++) {
             for(let c=0; c<COLS-2; c++) {
                 let t1 = grid[r][c], t2 = grid[r][c+1], t3 = grid[r][c+2];
+                // 增加判断：t1.type !== BOMB_TYPE，炸弹不参与自动匹配
                 if(t1 && t2 && t3 && 
                    t1.type !== BOMB_TYPE && 
                    t1.type === t2.type && t2.type === t3.type) {
@@ -857,24 +973,41 @@
             score += comboCount * 50; // 连击加分
         }
 
-        // 分类：问号和其他
+        // 1. 道具生成检测 (4连 -> 火箭, 5连 -> 星星)
+        // 过滤出普通方块 (只有普通方块消除才能生成道具，防止套娃)
+        let normalTiles = matches.filter(t => !['?', BOMB_TYPE, ROCKET_TYPE, STAR_TYPE].includes(t.type));
+        
+        let newPowerUp = null;
+        let powerUpType = null;
+        
+        // 优先奖励星星，其次火箭
+        if (normalTiles.length >= 5) {
+            powerUpType = STAR_TYPE;
+            newPowerUp = normalTiles[Math.floor(normalTiles.length/2)]; // 选中间的
+        } else if (normalTiles.length >= 4) {
+            powerUpType = ROCKET_TYPE;
+            newPowerUp = normalTiles[Math.floor(normalTiles.length/2)];
+        }
+        
+        // 分类
         let questions = matches.filter(t => t.type === SPECIAL_TYPE);
         let others = matches.filter(t => t.type !== SPECIAL_TYPE);
         
-        let transformToBomb = []; // 需要变成炸弹的tile
-        let keepOnGrid = []; // 需要留在场上的tile
-
+        let transformList = []; 
+        
+        // 处理问号 -> 炸弹
         if (questions.length > 0) {
             let shouldTransform = false;
-
+            
             if (hasAnsweredRound) {
-                // 本回合已经答过题了，直接奖励
                 shouldTransform = true;
             } else {
-                // 没答过，弹窗
+                // 延迟一下再弹出题目，给用户反应时间
+                await wait(800);
+                
                 let correct = await promptMathQuestion();
                 if (correct) {
-                    hasAnsweredRound = true; // 标记本回合已答
+                    hasAnsweredRound = true; 
                     shouldTransform = true;
                     score += 200;
                 } else {
@@ -885,52 +1018,56 @@
             }
 
             if (shouldTransform) {
-                // 只生成一个炸弹 (取其中一个)
-                transformToBomb = [questions[0]];
-                // 剩下的问号作为普通消除
+                // 变身炸弹
+                let t = questions[0];
+                t.newType = BOMB_TYPE; // 暂存目标类型
+                transformList.push(t);
                 others = others.concat(questions.slice(1));
             }
         }
+        
+        // 处理道具生成
+        if (powerUpType && newPowerUp) {
+            // 从消除列表中移除这个tile，让它变身
+            others = others.filter(t => t !== newPowerUp);
+            newPowerUp.newType = powerUpType;
+            transformList.push(newPowerUp);
+            
+            showFloatText(powerUpType + " Created!", 
+                newPowerUp.el.getBoundingClientRect().left, 
+                newPowerUp.el.getBoundingClientRect().top);
+        }
 
-        // 视觉消除 (others)
+        // 视觉消除
         others.forEach(t => {
             t.el.classList.add('matched');
             score += 10;
-            
-            // 粒子特效
             const rect = t.el.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            createParticles(centerX, centerY, null, 6);
+            createParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, null, 6);
         });
         
-        // 视觉变换 (questions -> bomb)
-        transformToBomb.forEach(t => {
-            t.type = BOMB_TYPE;
-            t.el.textContent = BOMB_TYPE;
-            t.el.dataset.type = BOMB_TYPE;
-            // 样式重置
+        // 视觉变身
+        transformList.forEach(t => {
+            t.type = t.newType;
+            t.el.textContent = t.newType;
+            t.el.dataset.type = t.newType;
             t.el.classList.remove('selected');
-            t.el.classList.remove('matched'); // 防止之前的动画干扰
+            t.el.classList.remove('matched');
             t.el.style.opacity = '1';
             t.el.style.transform = 'scale(1)';
             
-            // 播放一个变换特效（简单的缩放）
-            // 需要强制重绘一下或者延时
             setTimeout(() => {
                 t.el.style.transform = 'scale(1.4)';
                 setTimeout(() => t.el.style.transform = 'scale(1)', 200);
             }, 50);
             
-            // 变身粒子特效
             const rect = t.el.getBoundingClientRect();
-            createParticles(rect.left + rect.width/2, rect.top + rect.height/2, '#333', 12, 1.2);
+            createParticles(rect.left + rect.width/2, rect.top + rect.height/2, '#FFD700', 12, 1.2);
         });
 
         scoreEl.textContent = score;
         await wait(300);
 
-        // 移除DOM和数据 (只移除 others)
         others.forEach(t => {
             if(t.el.parentNode) t.el.parentNode.removeChild(t.el);
             grid[t.r][t.c] = null;
@@ -939,10 +1076,66 @@
         await applyGravity();
     }
 
+    async function explodeRocket(tile) {
+        if(isProcessing) return; isProcessing = true; comboCount++;
+        playSound('explode');
+        
+        let toEliminate = new Set();
+        toEliminate.add(tile);
+        // 十字消除
+        for(let c=0; c<COLS; c++) if(grid[tile.r][c]) toEliminate.add(grid[tile.r][c]);
+        for(let r=0; r<ROWS; r++) if(grid[r][tile.c]) toEliminate.add(grid[r][tile.c]);
+        
+        await performElimination(toEliminate);
+    }
+    
+    async function explodeStar(tile) {
+        if(isProcessing) return; isProcessing = true; comboCount++;
+        playSound('explode');
+        
+        // 随机选一种颜色消除
+        const targetType = TYPES[Math.floor(Math.random() * TYPES.length)];
+        let toEliminate = new Set();
+        toEliminate.add(tile);
+        
+        for(let r=0; r<ROWS; r++) {
+            for(let c=0; c<COLS; c++) {
+                if(grid[r][c] && grid[r][c].type === targetType) {
+                    toEliminate.add(grid[r][c]);
+                }
+            }
+        }
+        await performElimination(toEliminate);
+    }
+
+    async function performElimination(set) {
+        let list = Array.from(set);
+        list.forEach(t => {
+            t.el.classList.add('matched');
+            score += 20;
+            const r = t.el.getBoundingClientRect();
+            createParticles(r.left + r.width/2, r.top + r.height/2, '#FFF', 5);
+        });
+        scoreEl.textContent = score;
+        
+        // 震动
+        const container = document.getElementById('game-container');
+        container.style.transform = 'translate(3px, 3px)';
+        setTimeout(() => container.style.transform = 'none', 100);
+
+        await wait(400);
+        list.forEach(t => {
+            if(t.el.parentNode) t.el.parentNode.removeChild(t.el);
+            grid[t.r][t.c] = null;
+        });
+        moves--; movesEl.textContent = moves;
+        await applyGravity();
+    }
+
     async function explodeBomb(bombTile) {
         if (isProcessing) return;
         isProcessing = true;
-        comboCount++; 
+        comboCount++; // 炸弹也算连击
 
         playSound('explode'); // 播放爆炸音效
         
@@ -984,7 +1177,7 @@
         });
         scoreEl.textContent = score;
         
-        // 震动屏幕效果
+        // 震动屏幕效果 (加大力度)
         document.getElementById('game-container').style.transition = 'transform 0.05s';
         document.getElementById('game-container').style.transform = 'translate(5px, 5px) rotate(1deg)';
         setTimeout(() => document.getElementById('game-container').style.transform = 'translate(-5px, -5px) rotate(-1deg)', 50);
@@ -998,7 +1191,7 @@
             grid[t.r][t.c] = null;
         });
         
-        moves--; 
+        moves--; // 引爆算一步吗？算吧
         movesEl.textContent = moves;
 
         await applyGravity();
@@ -1037,7 +1230,8 @@
             await processMatches(newMatches);
         } else {
             isProcessing = false;
-            checkGameOver();
+            resetHintTimer(); // 动作结束，开始倒计时
+            checkGameOver(); // 检查是否结束
         }
     }
 
