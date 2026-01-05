@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>智能四子棋</title>
+    <style>
+        :root {
+            --bg-p1: #FFEBEE;
+            --bg-p2: #FFFDE7;
+            --board-color: #2980b9;
+            --board-dark: #1f618d;
+            --p1-color: #e74c3c;
+            --p2-color: #f1c40f;
+            --cell-size: min(13.5vw, 65px);
+            --gap: min(1.2vw, 6px);
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Rounded Mplus 1c', sans-serif;
+            background-color: var(--bg-p1);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            touch-action: none;
+            user-select: none;
+            transition: background-color 0.5s;
+            overflow: hidden;
+        }
+
+        /* 顶部导航 */
+        header {
+            width: 100%;
+            height: 50px;
+            padding: 0 15px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: grid;
+            grid-template-columns: 80px auto 60px;
+            align-items: center;
+            z-index: 100;
+            flex-shrink: 0;
+        }
+
+        .btn-back {
+            text-decoration: none;
+            color: #666;
+            font-weight: bold;
+            background: #f5f5f5;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            justify-self: start;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            white-space: nowrap;
+        }
+
+        .status-card {
+            background: white;
+            padding: 4px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+            font-size: 1rem;
+            color: #333;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .status-card.p1 { border-color: var(--p1-color); color: var(--p1-color); }
+        .status-card.p2 { border-color: var(--p2-color); color: #d35400; }
+
+        .avatar { font-size: 1.2rem; }
+
+        .scoreboard-btn {
+            justify-self: end;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* 游戏区域 */
+        .game-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+        }
+
+        .board-frame {
+            background-color: var(--board-color);
+            padding: 10px 10px 20px 10px;
+            border-radius: 12px 12px 6px 6px;
+            box-shadow: 0 5px 0 var(--board-dark), 0 15px 25px rgba(0,0,0,0.2);
+            position: relative;
+            border-top: 8px solid #3498db;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(7, var(--cell-size));
+            grid-template-rows: repeat(6, var(--cell-size));
+            gap: var(--gap);
+        }
+
+        .cell {
+            width: var(--cell-size);
+            height: var(--cell-size);
+            border-radius: 50%;
+            background-color: #1a5276; 
+            box-shadow: inset 2px 2px 6px rgba(0,0,0,0.4);
+            position: relative;
+            cursor: pointer;
+        }
+
+        /* 预判落子 (仅在人类回合显示) */
+        body:not(.game-over):not(.ai-thinking).p1-active .cell:empty:hover::after {
+            content: ''; position: absolute; top: 15%; left: 15%; width: 70%; height: 70%;
+            border-radius: 50%; background: var(--p1-color); opacity: 0.4;
+        }
+        body:not(.game-over):not(.ai-thinking).p2-active .cell:empty:hover::after {
+            content: ''; position: absolute; top: 15%; left: 15%; width: 70%; height: 70%;
+            border-radius: 50%; background: var(--p2-color); opacity: 0.4;
+        }
+
+        /* 棋子 */
+        .piece {
+            width: 100%; height: 100%; border-radius: 50%;
+            position: absolute; top: 0; left: 0; z-index: 5;
+            animation: popIn 0.2s ease-out;
+            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.2), 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .piece.p1 { background: radial-gradient(circle at 35% 35%, #ff7675, var(--p1-color)); }
+        .piece.p2 { background: radial-gradient(circle at 35% 35%, #ffeaa7, var(--p2-color)); }
+
+        .piece.winner {
+            animation: winPulse 0.8s infinite alternate;
+            filter: brightness(1.2);
+            box-shadow: 0 0 15px white;
+        }
+        @keyframes winPulse { from { transform: scale(0.95); } to { transform: scale(1.05); } }
+
+        .controls { 
+            margin-bottom: 20px; 
+            margin-top: -10px; 
+            flex-shrink: 0;
+        }
+        
+        .btn-restart {
+            background: #2ECC71;
+            color: white;
+            border: none;
+            padding: 10px 35px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 3px 0 #27ae60;
+            cursor: pointer;
+        }
+        .btn-restart:active { transform: translateY(3px); box-shadow: 0 0 0; }
+
+        /* 弹窗 */
+        .overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal {
+            background: white; padding: 20px; border-radius: 16px;
+            text-align: center; width: 85%; max-width: 300px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .mode-btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .team-btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; padding: 12px;
+            border: 2px solid #eee; border-radius: 12px;
+            background: white; font-size: 1.1rem; font-weight: bold; cursor: pointer;
+            transition: background 0.2s;
+        }
+        .team-btn:active { background: #f9f9f9; }
+        .team-btn.pvp { color: #333; border-color: #333; }
+        .team-btn.pve { color: #2980b9; border-color: #2980b9; }
+
+        .rank-row {
+            display: flex; justify-content: space-between; padding: 8px;
+            border-bottom: 1px solid #eee; font-size: 1rem;
+        }
+        .rank-score { font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+<!-- 模式选择弹窗 -->
+<div class="overlay active" id="startModal">
+    <div class="modal">
+        <h3 style="margin:0 0 5px 0">欢迎来到智能四子棋</h3>
+        <p style="color:#666; font-size:0.9rem; margin:0">自由落子规则</p>
+        <div class="mode-btn-group">
+            <button class="team-btn pvp" onclick="selectMode('pvp')">
+                <span class="avatar">👥</span> 双人对战
+            </button>
+            <button class="team-btn pve" onclick="selectMode('pve')">
+                <span class="avatar">🤖</span> 挑战机器人
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 排行榜弹窗 -->
+<div class="overlay" id="rankModal">
+    <div class="modal">
+        <h3 style="margin-top:0">🏆 胜利榜</h3>
+        <div class="rank-row">
+            <span>🐯 红方胜</span>
+            <span class="rank-score" id="scoreP1">0</span>
+        </div>
+        <div class="rank-row">
+            <span>🐼 黄方/AI胜</span>
+            <span class="rank-score" id="scoreP2">0</span>
+        </div>
+        <button class="btn-restart" style="margin-top:15px; font-size:0.9rem; padding:8px 20px;" onclick="closeRank()">关闭</button>
+    </div>
+</div>
+
+<header>
+    <a href="index.html" class="btn-back">🔙 返回</a>
+    <div class="status-card" id="statusCard">
+        <span class="avatar" id="turnAvatar">🐯</span>
+        <span id="statusText">红方回合</span>
+    </div>
+    <button class="scoreboard-btn" onclick="showRank()">🏆</button>
+</header>
+
+<div class="game-wrapper">
+    <div class="board-frame">
+        <div class="board" id="board">
+            <!-- Grid Cells -->
+        </div>
+    </div>
+</div>
+
+<div class="controls">
+    <button class="btn-restart" onclick="showStartScreen()">🔄 重新开始</button>
+</div>
+
+<script>
+    const ROWS = 6;
+    const COLS = 7;
+    let boardState = [];
+    let currentPlayer = 1; // 1: Red (Human), 2: Yellow (Human/AI)
+    let isGameOver = false;
+    let gameMode = 'pvp'; // 'pvp' or 'pve'
+    let isAiThinking = false;
+    
+    // 记录胜利次数
+    let wins = { 1: 0, 2: 0 };
+    if(localStorage.getItem('c4_wins_p1')) wins[1] = parseInt(localStorage.getItem('c4_wins_p1'));
+    if(localStorage.getItem('c4_wins_p2')) wins[2] = parseInt(localStorage.getItem('c4_wins_p2'));
+
+    const boardEl = document.getElementById('board');
+    const statusText = document.getElementById('statusText');
+    const statusCard = document.getElementById('statusCard');
+    const turnAvatar = document.getElementById('turnAvatar');
+    const bodyEl = document.body;
+    
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playClickSound() {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const t = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.frequency.setValueAtTime(600, t);
+        osc.frequency.exponentialRampToValueAtTime(300, t + 0.1);
+        gain.gain.setValueAtTime(0.3, t);
+        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
+        osc.start();
+        osc.stop(t + 0.1);
+    }
+
+    function playWinSound() {
+        new Audio('amazing.mp3').play().catch(()=>{});
+    }
+
+    function showStartScreen() {
+        document.getElementById('startModal').classList.add('active');
+    }
+
+    function selectMode(mode) {
+        gameMode = mode;
+        initGame();
+        document.getElementById('startModal').classList.remove('active');
+    }
+
+    function initGame() {
+        boardState = Array(ROWS).fill().map(() => Array(COLS).fill(0));
+        currentPlayer = 1;
+        isGameOver = false;
+        isAiThinking = false;
+        
+        bodyEl.classList.remove('game-over');
+        bodyEl.classList.remove('ai-thinking');
+        renderBoard();
+        updateUI();
+    }
+
+    function updateUI() {
+        // P1始终是红方，P2是黄方
+        if(currentPlayer === 1) {
+            bodyEl.style.backgroundColor = 'var(--bg-p1)';
+            bodyEl.classList.remove('p2-active');
+            bodyEl.classList.add('p1-active');
+            statusCard.className = 'status-card p1';
+            turnAvatar.textContent = '🐯';
+            statusText.textContent = isGameOver ? "红方获胜！" : "红方回合";
+        } else {
+            bodyEl.style.backgroundColor = 'var(--bg-p2)';
+            bodyEl.classList.remove('p1-active');
+            bodyEl.classList.add('p2-active');
+            statusCard.className = 'status-card p2';
+            turnAvatar.textContent = (gameMode === 'pve') ? '🤖' : '🐼';
+            
+            if (isGameOver) {
+                statusText.textContent = (gameMode === 'pve') ? "机器人获胜！" : "黄方获胜！";
+            } else {
+                statusText.textContent = (gameMode === 'pve') ? "机器人思考..." : "黄方回合";
+            }
+        }
+        
+        if(isGameOver) bodyEl.classList.add('game-over');
+    }
+
+    function renderBoard() {
+        boardEl.innerHTML = '';
+        for (let r = 0; r < ROWS; r++) {
+            for (let c = 0; c < COLS; c++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.onclick = () => handleMove(r, c, cell);
+                
+                if (boardState[r][c] !== 0) {
+                    const piece = document.createElement('div');
+                    piece.className = `piece p${boardState[r][c]}`;
+                    cell.appendChild(piece);
+                }
+                boardEl.appendChild(cell);
+            }
+        }
+    }
+
+    function handleMove(r, c, cellEl) {
+        // 游戏结束，或位置有子，或正在AI思考，都不能落子
+        if (isGameOver || boardState[r][c] !== 0 || isAiThinking) return;
+
+        // 执行落子
+        placePiece(r, c, currentPlayer, cellEl);
+
+        // 检查结果
+        if (checkGameStatus(r, c)) return;
+
+        // 切换回合
+        currentPlayer = currentPlayer === 1 ? 2 : 1;
+        updateUI();
+
+        // 如果是 PVE 且轮到 P2，触发 AI
+        if (gameMode === 'pve' && currentPlayer === 2) {
+            isAiThinking = true;
+            bodyEl.classList.add('ai-thinking');
+            setTimeout(makeAiMove, 600); // 延迟模拟思考
+        }
+    }
+
+    function placePiece(r, c, p, cellEl) {
+        boardState[r][c] = p;
+        
+        // 如果没有传cellEl (AI下棋)，需要去查找
+        if (!cellEl) {
+            const idx = r * COLS + c;
+            cellEl = boardEl.children[idx];
+        }
+
+        const piece = document.createElement('div');
+        piece.className = `piece p${p}`;
+        cellEl.appendChild(piece);
+        
+        playClickSound();
+    }
+
+    function checkGameStatus(r, c) {
+        const winPath = checkWin(r, c, currentPlayer);
+        if (winPath) {
+            isGameOver = true;
+            playWinSound();
+            updateUI();
+            
+            wins[currentPlayer]++;
+            localStorage.setItem('c4_wins_p1', wins[1]);
+            localStorage.setItem('c4_wins_p2', wins[2]);
+            
+            winPath.forEach(pos => {
+                const idx = pos.r * COLS + pos.c;
+                const targetCell = boardEl.children[idx];
+                const p = targetCell.querySelector('.piece');
+                if(p) p.classList.add('winner');
+            });
+            return true;
+        }
+        
+        // 检查平局
+        const isFull = boardState.every(row => row.every(cell => cell !== 0));
+        if (isFull) {
+            isGameOver = true;
+            statusText.textContent = "平局！🤝";
+            return true;
+        }
+        return false;
+    }
+
+    // --- AI 逻辑 ---
+    function makeAiMove() {
+        if(isGameOver) return;
+
+        // 1. 尝试寻找致胜一步
+        let move = findWinningMove(2); // AI是2
+        if (!move) {
+            // 2. 尝试寻找阻挡对手致胜的一步
+            move = findWinningMove(1); // 对手是1
+        }
+        if (!move) {
+            // 3. 寻找连成3子的一步，或随机
+            move = findSmartMove();
+        }
+
+        // 执行 AI 移动
+        placePiece(move.r, move.c, 2);
+        
+        if (!checkGameStatus(move.r, move.c)) {
+            currentPlayer = 1;
+            isAiThinking = false;
+            bodyEl.classList.remove('ai-thinking');
+            updateUI();
+        }
+    }
+
+    function findWinningMove(player) {
+        // 遍历所有空位，看下了之后是否会赢
+        for(let r=0; r<ROWS; r++) {
+            for(let c=0; c<COLS; c++) {
+                if(boardState[r][c] === 0) {
+                    // 模拟落子
+                    boardState[r][c] = player;
+                    const win = checkWin(r, c, player);
+                    boardState[r][c] = 0; // 回溯
+                    
+                    if(win) return {r, c};
+                }
+            }
+        }
+        return null;
+    }
+
+    function findSmartMove() {
+        // 简单的启发式：优先中间，优先已有邻居
+        // 收集所有合法空位
+        let candidates = [];
+        for(let r=0; r<ROWS; r++) {
+            for(let c=0; c<COLS; c++) {
+                if(boardState[r][c] === 0) {
+                    let score = 0;
+                    // 靠近中心加分
+                    const centerDist = Math.abs(c - 3) + Math.abs(r - 2.5);
+                    score -= centerDist; 
+                    
+                    // 检查周围有没有自己的子 (倾向于扎堆)
+                    // ... 简单起见，主要靠随机性增加趣味，不要太强
+                    candidates.push({r, c, score});
+                }
+            }
+        }
+        
+        // 排序并添加随机性 (取前5个最好的随机一个)
+        candidates.sort((a, b) => b.score - a.score);
+        const topN = candidates.slice(0, 5);
+        return topN[Math.floor(Math.random() * topN.length)];
+    }
+
+    // 检查某点是否连成4子
+    function checkWin(r, c, player) {
+        // 此时 boardState[r][c] 已经是 player (或者在findWinningMove中被临时设置了)
+        // const p = boardState[r][c]; // 这一行在回溯检查时会出错，因为我们传入了 player
+        const p = player;
+        const dirs = [[0,1], [1,0], [1,1], [1,-1]];
+        
+        for (let [dr, dc] of dirs) {
+            let path = [{r,c}];
+            
+            let i=1; 
+            while(true) {
+                let nr=r+dr*i, nc=c+dc*i;
+                if(nr<0||nr>=ROWS||nc<0||nc>=COLS||boardState[nr][nc]!==p) break;
+                path.push({r:nr, c:nc});
+                i++;
+            }
+            i=1;
+            while(true) {
+                let nr=r-dr*i, nc=c-dc*i;
+                if(nr<0||nr>=ROWS||nc<0||nc>=COLS||boardState[nr][nc]!==p) break;
+                path.push({r:nr, c:nc});
+                i++;
+            }
+            
+            if(path.length >= 4) return path;
+        }
+        return null;
+    }
+
+    function showRank() {
+        document.getElementById('scoreP1').textContent = wins[1];
+        document.getElementById('scoreP2').textContent = wins[2];
+        document.getElementById('rankModal').classList.add('active');
+    }
+    
+    function closeRank() {
+        document.getElementById('rankModal').classList.remove('active');
+    }
+</script>
+</body>
+</html>
