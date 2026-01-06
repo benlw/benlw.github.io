@@ -18,7 +18,9 @@ const elements = {
     saveSettingsBtn: document.getElementById('save-settings'),
     apiKeyInput: document.getElementById('api-key'),
     apiBaseInput: document.getElementById('api-base'),
-    modelIdInput: document.getElementById('model-id'),
+    // New Model UI
+    modelSelect: document.getElementById('model-select'),
+    modelCustomInput: document.getElementById('model-custom-input'),
     // New Settings Inputs
     animSpeedInput: document.getElementById('anim-speed'),
     showOutlineInput: document.getElementById('show-outline'),
@@ -66,7 +68,18 @@ function init() {
     // Restore settings
     elements.apiKeyInput.value = state.apiKey;
     elements.apiBaseInput.value = state.apiBase;
-    elements.modelIdInput.value = state.modelId;
+    
+    // Restore Model Logic
+    const presets = Array.from(elements.modelSelect.options).map(o => o.value);
+    if (presets.includes(state.modelId)) {
+        elements.modelSelect.value = state.modelId;
+        elements.modelCustomInput.classList.add('hidden');
+    } else {
+        elements.modelSelect.value = 'custom';
+        elements.modelCustomInput.value = state.modelId;
+        elements.modelCustomInput.classList.remove('hidden');
+    }
+
     elements.animSpeedInput.value = state.speed;
     elements.showOutlineInput.checked = state.showOutline;
     elements.strokeLimitInput.value = state.strokeLimit;
@@ -86,6 +99,16 @@ function setupEventListeners() {
     elements.settingsBtn.addEventListener('click', () => toggleModal(true));
     elements.closeSettingsBtn.addEventListener('click', () => toggleModal(false));
     elements.saveSettingsBtn.addEventListener('click', saveSettings);
+    
+    // Model Select Toggle
+    elements.modelSelect.addEventListener('change', (e) => {
+        if (e.target.value === 'custom') {
+            elements.modelCustomInput.classList.remove('hidden');
+            elements.modelCustomInput.focus();
+        } else {
+            elements.modelCustomInput.classList.add('hidden');
+        }
+    });
 
     // Search
     elements.searchBtn.addEventListener('click', handleSearch);
@@ -131,13 +154,24 @@ function saveSettings() {
     const key = elements.apiKeyInput.value.trim();
     // Remove trailing slash if user added it
     let base = elements.apiBaseInput.value.trim().replace(/\/+$/, '');
-    const model = elements.modelIdInput.value.trim();
+    
+    // Get Model
+    let model = elements.modelSelect.value;
+    if (model === 'custom') {
+        model = elements.modelCustomInput.value.trim();
+    }
+    
     const speed = parseFloat(elements.animSpeedInput.value);
     const showOutline = elements.showOutlineInput.checked;
     const strokeLimit = parseInt(elements.strokeLimitInput.value);
 
     if (!key) {
         alert('请输入 API Key');
+        return;
+    }
+    
+    if (!model) {
+        alert('请选择或输入 Model ID');
         return;
     }
 
