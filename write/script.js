@@ -5,6 +5,8 @@ const state = {
     modelId: localStorage.getItem('sf_model_id') || 'Qwen/Qwen2.5-7B-Instruct',
     speed: parseFloat(localStorage.getItem('sf_speed')) || 1,
     showOutline: localStorage.getItem('sf_show_outline') !== 'false', // Default true
+    strokeLimit: parseInt(localStorage.getItem('sf_stroke_limit')) || 0, // 0 = no limit
+    history: JSON.parse(localStorage.getItem('sf_history') || '[]'), // Learned words
     writers: [] // Store HanziWriter instances
 };
 
@@ -20,9 +22,11 @@ const elements = {
     // New Settings Inputs
     animSpeedInput: document.getElementById('anim-speed'),
     showOutlineInput: document.getElementById('show-outline'),
+    strokeLimitInput: document.getElementById('stroke-limit'),
     
     userInput: document.getElementById('user-input'),
     voiceBtn: document.getElementById('voice-btn'),
+    randomBtn: document.getElementById('random-btn'), // New Random Button
     searchBtn: document.getElementById('search-btn'),
     
     // New Overlay Elements
@@ -41,6 +45,21 @@ const elements = {
     statusMsg: document.getElementById('status-msg')
 };
 
+// --- Helper: Add to History ---
+function addToHistory(text) {
+    // Remove if exists (to move to top)
+    const index = state.history.indexOf(text);
+    if (index > -1) {
+        state.history.splice(index, 1);
+    }
+    // Add to front
+    state.history.unshift(text);
+    // Keep max 50
+    if (state.history.length > 50) state.history.pop();
+    
+    localStorage.setItem('sf_history', JSON.stringify(state.history));
+}
+
 // --- Initialization ---
 function init() {
     console.log("App Initializing...");
@@ -50,6 +69,7 @@ function init() {
     elements.modelIdInput.value = state.modelId;
     elements.animSpeedInput.value = state.speed;
     elements.showOutlineInput.checked = state.showOutline;
+    elements.strokeLimitInput.value = state.strokeLimit;
 
     // Check if API key is missing
     if (!state.apiKey) {
@@ -75,6 +95,9 @@ function setupEventListeners() {
 
     // Voice
     elements.voiceBtn.addEventListener('click', startVoiceRecognition);
+    
+    // Random
+    elements.randomBtn.addEventListener('click', () => handleRandom());
     
     // Cancel Voice
     elements.cancelVoiceBtn.addEventListener('click', stopVoiceRecognition);
@@ -111,6 +134,7 @@ function saveSettings() {
     const model = elements.modelIdInput.value.trim();
     const speed = parseFloat(elements.animSpeedInput.value);
     const showOutline = elements.showOutlineInput.checked;
+    const strokeLimit = parseInt(elements.strokeLimitInput.value);
 
     if (!key) {
         alert('请输入 API Key');
@@ -122,14 +146,16 @@ function saveSettings() {
     localStorage.setItem('sf_model_id', model);
     localStorage.setItem('sf_speed', speed);
     localStorage.setItem('sf_show_outline', showOutline);
+    localStorage.setItem('sf_stroke_limit', strokeLimit);
 
     state.apiKey = key;
     state.apiBase = base;
     state.modelId = model;
     state.speed = speed;
     state.showOutline = showOutline;
+    state.strokeLimit = strokeLimit;
 
-    console.log("Settings saved:", { base, model, speed, showOutline }); // Don't log key
+    console.log("Settings saved:", { base, model, speed, showOutline, strokeLimit }); // Don't log key
     toggleModal(false);
     setStatus('设置已保存', 'text-green-500');
 }
@@ -199,6 +225,96 @@ function stopVoiceRecognition() {
     setStatus('', '');
 }
 
+// --- Random Logic ---
+async function handleRandom(retryCount = 0) {
+    console.log("Handling Random. Stroke Limit:", state.strokeLimit);
+
+    if (!state.apiKey) {
+        setStatus('请先设置 API Key', 'text-red-500');
+        toggleModal(true);
+        return;
+    }
+
+    if (retryCount > 2) {
+        setStatus('随机尝试次数过多，请稍后再试', 'text-red-500');
+        setLoading(false);
+        return;
+    }
+
+    setLoading(true);
+    setStatus(retryCount > 0 ? '重复了，正在重抽...' : '正在抽取幸运汉字...', 'text-secondary');
+    
+    // Construct prompt based on difficulty
+    let constraint = "难度不限，适合小学生学习。";
+    let strokeNote = "";
+    
+    if (state.strokeLimit > 0) {
+        constraint = `**严格限制**：生成的汉字（如果是词语，则包含的**每一个字**）的笔画数必须 **小于等于 ${state.strokeLimit} 画**。`;
+        strokeNote = `请务必计算笔画数，不要生成超过 ${state.strokeLimit} 画的复杂字。`;
+    }
+
+    // Get last 20 words to avoid
+    const avoidWords = state.history.slice(0, 20).join('、');
+
+    const prompt = `
+    任务：随机推荐一个适合儿童学习的**常用汉字**或**有意义的常用词语**（两字词）。
+    
+    ${constraint}
+    ${strokeNote}
+    
+    **其他要求**：
+    1. 必须是生活中常用的、有具体意义的词（如“白云”、“朋友”、“快乐”），绝对不要生造词或无意义的搭配。
+    2. 绝对不要生成以下这些词（最近已学过）：${avoidWords || '无'}。
+    
+    请直接返回这个字或词语，不要包含任何标点符号、拼音或解释。只返回纯文本。
+    `;
+
+    try {
+        const response = await fetch(`${state.apiBase}/chat/completions`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${state.apiKey}`
+            },
+            body: JSON.stringify({
+                model: state.modelId,
+                messages: [
+                    { role: "system", content: "You are a helpful assistant." },
+                    { role: "user", content: prompt }
+                ],
+                temperature: 1.0 // High temp for randomness
+            })
+        });
+
+        if (!response.ok) throw new Error(`API Error: ${response.status}`);
+
+        const data = await response.json();
+        let randomText = data.choices[0].message.content.trim();
+        
+        // Cleanup response (remove quotes, punctuation)
+        randomText = randomText.replace(/[。，"“”.\s]/g, '');
+        
+        if (randomText) {
+            // Client-side duplicate check (double safety)
+            if (state.history.includes(randomText)) {
+                console.log(`Duplicate random word: ${randomText}, retrying...`);
+                handleRandom(retryCount + 1);
+                return;
+            }
+
+            elements.userInput.value = randomText;
+            handleSearch(); // Trigger search immediately
+        } else {
+            throw new Error("AI 返回内容为空");
+        }
+
+    } catch (error) {
+        console.error("Random Error:", error);
+        setStatus('抽词失败: ' + error.message, 'text-red-500');
+        setLoading(false);
+    }
+}
+
 // --- Main Logic: Search & AI ---
 async function handleSearch() {
     console.log("Search button clicked");
@@ -216,6 +332,9 @@ async function handleSearch() {
         toggleModal(true);
         return;
     }
+    
+    // Add to history immediately
+    addToHistory(text);
 
     setLoading(true);
     elements.resultContainer.classList.add('hidden');
@@ -488,62 +607,64 @@ function renderResults(data) {
                 });
             };
             
-                        // Breakdown Logic (Overlay) - Native SVG Implementation
-                        btnBreakdown.onclick = () => {
-                            // Show Overlay
-                            elements.breakdownOverlay.classList.remove('hidden');
-                            elements.breakdownTitle.innerText = `"${characterToLoad}" 字分解`;
-                            elements.breakdownContent.innerHTML = '<p class="text-gray-400 text-lg w-full text-center mt-10">正在生成笔画...</p>';
-                            
-                            // Fetch Data
-                            HanziWriter.loadCharacterData(characterToLoad, { charDataLoader: charDataLoader }).then(charData => {
-                                elements.breakdownContent.innerHTML = '';
-                                
-                                charData.strokes.forEach((strokePath, i) => {
-                                    const stepContainer = document.createElement('div');
-                                    stepContainer.className = 'flex flex-col items-center bg-white p-2 rounded-xl';
-                                    
-                                    const stepLabel = document.createElement('span');
-                                    stepLabel.className = 'text-lg font-bold text-gray-600 mt-2';
-                                    stepLabel.innerText = `第${i+1}笔`;
-                                    
-                                    // Construct SVG
-                                    // HanziWriter data is typically 1024x1024 coordinate system.
-                                    // We need a specific transform to flip it upright.
-                                    // Standard HanziWriter transform: scale(1, -1) translate(0, -900)
-                                    
-                                    let pathsHtml = '';
-                                    // Accumulate strokes up to i
-                                    for (let k = 0; k <= i; k++) {
-                                        const color = (k === i) ? '#ef4444' : '#333'; // Highlight current
-                                        pathsHtml += `<path d="${charData.strokes[k]}" fill="${color}" />`;
-                                    }
+            // Breakdown Logic (Overlay) - Native SVG Implementation
+            btnBreakdown.onclick = () => {
+                // Show Overlay
+                elements.breakdownOverlay.classList.remove('hidden');
+                elements.breakdownTitle.innerText = `"${characterToLoad}" 字分解`;
+                elements.breakdownContent.innerHTML = '<p class="text-gray-400 text-lg w-full text-center mt-10">正在生成笔画...</p>';
+                
+                // Fetch Data
+                HanziWriter.loadCharacterData(characterToLoad, { charDataLoader: charDataLoader }).then(charData => {
+                    elements.breakdownContent.innerHTML = '';
+                    
+                    charData.strokes.forEach((strokePath, i) => {
+                        const stepContainer = document.createElement('div');
+                        stepContainer.className = 'flex flex-col items-center bg-white p-2 rounded-xl';
+                        
+                        const stepLabel = document.createElement('span');
+                        stepLabel.className = 'text-lg font-bold text-gray-600 mt-2';
+                        stepLabel.innerText = `第${i+1}笔`;
+                        
+                        // Construct SVG
+                        // HanziWriter data is typically 1024x1024 coordinate system.
+                        // We need a specific transform to flip it upright.
+                        // Standard HanziWriter transform: scale(1, -1) translate(0, -900)
+                        
+                        let pathsHtml = '';
+                        // Accumulate strokes up to i
+                        for (let k = 0; k <= i; k++) {
+                            const color = (k === i) ? '#ef4444' : '#333'; // Highlight current
+                            pathsHtml += `<path d="${charData.strokes[k]}" fill="${color}" />`;
+                        }
+
+                        // Tian Zi Ge Background Lines are handled by .hanzi-container CSS
+                        // So SVG needs transparent background to show them
+                        const svg = `
+                            <svg viewBox="0 0 1024 1024" width="100" height="100" style="background: none; border-radius: 8px;">
+                                <g transform="scale(1, -1) translate(0, -900)">
+                                    ${pathsHtml}
+                                </g>
+                            </svg>
+                        `;
+                        
+                        // Wrapper for Grid (CSS based)
+                        const gridWrapper = document.createElement('div');
+                        gridWrapper.className = 'hanzi-container'; // Reuse our CSS class for grid lines!
+                        gridWrapper.style.width = '100px';
+                        gridWrapper.style.height = '100px';
+                        gridWrapper.innerHTML = svg;
+
+                        stepContainer.appendChild(gridWrapper);
+                        stepContainer.appendChild(stepLabel);
+                        elements.breakdownContent.appendChild(stepContainer);
+                    });
+                }).catch(err => {
+                    console.error(err);
+                    elements.breakdownContent.innerHTML = `<p class="text-red-400 text-lg w-full text-center mt-10">加载失败: ${err.message}</p>`;
+                });
+            };
             
-                                                            // Tian Zi Ge Background Lines are handled by .hanzi-container CSS
-                                                            // So SVG needs transparent background to show them
-                                                            const svg = `
-                                                                <svg viewBox="0 0 1024 1024" width="100" height="100" style="background: none; border-radius: 8px;">
-                                                                    <g transform="scale(1, -1) translate(0, -900)">
-                                                                        ${pathsHtml}
-                                                                    </g>
-                                                                </svg>
-                                                            `;                                    
-                                    // Wrapper for Grid (CSS based)
-                                    const gridWrapper = document.createElement('div');
-                                    gridWrapper.className = 'hanzi-container'; // Reuse our CSS class for grid lines!
-                                    gridWrapper.style.width = '100px';
-                                    gridWrapper.style.height = '100px';
-                                    gridWrapper.innerHTML = svg;
-            
-                                    stepContainer.appendChild(gridWrapper);
-                                    stepContainer.appendChild(stepLabel);
-                                    elements.breakdownContent.appendChild(stepContainer);
-                                });
-                            }).catch(err => {
-                                console.error(err);
-                                elements.breakdownContent.innerHTML = `<p class="text-red-400 text-lg w-full text-center mt-10">加载失败: ${err.message}</p>`;
-                            });
-                        };            
         }, 50);
     });
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>王孝满汉字小课堂</title>
+    <title>汉字小课堂</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Hanzi Writer -->
@@ -57,8 +57,13 @@
             <!-- Buttons Row -->
             <div class="flex w-full gap-3 h-12 md:h-14">
                 <!-- Voice Button -->
-                <button id="voice-btn" class="flex-none w-16 h-full bg-secondary hover:bg-blue-300 rounded-xl flex justify-center items-center shadow-sm hover:shadow-md transition-all active:scale-95 group">
+                <button id="voice-btn" class="flex-none w-16 h-full bg-secondary hover:bg-blue-300 rounded-xl flex justify-center items-center shadow-sm hover:shadow-md transition-all active:scale-95 group" title="语音输入">
                     <svg class="group-hover:scale-110 transition-transform" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                </button>
+
+                <!-- Random Button -->
+                <button id="random-btn" class="flex-none w-16 h-full bg-purple-400 hover:bg-purple-500 rounded-xl flex justify-center items-center shadow-sm hover:shadow-md transition-all active:scale-95 group" title="随机抽词">
+                    <svg class="group-hover:rotate-180 transition-transform duration-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 8h.01"></path><path d="M8 8h.01"></path><path d="M8 16h.01"></path><path d="M16 16h.01"></path><path d="M12 12h.01"></path></svg>
                 </button>
                 
                 <!-- Search Button -->
@@ -137,6 +142,16 @@
                 <hr class="border-gray-100 my-4">
                 
                 <!-- Display Settings -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">随机难度 (笔画限制)</label>
+                    <select id="stroke-limit" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none bg-white">
+                        <option value="5">简单 (≤ 5画)</option>
+                        <option value="10">中等 (≤ 10画)</option>
+                        <option value="15">困难 (≤ 15画)</option>
+                        <option value="0">无限制</option>
+                    </select>
+                </div>
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">书写速度 / Speed</label>
                     <div class="flex items-center gap-2">
