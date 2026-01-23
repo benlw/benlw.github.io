@@ -164,6 +164,15 @@
         <p class="absolute bottom-10 text-white text-sm bg-black bg-opacity-50 px-3 py-1 rounded-full">点击任意处关闭</p>
     </div>
 
+    <!-- Listening Overlay -->
+    <div id="listening-overlay" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden flex flex-col justify-center items-center backdrop-blur-sm transition-all">
+        <div class="w-32 h-32 bg-white rounded-full flex justify-center items-center animate-bounce shadow-lg border-4 border-primary">
+            <svg class="text-primary w-16 h-16" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        </div>
+        <p class="text-white text-2xl font-cartoon mt-8 animate-pulse tracking-widest">Capybara 正在听...</p>
+        <button id="cancel-voice-btn" class="mt-12 px-8 py-2 border-2 border-white text-white rounded-full hover:bg-white hover:text-primary transition-colors font-bold tracking-wide">取消 / Cancel</button>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

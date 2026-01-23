@@ -21,11 +21,13 @@ const els = {
     textInput: document.getElementById('text-input'),
     sendBtn: document.getElementById('send-btn'),
     voiceBtn: document.getElementById('voice-btn'),
-    micIcon: document.getElementById('mic-icon'),
-    stopIcon: document.getElementById('stop-icon'),
-    statusText: document.getElementById('status-text'),
+    
+    // New Overlay Elements
+    listeningOverlay: document.getElementById('listening-overlay'),
+    cancelVoiceBtn: document.getElementById('cancel-voice-btn'),
+    
     settingsBtn: document.getElementById('settings-btn'),
-    clearChatBtn: document.getElementById('clear-chat-btn'), // New
+    clearChatBtn: document.getElementById('clear-chat-btn'), 
     settingsModal: document.getElementById('settings-modal'),
     closeSettings: document.getElementById('close-settings'),
     saveSettings: document.getElementById('save-settings'),
@@ -69,7 +71,6 @@ function init() {
             els.apiKeyInput.value = legacyKey;
         } else {
             setTimeout(() => {
-                // Only show modal if no key, don't nag if history exists
                 if(state.messages.length === 0) {
                      els.settingsModal.classList.remove('hidden');
                 }
@@ -103,7 +104,7 @@ function renderHistory() {
 
     // Persisted Messages
     state.messages.forEach(msg => {
-        appendMessage(msg.role, msg.text, false); // false = no animation for history
+        appendMessage(msg.role, msg.text, false); 
     });
     
     scrollToBottom();
@@ -116,7 +117,8 @@ function setupEventListeners() {
         if (e.key === 'Enter') handleUserMessage();
     });
 
-    els.voiceBtn.addEventListener('click', toggleRecording);
+    els.voiceBtn.addEventListener('click', startRecording);
+    els.cancelVoiceBtn.addEventListener('click', stopRecording); // Cancel from overlay
 
     els.settingsBtn.addEventListener('click', () => els.settingsModal.classList.remove('hidden'));
     els.closeSettings.addEventListener('click', () => els.settingsModal.classList.add('hidden'));
@@ -129,9 +131,6 @@ function setupEventListeners() {
             return `${role}: ${m.text}\n-------------------`;
         }).join('\n');
         
-        // Simple way: Create a temporary textarea and copy, or just show in prompt
-        // Let's creating a simple modal overlay dynamically or just use a prompt/alert for V1 simplicity?
-        // Actually, prompt is bad for long text. Let's make a simple new window/tab.
         const win = window.open("", "History", "width=600,height=600");
         win.document.write(`<pre style="font-family: sans-serif; white-space: pre-wrap; word-wrap: break-word; padding: 20px;">${historyText || '暂无聊天记录'}</pre>`);
         win.document.title = "聊天记录备份";
@@ -200,21 +199,13 @@ function saveSettings() {
     alert("设置保存成功！");
 }
 
-// --- Logic: Recording ---
-function toggleRecording() {
-    if (isRecording) {
-        stopRecording();
-    } else {
-        startRecording();
-    }
-}
-
+// --- Logic: Recording (Updated for Overlay) ---
 function startRecording() {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
         return alert("您的浏览器不支持语音识别，请使用 Chrome。");
     }
     
-    stopSpeaking();
+    stopSpeaking(); // Stop TTS if playing
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     recognition = new SpeechRecognition();
@@ -224,32 +215,40 @@ function startRecording() {
 
     recognition.onstart = () => {
         isRecording = true;
-        els.micIcon.classList.add('hidden');
-        els.stopIcon.classList.remove('hidden');
-        els.voiceBtn.classList.add('bg-red-500');
-        els.voiceBtn.classList.remove('bg-primary');
-        els.statusText.textContent = "正在听你说...";
-        els.textInput.placeholder = "正在听...";
+        // Show Overlay
+        els.listeningOverlay.classList.remove('hidden');
     };
 
     recognition.onend = () => {
         isRecording = false;
-        resetMicUI();
+        // Don't auto-hide here immediately, let logic handle it or user cancel
+        // But for safety, if user stopped talking but no result came, hide it
+        if (!els.listeningOverlay.classList.contains('hidden')) {
+             // Maybe user just stopped talking. 
+             // We'll leave it to stopRecording() or result to close.
+             // Actually standard behavior: close on end.
+             resetMicUI();
+        }
     };
 
     recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         els.textInput.value = transcript;
+        
+        // Update overlay text to show what's being heard
+        // Optional: could add a <p> in overlay to show real-time text
+        
         if (event.results[0].isFinal) {
-             els.statusText.textContent = "听到啦！正在思考...";
+             // Success! Close overlay immediately and send
+             stopRecording();
              setTimeout(() => handleUserMessage(), 500);
         }
     };
 
     recognition.onerror = (e) => {
         console.error(e);
-        resetMicUI();
-        els.statusText.textContent = "没听清，请再试一次~";
+        stopRecording();
+        alert("没听清，请再试一次~");
     };
 
     recognition.start();
@@ -257,16 +256,12 @@ function startRecording() {
 
 function stopRecording() {
     if (recognition) recognition.stop();
+    resetMicUI();
 }
 
 function resetMicUI() {
     isRecording = false;
-    els.micIcon.classList.remove('hidden');
-    els.stopIcon.classList.add('hidden');
-    els.voiceBtn.classList.remove('bg-red-500');
-    els.voiceBtn.classList.add('bg-primary');
-    els.textInput.placeholder = "和 Capybara 聊天...";
-    els.statusText.textContent = "点击话筒开始说话...";
+    els.listeningOverlay.classList.add('hidden');
 }
 
 // --- Logic: Chat ---
@@ -279,7 +274,6 @@ async function handleUserMessage() {
         return alert("请先设置 API Key");
     }
 
-    // Add & Save User Message
     appendMessage('user', text);
     state.messages.push({ role: 'user', text });
     localStorage.setItem('curiosity_history', JSON.stringify(state.messages));
@@ -287,7 +281,6 @@ async function handleUserMessage() {
     els.textInput.value = '';
     const loadingId = appendLoading();
     
-    // System Prompt for "Capybara" (Smart & Educational Ver.)
     const systemPrompt = `你是一只名叫 "Capybara (卡皮巴拉)" 的水豚 🦦。
     你的特点是：情绪超级稳定、性格温和、**博学多才**、说话慢条斯理但非常有逻辑。
     你的对话对象是3-8岁的小朋友。
@@ -305,7 +298,6 @@ async function handleUserMessage() {
     4. **画画指令**：如果被要求画画，只回答：“好的，点击下面的【🎨 画给我看】按钮，我这就为你画一张。”
     `;
     
-    // Construct context window (Last 10 messages + System)
     const contextMessages = state.messages.slice(-10).map(m => ({ role: m.role, content: m.text }));
     
     const messages = [
@@ -333,7 +325,6 @@ async function handleUserMessage() {
 
         removeLoading(loadingId);
         
-        // Add & Save AI Message
         appendMessage('assistant', reply);
         state.messages.push({ role: 'assistant', text: reply });
         localStorage.setItem('curiosity_history', JSON.stringify(state.messages));
@@ -375,12 +366,11 @@ function appendMessage(role, text, animate = true) {
         return;
     }
 
-    // Enhanced Markdown Rendering with Highlight.js
     const htmlContent = marked.parse(text);
 
     let extraActions = '';
     if (role === 'assistant') {
-        const safeText = text.replace(/'/g, "\' ").replace(/"/g, '&quot;').replace(/\n/g, ' ');
+        const safeText = text.replace(/'/g, "' ").replace(/"/g, '&quot;').replace(/\n/g, ' ');
         
         extraActions = `
         <div class="flex gap-2 mt-1 ml-1">
@@ -407,7 +397,6 @@ function appendMessage(role, text, animate = true) {
 
     els.chatContainer.appendChild(div);
     
-    // Highlight Code Blocks
     div.querySelectorAll('pre code').forEach((block) => {
         hljs.highlightElement(block);
     });
@@ -490,12 +479,10 @@ async function speak(text) {
         }
     }
 
-    // Local Fallback
     const utterance = new SpeechSynthesisUtterance(text.replace(/[*#`]/g, ''));
     utterance.lang = 'zh-CN';
     utterance.rate = 1.0;
     
-    // Attempt to select a Chinese voice
     const voices = synthesis.getVoices();
     const zhVoice = voices.find(v => v.lang.includes('zh'));
     if (zhVoice) utterance.voice = zhVoice;
@@ -503,7 +490,7 @@ async function speak(text) {
     synthesis.speak(utterance);
 }
 
-// --- Logic: Image Generation ---
+// --- Logic: Image Generation (Smart Context-Aware) ---
 window.generateImage = async function(contextText) {
     if (!state.apiKey) return alert("请先设置 API Key");
     
@@ -516,17 +503,54 @@ window.generateImage = async function(contextText) {
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <span class="text-sm">Capybara 正在作画...</span>
+            <span class="text-sm">Capybara 正在构思画面...</span>
         </div>
     `;
     els.chatContainer.appendChild(div);
     scrollToBottom();
 
     try {
-        // Kolors prompt
-        let imagePrompt = `${contextText}，儿童插画风格，温暖治愈，水彩质感，卡皮巴拉元素，高质量，杰作，8k`;
-        console.log("Generating image with:", state.imageModel, "Prompt:", imagePrompt);
+        // Step 1: Optimize Prompt using LLM
+        // We ask the LLM to describe the image visually based on the educational context
+        const optimizationPrompt = `
+        你是一个专业的儿童教材插画师。请根据以下文本内容，写一段用于 AI 生图（Kolors）的提示词。
+        
+        **分析原则**：
+        1. **数学/几何/物理**：必须生成“清晰的教科书示意图”、“扁平化设计”、“线条清晰”、“色彩明亮但背景干净”，**不要**出现复杂背景。
+        2. **古诗/历史**：生成“中国水墨画风格”或“精美历史场景还原”、“电影质感”、“意境优美”。
+        3. **生物/自然**：生成“DK百科全书风格”、“写实细腻插画”、“焦点清晰”。
+        4. **日常/故事**：生成“温馨治愈水彩风”、“宫崎骏风格”，可以包含一只拟人化的水豚(Capybara)作为主角。
+        
+        **输出要求**：
+        - 直接输出提示词（Prompt），不要包含“好的”、“提示词是”等废话。
+        - 提示词中包含具体的画面描述 + 风格关键词。
+        
+        **文本内容**：
+        "${contextText}"
+        `;
 
+        const promptResponse = await fetch(`${state.apiBase}/chat/completions`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${state.apiKey}`
+            },
+            body: JSON.stringify({
+                model: 'Qwen/Qwen2.5-7B-Instruct', // Use a fast/cheap model for this tool task
+                messages: [{ role: "user", content: optimizationPrompt }],
+                temperature: 0.7
+            })
+        });
+
+        if (!promptResponse.ok) throw new Error("Prompt Optimization Failed");
+        const promptData = await promptResponse.json();
+        let optimizedPrompt = promptData.choices[0].message.content.trim();
+        
+        // Safety: Ensure it's not too long for Kolors
+        optimizedPrompt = optimizedPrompt.substring(0, 500); 
+        console.log("🎨 Optimized Prompt:", optimizedPrompt);
+
+        // Step 2: Generate Image
         const imgResponse = await fetch(`${state.apiBase}/images/generations`, {
             method: 'POST',
             headers: {
@@ -535,7 +559,7 @@ window.generateImage = async function(contextText) {
             },
             body: JSON.stringify({
                 model: state.imageModel,
-                prompt: imagePrompt,
+                prompt: optimizedPrompt, // Use the smart prompt
                 image_size: "1024x1024",
                 batch_size: 1
             })
