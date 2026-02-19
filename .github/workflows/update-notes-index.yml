@@ -7,7 +7,9 @@ on:
     paths:
       - "notes/**/*.html"
       - "tools/build-notes-index.mjs"
+      - "tools/build-sitemap.mjs"
       - ".github/workflows/update-notes-index.yml"
+      - "CNAME"
       - "!notes/index.html"
       - "!notes/_template.html"
   schedule:
@@ -33,16 +35,18 @@ jobs:
           node-version: "20"
 
       - name: Rebuild notes index
-        run: node tools/build-notes-index.mjs
+        run: |
+          node tools/build-notes-index.mjs
+          node tools/build-sitemap.mjs
 
       - name: Commit and push if changed
         run: |
-          if git diff --quiet -- notes/notes-index.json; then
-            echo "No changes in notes/notes-index.json"
+          if git diff --quiet -- notes/notes-index.json sitemap.xml robots.txt; then
+            echo "No changes in index artifacts"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add notes/notes-index.json
-          git commit -m "Auto-update notes index"
+          git add notes/notes-index.json sitemap.xml robots.txt
+          git commit -m "Auto-update notes index and sitemap"
           git push
