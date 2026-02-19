@@ -1,0 +1,48 @@
+name: Update Notes Index
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "notes/**/*.html"
+      - "tools/build-notes-index.mjs"
+      - ".github/workflows/update-notes-index.yml"
+      - "!notes/index.html"
+      - "!notes/_template.html"
+  schedule:
+    # UTC 19:30 = Beijing Time (UTC+8) 03:30 (next day)
+    - cron: "30 19 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-notes-index:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Rebuild notes index
+        run: node tools/build-notes-index.mjs
+
+      - name: Commit and push if changed
+        run: |
+          if git diff --quiet -- notes/notes-index.json; then
+            echo "No changes in notes/notes-index.json"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add notes/notes-index.json
+          git commit -m "Auto-update notes index"
+          git push

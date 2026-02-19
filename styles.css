@@ -470,6 +470,22 @@ body {
   padding: 0.32rem;
 }
 
+.heatmap-fallback {
+  margin: 0.44rem 0 0;
+  font-size: 0.84rem;
+  color: #5f6f7c;
+}
+
+.heatmap-fallback a {
+  color: var(--brand);
+  text-decoration: none;
+}
+
+.heatmap-fallback a:hover,
+.heatmap-fallback a:focus-visible {
+  text-decoration: underline;
+}
+
 .footer {
   margin-top: 1.12rem;
   text-align: center;

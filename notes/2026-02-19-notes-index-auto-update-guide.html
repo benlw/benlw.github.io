@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notes & Logs 自动更新教程（GitHub Actions）</title>
+    <meta name="note-date" content="2026-02-19" />
+    <style>
+      body {
+        margin: 0;
+        padding: 2rem 1rem 3rem;
+        font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+        line-height: 1.75;
+        color: #1f2d38;
+        background: #f6f8f7;
+      }
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        background: #fff;
+        border: 1px solid #d9e3e8;
+        border-radius: 14px;
+        padding: 1.4rem 1.2rem;
+      }
+      h1,
+      h2 {
+        margin: 0.2rem 0 0.7rem;
+        color: #122532;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+      h2 {
+        font-size: 1.15rem;
+        margin-top: 1.25rem;
+      }
+      p {
+        margin: 0.5rem 0;
+      }
+      ul,
+      ol {
+        margin: 0.45rem 0 0.6rem 1.25rem;
+      }
+      pre {
+        overflow: auto;
+        border-radius: 10px;
+        border: 1px solid #d5e0e5;
+        background: #f8fbfc;
+        padding: 0.75rem;
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 0.9rem;
+      }
+      .meta {
+        color: #5b6f7d;
+        font-size: 0.9rem;
+      }
+      .back {
+        margin-top: 1.4rem;
+      }
+      .back a {
+        color: #1b5e7a;
+        text-decoration: none;
+      }
+      .back a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Notes &amp; Logs 自动更新教程（GitHub Actions）</h1>
+      <p class="meta">2026-02-19</p>
+
+      <p>
+        这篇笔记记录我目前对 <code>notes-index.json</code> 的自动维护方案。目标很直接：只要我在
+        <code>notes/</code> 下新增或修改文章，首页与 <code>notes/index.html</code> 的列表就能自动同步，不再手动执行脚本。
+      </p>
+
+      <h2>1. 工作流文件位置</h2>
+      <p>在仓库中新增文件：</p>
+      <pre><code>.github/workflows/update-notes-index.yml</code></pre>
+
+      <h2>2. 完整 YAML 示例</h2>
+      <pre><code>name: Update Notes Index
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "notes/**/*.html"
+      - "tools/build-notes-index.mjs"
+      - ".github/workflows/update-notes-index.yml"
+      - "!notes/index.html"
+      - "!notes/_template.html"
+  schedule:
+    # UTC 19:30 = Beijing Time (UTC+8) 03:30 (next day)
+    - cron: "30 19 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-notes-index:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Rebuild notes index
+        run: node tools/build-notes-index.mjs
+
+      - name: Commit and push if changed
+        run: |
+          if git diff --quiet -- notes/notes-index.json; then
+            echo "No changes in notes/notes-index.json"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add notes/notes-index.json
+          git commit -m "Auto-update notes index"
+          git push</code></pre>
+
+      <h2>3. 触发策略说明</h2>
+      <ol>
+        <li><code>push + paths</code>：只在笔记 HTML 或索引脚本变更时触发，避免无关提交触发。</li>
+        <li><code>schedule</code>：每天北京时间 03:30 定时跑一次，作为兜底同步。</li>
+        <li><code>workflow_dispatch</code>：需要时可在 GitHub Actions 页面手动触发。</li>
+      </ol>
+
+      <h2>4. 日常写作步骤（最实用）</h2>
+      <ol>
+        <li>在 <code>notes/</code> 新建一篇 <code>*.html</code>。</li>
+        <li>写好 <code>&lt;title&gt;</code> 和 <code>&lt;meta name="note-date"&gt;</code>。</li>
+        <li>提交并 push 到 <code>master</code>。</li>
+        <li>等待 Actions 自动更新 <code>notes/notes-index.json</code>。</li>
+      </ol>
+
+      <h2>5. 实际建议</h2>
+      <ul>
+        <li>文件名建议带日期前缀，后续检索更清晰。</li>
+        <li>文章只负责内容，索引交给脚本生成，维护成本最低。</li>
+        <li>如果当天没更新，定时任务也会兜底把索引修正。</li>
+      </ul>
+
+      <p class="back"><a href="index.html">返回 Notes &amp; Logs 列表</a></p>
+    </main>
+  </body>
+</html>

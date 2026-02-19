@@ -84,7 +84,21 @@
     node.textContent = `Last updated: ${formatDateYYYYMMDD(new Date())}`;
   }
 
+  function initHeatmapFallback() {
+    document.querySelectorAll('[data-heatmap]').forEach((block) => {
+      const image = block.querySelector('[data-heatmap-img]');
+      const fallback = block.querySelector('[data-heatmap-fallback]');
+      if (!image || !fallback) return;
+
+      image.addEventListener('error', () => {
+        image.style.display = 'none';
+        fallback.hidden = false;
+      });
+    });
+  }
+
   initReveal();
   initCopyButtons();
   initLastUpdatedDate();
+  initHeatmapFallback();
 })();

@@ -201,7 +201,7 @@
                   (sub) =>
                     `<a href="${escapeHtml(
                       withBase(sub.href, base)
-                    )}"${linkAttrs(withBase(sub.href, base))}>${escapeHtml(
+                    )}" target="_blank" rel="noopener noreferrer">${escapeHtml(
                       sub.label
                     )}</a>`
                 )
