@@ -7,5 +7,9 @@
 4. Rebuild the notes index:
    - `node tools/build-notes-index.mjs`
 
-The homepage and `notes/index.html` read `notes/notes-index.json` and render items as:
+This command updates:
+- `notes/notes-index.json`
+- `notes/notes-index.js`
+
+The homepage and `notes/index.html` read the generated notes index and render items as:
 `date + title + link`.

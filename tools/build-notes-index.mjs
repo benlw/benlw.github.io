@@ -6,6 +6,7 @@ import path from "node:path";
 const rootDir = process.cwd();
 const notesDir = path.join(rootDir, "notes");
 const outputFile = path.join(notesDir, "notes-index.json");
+const outputJsFile = path.join(notesDir, "notes-index.js");
 
 function cleanText(input) {
   return String(input || "")
@@ -95,7 +96,17 @@ async function buildNotesIndex() {
   };
 
   await fs.writeFile(outputFile, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
-  console.log(`Updated ${path.relative(rootDir, outputFile)} with ${items.length} item(s).`);
+  await fs.writeFile(
+    outputJsFile,
+    `window.NOTES_INDEX = ${JSON.stringify(payload, null, 2)};\n`,
+    "utf8"
+  );
+  console.log(
+    `Updated ${path.relative(rootDir, outputFile)} and ${path.relative(
+      rootDir,
+      outputJsFile
+    )} with ${items.length} item(s).`
+  );
 }
 
 buildNotesIndex().catch((error) => {

@@ -1,4 +1,4 @@
-{
+window.NOTES_INDEX = {
   "generatedAt": "2026-02-19T16:47:52.519Z",
   "items": [
     {
@@ -7,4 +7,4 @@
       "href": "notes/2026-02-19-notes-index-auto-update-guide.html"
     }
   ]
-}
+};

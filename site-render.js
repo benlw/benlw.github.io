@@ -253,6 +253,19 @@
       const limitRaw = node.dataset.limit;
       const limit = limitRaw ? Number(limitRaw) : Number.POSITIVE_INFINITY;
       const sourceUrl = withBase(source, base);
+      const globalPayload =
+        window.NOTES_INDEX && Array.isArray(window.NOTES_INDEX.items)
+          ? window.NOTES_INDEX
+          : null;
+
+      if (globalPayload) {
+        const allItems = globalPayload.items;
+        const items = Number.isFinite(limit)
+          ? allItems.slice(0, limit)
+          : allItems;
+        renderNotesItems(node, items, base);
+        return;
+      }
 
       try {
         const response = await fetch(sourceUrl, { cache: "no-store" });
