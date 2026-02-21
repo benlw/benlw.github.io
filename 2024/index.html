@@ -318,15 +318,23 @@
         </table>
       </section>
       <div class="comment-wrapper">
-        <div
-          id="cusdis_thread"
-          data-host="https://cusdis.com"
-          data-app-id="5b820f54-1069-4b4d-8513-f967e46e4153"
-          data-page-id="homepage-2024"
-          data-page-url="https://5imcs.com/2024"
-          data-page-title="Ben's Academic Homepage"
-        ></div>
-        <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+        <script
+          src="https://giscus.app/client.js"
+          data-repo="benlw/benlw.github.io"
+          data-repo-id="MDEwOlJlcG9zaXRvcnkyNDEwMzQwNjU="
+          data-category="General"
+          data-category-id="DIC_kwDODl3jUc4C25RN"
+          data-mapping="pathname"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="top"
+          data-theme="light"
+          data-lang="en"
+          data-loading="lazy"
+          crossorigin="anonymous"
+          async
+        ></script>
       </div>
     </main>
 
@@ -375,15 +383,5 @@
       </div>
     </footer>
 
-    <script>
-      window.addEventListener("load", function () {
-        setTimeout(() => {
-          let scrollHeight = document.querySelector("#cusdis_thread iframe")
-            .contentWindow.document.body.scrollHeight;
-          document.querySelector("#cusdis_thread iframe").style.height =
-            scrollHeight + "px";
-        }, 1000);
-      });
-    </script>
   </body>
 </html>

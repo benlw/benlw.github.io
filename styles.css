@@ -199,6 +199,11 @@ body {
   padding: 1rem;
 }
 
+.comment-wrapper {
+  margin: 0 auto;
+  padding: 0.2rem 0;
+}
+
 .section-head {
   display: flex;
   justify-content: space-between;
