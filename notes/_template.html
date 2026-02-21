@@ -28,10 +28,14 @@
         gap: 0.9rem;
         margin-bottom: 0.8rem;
         font-size: 0.92rem;
+        flex-wrap: wrap;
       }
       .top-links a {
         color: #1b5e7a;
         text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;
       }
       .top-links a:hover {
         text-decoration: underline;
@@ -40,6 +44,29 @@
         margin-top: 1.4rem;
         padding-top: 1rem;
         border-top: 1px solid #d9e3e8;
+      }
+      pre {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      @media (max-width: 640px) {
+        body {
+          padding: 1rem 0.8rem 2rem;
+        }
+        main {
+          padding: 1rem 0.85rem;
+        }
+        .top-links {
+          font-size: 0.88rem;
+          margin-bottom: 0.65rem;
+        }
+        .comment-wrapper {
+          margin-top: 1rem;
+          padding-top: 0.8rem;
+        }
+        pre {
+          padding: 0.62rem;
+        }
       }
     </style>
   </head>
