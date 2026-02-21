@@ -1,0 +1,30 @@
+name: Verify Giscus Embeds
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "2024/index.html"
+      - "ongoing/index.html"
+      - "notes/*.html"
+      - "tools/verify-giscus.sh"
+      - ".github/workflows/verify-giscus.yml"
+  pull_request:
+    paths:
+      - "2024/index.html"
+      - "ongoing/index.html"
+      - "notes/*.html"
+      - "tools/verify-giscus.sh"
+      - ".github/workflows/verify-giscus.yml"
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify giscus embeds
+        run: bash tools/verify-giscus.sh
