@@ -22,6 +22,20 @@
         border-radius: 14px;
         padding: 1.4rem 1.2rem;
       }
+      .top-links {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.9rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.92rem;
+      }
+      .top-links a {
+        color: #1b5e7a;
+        text-decoration: none;
+      }
+      .top-links a:hover {
+        text-decoration: underline;
+      }
       .comment-wrapper {
         margin-top: 1.4rem;
         padding-top: 1rem;
@@ -31,6 +45,10 @@
   </head>
   <body>
     <main>
+      <div class="top-links">
+        <a href="../index.html">Back to homepage</a>
+        <a href="index.html">Back to Notes &amp; Logs</a>
+      </div>
       <h1>Note Title</h1>
       <p>Write note here.</p>
       <div class="comment-wrapper">
@@ -38,10 +56,10 @@
           src="https://giscus.app/client.js"
           data-repo="benlw/benlw.github.io"
           data-repo-id="MDEwOlJlcG9zaXRvcnkyNDEwMzQwNjU="
-          data-category="General"
-          data-category-id="DIC_kwDODl3jUc4C25RN"
+          data-category="Website Comments"
+          data-category-id="DIC_kwDODl3jUc4C25Z4"
           data-mapping="pathname"
-          data-strict="0"
+          data-strict="1"
           data-reactions-enabled="1"
           data-emit-metadata="0"
           data-input-position="top"

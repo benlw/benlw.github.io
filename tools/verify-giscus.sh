@@ -13,9 +13,10 @@ required_tokens=(
   'src="https://giscus.app/client.js"'
   'data-repo="benlw/benlw.github.io"'
   'data-repo-id="MDEwOlJlcG9zaXRvcnkyNDEwMzQwNjU="'
-  'data-category="General"'
-  'data-category-id="DIC_kwDODl3jUc4C25RN"'
+  'data-category="Website Comments"'
+  'data-category-id="DIC_kwDODl3jUc4C25Z4"'
   'data-mapping="pathname"'
+  'data-strict="1"'
 )
 
 for file in "${required_files[@]}"; do
