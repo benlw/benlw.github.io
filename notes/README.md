@@ -4,12 +4,13 @@
 2. Set page title in `<title>...</title>`.
 3. Add date metadata in the head:
    - `<meta name="note-date" content="YYYY-MM-DD" />`
-4. Rebuild the notes index:
-   - `node tools/build-notes-index.mjs`
+4. Commit and push to `master`.
 
-This command updates:
+After push, GitHub Actions will automatically refresh:
 - `notes/notes-index.json`
 - `notes/notes-index.js`
+- `sitemap.xml`
+- `robots.txt`
 
-The homepage and `notes/index.html` read the generated notes index and render items as:
+The homepage and `notes/index.html` read the notes index and render items as:
 `date + title + link`.
