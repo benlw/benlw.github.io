@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-02-22T06:26:07.527Z",
+  "generatedAt": "2026-02-22T06:40:00.251Z",
   "items": [
     {
       "date": "2026-02-19",
@@ -8,7 +8,7 @@
     },
     {
       "date": "2025-09-24",
-      "title": "Structure-Preserving Neural Networks for Geometric Machine Learning（网页精细整理版）",
+      "title": "Structure-Preserving Neural Networks for Geometric Machine Learning（调研）",
       "href": "notes/2025-09-24-structure-preserving-neural-networks-geometric-ml-note.html"
     }
   ]
