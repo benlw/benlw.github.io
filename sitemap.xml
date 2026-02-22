@@ -2,11 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://5imcs.com/</loc>
-    <lastmod>2026-02-21</lastmod>
+    <lastmod>2026-02-20</lastmod>
   </url>
   <url>
     <loc>https://5imcs.com/selected/</loc>
-    <lastmod>2026-02-21</lastmod>
+    <lastmod>2026-02-20</lastmod>
   </url>
   <url>
     <loc>https://5imcs.com/ongoing/</loc>
@@ -14,7 +14,7 @@
   </url>
   <url>
     <loc>https://5imcs.com/projects/</loc>
-    <lastmod>2026-02-21</lastmod>
+    <lastmod>2026-02-20</lastmod>
   </url>
   <url>
     <loc>https://5imcs.com/notes/</loc>
@@ -23,5 +23,9 @@
   <url>
     <loc>https://5imcs.com/notes/2026-02-19-notes-index-auto-update-guide.html</loc>
     <lastmod>2026-02-19</lastmod>
+  </url>
+  <url>
+    <loc>https://5imcs.com/notes/2025-09-24-structure-preserving-neural-networks-geometric-ml-note.html</loc>
+    <lastmod>2025-09-24</lastmod>
   </url>
 </urlset>

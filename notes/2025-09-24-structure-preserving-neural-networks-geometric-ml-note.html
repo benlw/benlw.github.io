@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Structure-Preserving Neural Networks for Geometric Machine Learning（调研）</title>
+    <meta name="note-date" content="2025-09-24" />
+    <style>
+      body {
+        margin: 0;
+        padding: 2rem 1rem 3rem;
+        font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+        line-height: 1.75;
+        color: #1f2d38;
+        background: #f6f8f7;
+      }
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        background: #fff;
+        border: 1px solid #d9e3e8;
+        border-radius: 14px;
+        padding: 1.4rem 1.2rem;
+      }
+      h1,
+      h2,
+      h3 {
+        margin: 0.2rem 0 0.7rem;
+        color: #122532;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+      h2 {
+        font-size: 1.15rem;
+        margin-top: 1.25rem;
+      }
+      h3 {
+        font-size: 1rem;
+        margin-top: 0.9rem;
+      }
+      p {
+        margin: 0.5rem 0;
+      }
+      ul,
+      ol {
+        margin: 0.45rem 0 0.6rem 1.25rem;
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 0.9rem;
+      }
+      pre {
+        position: relative;
+        overflow: auto;
+        border-radius: 10px;
+        border: 1px solid #d5e0e5;
+        background: #f8fbfc;
+        padding: 0.75rem;
+      }
+      .copy-code-btn {
+        position: absolute;
+        top: 0.45rem;
+        right: 0.45rem;
+        border: 1px solid #b9cbd6;
+        background: #ffffff;
+        color: #1b5e7a;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        line-height: 1;
+        padding: 0.34rem 0.48rem;
+        cursor: pointer;
+      }
+      .copy-code-btn:hover {
+        background: #f1f7fa;
+      }
+      .meta {
+        color: #5b6f7d;
+        font-size: 0.9rem;
+      }
+      .top-links {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.9rem;
+        margin-bottom: 0.85rem;
+        font-size: 0.92rem;
+        flex-wrap: wrap;
+      }
+      .top-links a {
+        color: #1b5e7a;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;
+      }
+      .top-links a:hover {
+        text-decoration: underline;
+      }
+      .reading-map {
+        margin: 0 0 0.9rem;
+        border: 1px solid #d9e3e8;
+        border-radius: 10px;
+        background: #f8fbfc;
+        padding: 0.56rem 0.62rem;
+      }
+      .reading-map-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        font-size: 0.84rem;
+        color: #506676;
+      }
+      .reading-map details {
+        margin-top: 0.32rem;
+      }
+      .reading-map summary {
+        color: #1b5e7a;
+        cursor: pointer;
+        font-size: 0.86rem;
+        font-weight: 600;
+      }
+      .reading-map ul {
+        margin: 0.35rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .reading-map li {
+        margin: 0.2rem 0;
+      }
+      .reading-map li.toc-sub {
+        margin-left: 0.58rem;
+      }
+      .reading-map a {
+        color: #1b5e7a;
+        text-decoration: none;
+        font-size: 0.84rem;
+      }
+      .reading-map a:hover {
+        text-decoration: underline;
+      }
+      .reading-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        z-index: 40;
+        pointer-events: none;
+      }
+      .reading-progress-bar {
+        display: block;
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #1b5e7a 0%, #2f8aa8 100%);
+      }
+      .cite {
+        font-size: 0.86em;
+        vertical-align: super;
+      }
+      .cite a {
+        color: #1b5e7a;
+        text-decoration: none;
+      }
+      .cite a:hover {
+        text-decoration: underline;
+      }
+      .refs li {
+        margin: 0.4rem 0;
+      }
+      .comment-wrapper {
+        margin-top: 1.4rem;
+        padding-top: 1rem;
+        border-top: 1px solid #d9e3e8;
+      }
+      @media (max-width: 640px) {
+        body {
+          padding: 1rem 0.8rem 2rem;
+        }
+        main {
+          padding: 1rem 0.85rem;
+        }
+        .top-links {
+          font-size: 0.88rem;
+          margin-bottom: 0.65rem;
+        }
+        .comment-wrapper {
+          margin-top: 1rem;
+          padding-top: 0.8rem;
+        }
+        pre {
+          padding: 0.62rem;
+        }
+        .reading-map {
+          padding: 0.5rem 0.56rem;
+        }
+      }
+    </style>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [
+            ["\\(", "\\)"]
+          ],
+          displayMath: [
+            ["\\[", "\\]"]
+          ]
+        },
+        options: {
+          skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  </head>
+  <body>
+    <div class="reading-progress" aria-hidden="true">
+      <span class="reading-progress-bar" data-reading-progress-bar></span>
+    </div>
+    <main>
+      <div class="top-links">
+        <a href="../index.html">Back to homepage</a>
+        <a href="index.html">Back to Notes &amp; Logs</a>
+      </div>
+      <section class="reading-map" data-reading-map>
+        <div class="reading-map-head">
+          <span data-reading-time>--</span>
+          <span data-reading-progress-text>0% read</span>
+        </div>
+        <details data-reading-toc-wrap open>
+          <summary>阅读地图</summary>
+          <ul data-reading-toc></ul>
+        </details>
+      </section>
+
+      <article data-reading-content>
+        <h1>Structure-Preserving Neural Networks for Geometric Machine Learning</h1>
+        <p class="meta">2025-09-24</p>
+
+        <h2>摘要</h2>
+        <p>
+          本笔记围绕几何机器学习中的“保结构”建模路径展开：从哈密顿/拉格朗日结构学习，到流体、流变、细胞生物力学与连续体机器人中的 PINN 实践。
+        </p>
+        <!-- <p>
+          调研背景涉及保结构算法专题研讨会（Frontiers in the theory and application of structure-preserving algorithms，2025/09/07-2025/09/13）。<span class="cite"><a href="#ref-r1">[R1]</a></span><span class="cite"><a href="#ref-r2">[R2]</a></span>
+        </p> -->
+
+        <h2>一、Hamiltonian / Lagrangian 主线</h2>
+
+        <h3>1. Hamiltonian Neural Networks (2019)</h3>
+        <p>
+          HNN 的核心是学习哈密顿函数而非直接学习状态演化，再通过哈密顿方程得到动力学。
+          这种设计将能量守恒作为模型内生约束，体现了明确的物理归纳偏置。实证上，HNN 在理想单摆、二体问题等长期预测中能缓解能量漂移，并在训练与泛化方面优于常规黑箱网络。
+          <span class="cite"><a href="#ref-r3">[R3]</a></span>
+        </p>
+
+        <h3>2. Deep Lagrangian Networks (2019)</h3>
+        <p>
+          DeLaN 将拉格朗日力学嵌入深度网络，通过学习拉格朗日函数并施加 Euler-Lagrange 约束，构建数据驱动动力学模型。
+          其重点是小样本条件下的稳健外推与控制可用性，支持端到端训练并保持物理合理性。
+          <span class="cite"><a href="#ref-r4">[R4]</a></span>
+        </p>
+
+        <h3>3. SympNets (2020)</h3>
+        <p>
+          SympNets 由线性、激活和梯度模块组合，提出 LA-SympNets 与 G-SympNets 两类架构，并给出辛映射逼近能力。
+          在摆、双摆、三体等测试中，该方法对不规则采样也表现出较好泛化与效率。
+          <span class="cite"><a href="#ref-r5">[R5]</a></span>
+        </p>
+
+        <h3>4. Lagrangian Neural Networks (2020)</h3>
+        <p>
+          LNN 用神经网络参数化拉格朗日函数，基本形式为 \(L = T - V\)，再借助自动微分推导运动方程。
+          相比直接拟合动力学向量场，这一路径把守恒结构放进模型定义本身。
+          <span class="cite"><a href="#ref-r6">[R6]</a></span>
+        </p>
+        <ul>
+          <li>
+            教程与代码：
+            <a href="https://greydanus.github.io/2020/03/10/lagrangian-nns/">A self-contained tutorial for LNNs.ipynb</a>
+          </li>
+        </ul>
+
+        <h3>附：在 VSCode 中连接 Colab（LNN 相关实验流程）</h3>
+        <p><strong>单元 1：安装依赖</strong></p>
+        <pre><code>!pip install -q jupyter jupyter_http_over_ws pyngrok colab_xterm</code></pre>
+        <p><strong>单元 2：启用 WebSocket 扩展</strong></p>
+        <pre><code>!jupyter serverextension enable --py jupyter_http_over_ws</code></pre>
+        <p><strong>单元 3：启动 Jupyter 服务器并通过 ngrok 暴露</strong></p>
+        <pre><code>import os
+from pyngrok import ngrok
+import asyncio
+
+token = "YOUR_PASSWORD"
+ngrok_auth_token = "YOUR_NGROK_AUTHTOKEN"
+
+if ngrok_auth_token:
+    ngrok.set_auth_token(ngrok_auth_token)
+    proc = await asyncio.create_subprocess_shell(
+        "jupyter server --allow-root --ip=0.0.0.0 --no-browser --port=8888 "
+        f"--ServerApp.token='{token}' --ServerApp.allow_origin='*' --ServerApp.disable_check_xsrf=True",
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    public_url = ngrok.connect(8888, "http")
+    print(f"{public_url.public_url}?token={token}")
+else:
+    print("Error: Please set your ngrok authtoken first.")</code></pre>
+        <ol>
+          <li>VSCode 安装 `Jupyter` 扩展。</li>
+          <li>执行 `Jupyter: Specify Jupyter server for connections`。</li>
+          <li>选择 `Existing` 并粘贴完整 URL（含 token）。</li>
+        </ol>
+
+        <h2>二、其它主线：热力学一致性学习</h2>
+
+        <h3>1. Structure-Preserving Neural Networks (2021)</h3>
+        <p>
+          该工作将 非平衡可逆-不可逆耦合 引入神经网络，联合学习能量函数与耗散势。
+          模型在不显式给定平衡方程的情况下，仍可满足总能量守恒与熵产非负（热力学第二定律），并在保守/耗散、离散/连续任务上展示了较好的数据效率与物理保真。
+          <span class="cite"><a href="#ref-r7">[R7]</a></span>
+        </p>
+
+        <h3>2. Machine Learning Structure Preserving Brackets (2021) 等</h3>
+        <p>
+          该方向专注不可逆过程，通过参数化耗散 brackets 学习耗散动力学；通过广义 Casimir 函数维持能量守恒与熵非减；并在含噪条件下通过涨落-耗散关系维持热力学一致性。
+          相较黑箱方法与惩罚项方法，表现出更好的鲁棒性与泛化。
+          <span class="cite"><a href="#ref-r8">[R8]</a></span>
+        </p>
+
+        <h2>三、应用扩展（流体、流变、生物）</h2>
+
+        <h3>1. \(\beta\)-VAE + Transformer for Fluid ROM</h3>
+        <p>
+          该路线先用 \(\beta\)-VAE 学习紧凑、可解释的潜在表示，再用 Transformer 预测潜在空间动力学。
+          在流体 ROM 场景中，基于 Poincare 映射分析，展示出对复杂动力学特征更好的捕捉能力。
+          <span class="cite"><a href="#ref-r9">[R9]</a></span>
+        </p>
+
+        <h3>2. Data-Driven Rheological Modeling (2025)</h3>
+        <p>
+          在非牛顿流体建模中，以 ICNN 构建数据驱动流变模型。输入凸结构有助于相关微分问题良定性，并提升有限元近似稳定性与可靠性。
+          <span class="cite"><a href="#ref-r10">[R10]</a></span>
+        </p>
+
+        <h3>3. Augmented SPNN for Cell Biomechanics (2025)</h3>
+        <p>
+          该工作将 SPNN 与 MLP 融合：SPNN 用于细胞内部力学生成机制，MLP 处理环境因素（如化学信号），
+          在细胞迁移与有丝分裂事件预测中取得较高精度，体现 GENERIC 思路向生物系统扩展。
+          <span class="cite"><a href="#ref-r11">[R11]</a></span>
+        </p>
+
+        <h2>四、工具 / 库（Julia）</h2>
+        <ul>
+          <li>
+            <strong>GeometricMachineLearning.jl</strong>：
+            <a href="https://juliagni.github.io/GeometricMachineLearning.jl/">文档</a>
+          </li>
+          <li>
+            <strong>GEMPIC</strong>（几何电磁 PIC）：
+            <a href="https://arxiv.org/abs/1609.03053">论文</a>
+          </li>
+        </ul>
+
+        <h2>五、PINN for Continuum Robots (2024)</h2>
+        <p>
+          在肌腱驱动连续机器人场景中，PINN 将 Cosserat 杆理论嵌入损失函数，结合边界值数据实现快速形状预测。
+          公开结果显示该方法相对参考模型可获得数量级加速，并将中位位置误差控制在 1 mm 以内。
+          <span class="cite"><a href="#ref-r12">[R12]</a></span>
+        </p>
+        <ul>
+          <li>
+            代码：
+            <a href="https://github.com/Martin-Bensch/tdcr-pinn">Tdcr-pinn</a>
+          </li>
+        </ul>
+
+        <h3>1. 引言</h3>
+        <p>
+          PINN 结合“物理先验 + 数据”，不只学习驱动到末端映射，而是学习驱动到整条主干形态映射。
+          训练边界值由传统打靶法参考模型生成。
+        </p>
+
+        <h3>2. 神经网络模型 (PINN)</h3>
+        <p>
+          网络形式可写为 \(\mathcal{N}(s, \tau; \theta)\)，输入为弧长 \(s\) 与驱动力 \(\tau\)，输出为位置、姿态与应变等状态量。
+          对应实现位于 <code>src/pytdcrpinn/pinn_nn.py</code> 的 <code>NNApproximator</code>。
+        </p>
+
+        <h3>3. Cosserat 杆理论物理方程</h3>
+        <p>
+          物理方程以残差形式编码到 <code>src/pytdcrpinn/_physics_fn.py</code>。
+          例如位置方程可写为：
+          \[
+            \frac{\partial \mathbf{p}(s)}{\partial s} = \mathbf{R}(s)\mathbf{v}(s),
+            \quad
+            \mathcal{R}_p := \frac{\partial \mathbf{p}(s)}{\partial s} - \mathbf{R}(s)\mathbf{v}(s) = \mathbf{0}.
+          \]
+        </p>
+
+        <h3>4. 导数计算 (自动微分)</h3>
+        <p>
+          为计算残差中的导数项，使用自动微分（如 <code>torch.autograd.grad</code>）对网络输出关于输入 \(s\) 求导。
+          这一步是连接网络输出与 PDE 约束的关键。
+        </p>
+
+        <h3>5. 损失函数</h3>
+        <p>
+          与纯数据监督不同，PINN 使用混合损失：
+        </p>
+        <p>
+          纯数据损失：
+          \[
+            \mathcal{L}_{\text{data}} = \frac{1}{N}\sum_{i=1}^{N}\left\|\mathcal{N}(s_i, \tau_i)-y_{\text{true},i}\right\|^2.
+          \]
+          物理损失：
+          \[
+            \mathcal{L}_{\text{PDE}} = \frac{1}{M}\sum_{j=1}^{M}\left\|\mathcal{R}_p(s_j,\tau_j)\right\|^2.
+          \]
+          总损失：
+          \[
+            \mathcal{L}_{\text{total}} = \lambda_{\text{BC}}\mathcal{L}_{\text{BC}} + \lambda_{\text{PDE}}\mathcal{L}_{\text{PDE}}.
+          \]
+        </p>
+        <p>
+          损失实现入口位于 <code>src/pytdcrpinn/_losses.py</code>（如 <code>compute_loss</code>），
+          并在训练循环中汇总加权。
+        </p>
+
+        <h3>6. 训练与评估</h3>
+        <ul>
+          <li>训练入口：<code>src/pytdcrpinn/run_training.py</code></li>
+          <li>核心训练：<code>src/pytdcrpinn/train_nn.py</code></li>
+          <li>评估脚本：<code>src/pytdcrpinn/evaluate_model.py</code></li>
+          <li>配置目录：<code>configs/</code></li>
+        </ul>
+
+        <h2>六、Physics-Informed Neural Networks for Fluid Mechanics: A Review (2025)</h2>
+        <p>
+          该综述指出：尽管基于 Navier-Stokes 的数值模拟长期发展成熟，现有流程仍面临噪声数据融合困难、网格构建复杂和高维参数化代价高等问题。
+          PINN 通过统一数据与方程约束，为三维尾流、超音速流和生物医学流反演提供了可行路径。
+          <span class="cite"><a href="#ref-r13">[R13]</a></span>
+        </p>
+
+        <h2>参考文献</h2>
+        <ol class="refs">
+          <li id="ref-r1">
+            Hairer, Lubich, Wanner. <em>Geometric Numerical Integration: Structure-Preserving Algorithms for Ordinary Differential Equations</em>.
+            Springer, 2006. DOI:
+            <a href="https://doi.org/10.1007/3-540-30666-8">10.1007/3-540-30666-8</a>
+          </li>
+          <li id="ref-r2">
+            Marsden, Ratiu. <em>Introduction to Mechanics and Symmetry</em>.
+            Springer, 2nd ed. DOI:
+            <a href="https://doi.org/10.1007/978-0-387-21792-5">10.1007/978-0-387-21792-5</a>
+          </li>
+          <li id="ref-r3">
+            Greydanus, Dzamba, Yosinski. Hamiltonian Neural Networks, 2019.
+            arXiv:
+            <a href="https://arxiv.org/abs/1906.01563">1906.01563</a>
+          </li>
+          <li id="ref-r4">
+            Lutter, Ritter, Peters. Deep Lagrangian Networks: Using Physics as Model Prior for Deep Learning, ICLR 2019.
+            OpenReview:
+            <a href="https://openreview.net/pdf?id=BklHpjCqKm">BklHpjCqKm</a>
+          </li>
+          <li id="ref-r5">
+            Jin et al. SympNets: Intrinsic structure-preserving symplectic networks for identifying Hamiltonian systems.
+            <em>Neural Networks</em>, 2020. DOI:
+            <a href="https://doi.org/10.1016/j.neunet.2020.08.017">10.1016/j.neunet.2020.08.017</a>
+          </li>
+          <li id="ref-r6">
+            Cranmer et al. Lagrangian Neural Networks, 2020.
+            arXiv:
+            <a href="https://arxiv.org/abs/2003.04630">2003.04630</a>
+          </li>
+          <li id="ref-r7">
+            Hernandez et al. Structure-preserving neural networks.
+            <em>Journal of Computational Physics</em>, 2021. DOI:
+            <a href="https://doi.org/10.1016/j.jcp.2020.109950">10.1016/j.jcp.2020.109950</a>
+          </li>
+          <li id="ref-r8">
+            Lee, Trask, Stinis. Machine learning structure preserving brackets for forecasting irreversible processes, 2021.
+            arXiv:
+            <a href="https://arxiv.org/abs/2106.12619">2106.12619</a>
+          </li>
+          <li id="ref-r9">
+            Solera-Rico et al. \(\beta\)-Variational autoencoders and transformers for reduced-order modelling of fluid flows.
+            <em>Nature Communications</em>, 2024. DOI:
+            <a href="https://doi.org/10.1038/s41467-024-45578-4">10.1038/s41467-024-45578-4</a>
+          </li>
+          <li id="ref-r10">
+            Parolini, Poiatti, Vene', Verani. Structure-Preserving Neural Networks in Data-Driven Rheological Models.
+            <em>SIAM Journal on Scientific Computing</em>, 2025. DOI:
+            <a href="https://doi.org/10.1137/24M1631092">10.1137/24M1631092</a>
+          </li>
+          <li id="ref-r11">
+            Olalla-Pombo et al. Augmented Structure Preserving Neural Networks for cell biomechanics, 2025.
+            arXiv:
+            <a href="https://arxiv.org/abs/2509.05388">2509.05388</a>
+          </li>
+          <li id="ref-r12">
+            Bensch et al. Physics-Informed Neural Networks for Continuum Robots: Towards Fast Approximation of Static Cosserat Rod Theory.
+            ICRA 2024. DOI:
+            <a href="https://doi.org/10.1109/ICRA57147.2024.10610742">10.1109/ICRA57147.2024.10610742</a>
+          </li>
+          <li id="ref-r13">
+            Cai et al. Physics-informed neural networks (PINNs) for fluid mechanics: a review.
+            <em>Acta Mechanica Sinica</em>, 2021. DOI:
+            <a href="https://doi.org/10.1007/s10409-021-01148-1">10.1007/s10409-021-01148-1</a>
+          </li>
+        </ol>
+      </article>
+
+      <div class="comment-wrapper">
+        <script
+          src="https://giscus.app/client.js"
+          data-repo="benlw/benlw.github.io"
+          data-repo-id="MDEwOlJlcG9zaXRvcnkyNDEwMzQwNjU="
+          data-category="Website Comments"
+          data-category-id="DIC_kwDODl3jUc4C25Z4"
+          data-mapping="pathname"
+          data-strict="1"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="top"
+          data-theme="light"
+          data-lang="en"
+          data-loading="lazy"
+          crossorigin="anonymous"
+          async
+        ></script>
+      </div>
+    </main>
+    <script>
+      (function () {
+        const codeNodes = document.querySelectorAll("pre > code");
+        codeNodes.forEach(function (codeNode) {
+          const pre = codeNode.parentElement;
+          if (!pre || pre.querySelector(".copy-code-btn")) return;
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "copy-code-btn";
+          button.textContent = "Copy";
+          button.addEventListener("click", async function () {
+            const text = codeNode.innerText;
+            try {
+              await navigator.clipboard.writeText(text);
+              button.textContent = "Copied";
+            } catch (err) {
+              const selection = window.getSelection();
+              const range = document.createRange();
+              range.selectNodeContents(codeNode);
+              if (selection) {
+                selection.removeAllRanges();
+                selection.addRange(range);
+              }
+              try {
+                document.execCommand("copy");
+                button.textContent = "Copied";
+              } finally {
+                if (selection) selection.removeAllRanges();
+              }
+            }
+            setTimeout(function () {
+              button.textContent = "Copy";
+            }, 1200);
+          });
+          pre.appendChild(button);
+        });
+      })();
+    </script>
+    <script src="note-map.js"></script>
+  </body>
+</html>
