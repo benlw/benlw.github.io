@@ -168,6 +168,21 @@
       .refs li {
         margin: 0.4rem 0;
       }
+      .mjx-container {
+        max-width: 100%;
+      }
+      .mjx-container[display="true"] {
+        display: block;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        margin: 0.7rem 0 !important;
+        padding-bottom: 0.12rem;
+      }
+      .mjx-container[display="true"] > mjx-math {
+        min-width: max-content;
+      }
       .comment-wrapper {
         margin-top: 1.4rem;
         padding-top: 1rem;
@@ -194,6 +209,12 @@
         .reading-map {
           padding: 0.5rem 0.56rem;
         }
+        .mjx-container {
+          font-size: 0.96em;
+        }
+        .mjx-container[display="true"] {
+          margin: 0.58rem 0 !important;
+        }
       }
     </style>
     <script>
@@ -205,6 +226,14 @@
           displayMath: [
             ["\\[", "\\]"]
           ]
+        },
+        chtml: {
+          displayAlign: "left",
+          displayIndent: "0",
+          linebreaks: {
+            automatic: true,
+            width: "container"
+          }
         },
         options: {
           skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]
