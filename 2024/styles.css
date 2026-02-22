@@ -1,5 +1,5 @@
 body {
-  font-family: "Arial", sans-serif;
+  font-family: "Manrope", "Arial", sans-serif;
   margin: 0;
   padding: 0;
   background-color: #ffffff;
@@ -25,6 +25,7 @@ main {
 
 h1,
 h2 {
+  font-family: "Newsreader", "Georgia", serif;
   color: #0056b3;
   margin: 10px 0;
   /* Reduced margin for a tighter, cleaner header */
@@ -80,7 +81,7 @@ td {
   /* 在描述和视频或图片之间增加20px的间距 */
   font-size: 16px;
   /* 设置适中的字号以提高可读性 */
-  font-family: "Times New Roman", Times, serif;
+  font-family: "Newsreader", "Times New Roman", Times, serif;
   /* 使用'Times New Roman'字体，常用于学术文档 */
   line-height: 1.6;
   /* 行高设置为1.6，增强文本的可读性和舒适性 */

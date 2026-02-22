@@ -1,45 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>404 - Page Not Found</title>
-    <link rel="stylesheet" href="styles.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="nav-overlay.css" />
+    <link rel="stylesheet" href="styles.css" />
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-            text-align: center;
-            padding: 50px;
-        }
-
-        .container {
-            margin-top: 50px; 
-        }
-
-        h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-
-        p {
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
- 
+      .container {
+        margin-top: 50px;
+        padding: 50px 20px;
+        text-align: center;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
+    <nav class="site-nav" data-site-nav data-nav-context="sub" data-base="../"></nav>
+
     <div class="container">
-        <h1>404 - Page Not Found</h1>
-        <p>Oops! The page you are looking for does not exist. You can try visiting one of the following mirror sites:</p>
-        <ul class="mirror-list">
-            <li>Recommend: <a href="https://benlw.github.io/2024">https://benlw.github.io/2024 </a> OR <a href="https://benlw.gitee.io/2024">https://benlw.gitee.io/2024 </a> </li> 
-        </ul>
+      <h1>404 - Page Not Found</h1>
+      <p>
+        Oops! The page you are looking for does not exist. You can try visiting one
+        of the following mirror sites or use the navigation above:
+      </p>
+      <ul class="mirror-list">
+        <li>
+          Recommend:
+          <a href="https://benlw.github.io/2025">https://benlw.github.io/2025</a>
+          OR
+          <a href="https://benlw.gitee.io/2025">https://benlw.gitee.io/2025</a>
+        </li>
+      </ul>
     </div>
-</body>
 
+    <footer>
+      <p><a href="../index.html" class="contact-link">Back to homepage</a></p>
+    </footer>
+
+    <script src="../assets/data/site-data.js"></script>
+    <script src="../site-render.js"></script>
+  </body>
 </html>
