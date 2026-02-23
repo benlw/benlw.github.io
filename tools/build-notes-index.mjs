@@ -56,6 +56,76 @@ function extractDate(htmlContent, fileName) {
   );
 }
 
+function extractMetaContent(htmlContent, names) {
+  for (const name of names) {
+    const regex = new RegExp(
+      `<meta[^>]+name=["']${name}["'][^>]+content=["']([^"']*)["'][^>]*>`,
+      "i"
+    );
+    const match = htmlContent.match(regex);
+    if (match) return cleanText(match[1]);
+  }
+  return "";
+}
+
+function extractTags(htmlContent) {
+  const raw = extractMetaContent(htmlContent, ["note-tags", "tags"]);
+  if (!raw) return [];
+
+  const tags = raw
+    .split(",")
+    .map((tag) => cleanText(tag))
+    .filter(Boolean);
+
+  const seen = new Set();
+  const uniqueTags = [];
+  for (const tag of tags) {
+    const normalized = tag.toLowerCase();
+    if (seen.has(normalized)) continue;
+    seen.add(normalized);
+    uniqueTags.push(tag);
+  }
+  return uniqueTags;
+}
+
+function parseBooleanMeta(input) {
+  const value = cleanText(input).toLowerCase();
+  if (!value) return false;
+  return ["1", "true", "yes", "on"].includes(value);
+}
+
+function extractPinned(htmlContent) {
+  const raw = extractMetaContent(htmlContent, ["note-pinned", "pinned"]);
+  return parseBooleanMeta(raw);
+}
+
+function extractPinOrder(htmlContent) {
+  const raw = extractMetaContent(htmlContent, ["note-pin-order", "pin-order"]);
+  if (!raw) return null;
+
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function compareNotes(a, b) {
+  const aPinned = Boolean(a.pinned);
+  const bPinned = Boolean(b.pinned);
+
+  if (aPinned !== bPinned) return aPinned ? -1 : 1;
+
+  if (aPinned && bPinned) {
+    const aPinOrder = Number.isFinite(a.pinOrder)
+      ? a.pinOrder
+      : Number.POSITIVE_INFINITY;
+    const bPinOrder = Number.isFinite(b.pinOrder)
+      ? b.pinOrder
+      : Number.POSITIVE_INFINITY;
+    if (aPinOrder !== bPinOrder) return aPinOrder - bPinOrder;
+  }
+
+  return b.date.localeCompare(a.date) || a.title.localeCompare(b.title);
+}
+
 async function buildNotesIndex() {
   const entries = await fs.readdir(notesDir, { withFileTypes: true });
   const htmlFiles = entries
@@ -80,15 +150,24 @@ async function buildNotesIndex() {
     const fallbackTitle = fileName.replace(/\.html$/, "");
     const title = extractTitle(content, fallbackTitle);
     const date = extractDate(content, fileName) || formatDateYYYYMMDD(stats.mtime);
+    const tags = extractTags(content);
+    const pinned = extractPinned(content);
+    const pinOrder = extractPinOrder(content);
 
-    items.push({
+    const item = {
       date,
       title,
       href: `notes/${fileName}`,
-    });
+    };
+
+    if (tags.length > 0) item.tags = tags;
+    if (pinned) item.pinned = true;
+    if (pinOrder !== null) item.pinOrder = pinOrder;
+
+    items.push(item);
   }
 
-  items.sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
+  items.sort(compareNotes);
 
   const payload = {
     generatedAt: new Date().toISOString(),

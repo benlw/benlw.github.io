@@ -45,22 +45,22 @@
               { label: "Notes & Logs", href: "#notes" },
             ]
           : [
-              { label: "Home", href: withBase("index.html", base) },
+              { label: "Home", href: withBase("", base) },
               {
                 label: "Selected Research",
-                href: withBase("selected/index.html", base),
+                href: withBase("selected/", base),
               },
               {
                 label: "Ongoing Research",
-                href: withBase("ongoing/index.html", base),
+                href: withBase("ongoing/", base),
               },
               {
                 label: "My Projects",
-                href: withBase("projects/index.html", base),
+                href: withBase("projects/", base),
               },
               {
                 label: "Notes & Logs",
-                href: withBase("notes/index.html", base),
+                href: withBase("notes/", base),
               },
             ];
 
@@ -230,18 +230,123 @@
     return `${year}-${month}-${day}`;
   }
 
-  function renderNotesItems(node, items, base) {
+  function parseBoolean(input) {
+    if (typeof input === "boolean") return input;
+    const value = String(input || "")
+      .trim()
+      .toLowerCase();
+    return ["1", "true", "yes", "on"].includes(value);
+  }
+
+  function normalizeTags(input) {
+    const source = Array.isArray(input)
+      ? input
+      : String(input || "")
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter(Boolean);
+    if (!Array.isArray(source) || source.length === 0) return [];
+
+    const tags = source.map((tag) => String(tag || "").trim()).filter(Boolean);
+
+    const seen = new Set();
+    const uniqueTags = [];
+    tags.forEach((tag) => {
+      const normalized = tag.toLowerCase();
+      if (seen.has(normalized)) return;
+      seen.add(normalized);
+      uniqueTags.push(tag);
+    });
+    return uniqueTags;
+  }
+
+  function normalizePinOrder(input) {
+    if (input === null || input === undefined || input === "") return null;
+    const parsed = Number.parseInt(input, 10);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  function normalizeNotesItems(items) {
+    if (!Array.isArray(items)) return [];
+
+    return items.map((item) => {
+      const normalized = {
+        date: normalizeDate(item.date),
+        title: item.title || "Untitled",
+        href: item.href || "",
+        tags: normalizeTags(item.tags),
+        pinned: parseBoolean(item.pinned),
+      };
+
+      const pinOrder = normalizePinOrder(item.pinOrder);
+      if (pinOrder !== null) normalized.pinOrder = pinOrder;
+      return normalized;
+    });
+  }
+
+  function compareNotesItems(a, b) {
+    const aPinned = Boolean(a.pinned);
+    const bPinned = Boolean(b.pinned);
+
+    if (aPinned !== bPinned) return aPinned ? -1 : 1;
+
+    if (aPinned && bPinned) {
+      const aPinOrder = Number.isFinite(a.pinOrder)
+        ? a.pinOrder
+        : Number.POSITIVE_INFINITY;
+      const bPinOrder = Number.isFinite(b.pinOrder)
+        ? b.pinOrder
+        : Number.POSITIVE_INFINITY;
+      if (aPinOrder !== bPinOrder) return aPinOrder - bPinOrder;
+    }
+
+    return (
+      String(b.date || "").localeCompare(String(a.date || "")) ||
+      String(a.title || "").localeCompare(String(b.title || ""))
+    );
+  }
+
+  function sortNotesItems(items) {
+    return items.slice().sort(compareNotesItems);
+  }
+
+  function noteMatchesQuery(item, query) {
+    const keyword = String(query || "")
+      .trim()
+      .toLowerCase();
+    if (!keyword) return true;
+
+    const tokens = keyword.split(/\s+/).filter(Boolean);
+    const title = String(item.title || "").toLowerCase();
+    const tags = Array.isArray(item.tags) ? item.tags.join(" ").toLowerCase() : "";
+    const haystack = `${title} ${tags}`;
+
+    return tokens.every((token) => haystack.includes(token));
+  }
+
+  function renderNotesItems(node, items, base, emptyMessage) {
     if (!Array.isArray(items) || items.length === 0) {
-      node.innerHTML = '<li class="outline-empty">No notes available yet.</li>';
+      const message = emptyMessage || "No notes available yet.";
+      node.innerHTML = `<li class="outline-empty">${escapeHtml(message)}</li>`;
       return;
     }
 
     node.innerHTML = items
       .map((item) => {
-        const date = normalizeDate(item.date);
+        const date = normalizeDate(item.date) || "--";
         const href = withBase(item.href || "", base);
         const title = item.title || "Untitled";
-        return `<li><span class="outline-date">${escapeHtml(date)}</span><a href="${escapeHtml(href)}"${linkAttrs(href)}>${escapeHtml(title)}</a></li>`;
+        const pinHtml = item.pinned
+          ? '<span class="note-pin note-pin-inline" aria-label="Pinned note">Pinned</span>'
+          : "";
+
+        return `<li class="note-row"><span class="outline-date">${escapeHtml(
+          date
+        )}</span><a class="note-title" href="${escapeHtml(href)}"${linkAttrs(
+          href
+        )}>${escapeHtml(
+          title
+        )}</a>${pinHtml}</li>`;
       })
       .join("");
   }
@@ -253,17 +358,58 @@
       const limitRaw = node.dataset.limit;
       const limit = limitRaw ? Number(limitRaw) : Number.POSITIVE_INFINITY;
       const sourceUrl = withBase(source, base);
+      const sectionNode = node.closest(".section") || document;
+      const inputSelector = node.dataset.filterInput || "";
+      const metaSelector = node.dataset.filterMeta || "";
+      const filterInput = inputSelector
+        ? sectionNode.querySelector(inputSelector) ||
+          document.querySelector(inputSelector)
+        : null;
+      const filterMeta = metaSelector
+        ? sectionNode.querySelector(metaSelector) ||
+          document.querySelector(metaSelector)
+        : null;
       const globalPayload =
         window.NOTES_INDEX && Array.isArray(window.NOTES_INDEX.items)
           ? window.NOTES_INDEX
           : null;
 
+      function renderWithFilter(allItems) {
+        const sortedItems = sortNotesItems(normalizeNotesItems(allItems));
+        const query = filterInput ? filterInput.value : "";
+        const matchedItems = sortedItems.filter((item) =>
+          noteMatchesQuery(item, query)
+        );
+        const visibleItems = Number.isFinite(limit)
+          ? matchedItems.slice(0, limit)
+          : matchedItems;
+        const queryText = String(query || "").trim();
+        const emptyMessage = queryText
+          ? "No matching notes."
+          : "No notes available yet.";
+        renderNotesItems(node, visibleItems, base, emptyMessage);
+
+        if (filterMeta) {
+          if (queryText) {
+            filterMeta.textContent = `${matchedItems.length} result(s) for "${queryText}".`;
+          } else {
+            filterMeta.textContent = `Showing ${visibleItems.length} of ${sortedItems.length} note(s).`;
+          }
+        }
+      }
+
+      function bindFilter(allItems) {
+        if (!filterInput || filterInput.dataset.notesFilterBound === "1") return;
+        filterInput.addEventListener("input", () => renderWithFilter(allItems));
+        filterInput.dataset.notesFilterBound = "1";
+      }
+
       if (globalPayload) {
-        const allItems = globalPayload.items;
-        const items = Number.isFinite(limit)
-          ? allItems.slice(0, limit)
-          : allItems;
-        renderNotesItems(node, items, base);
+        const allItems = Array.isArray(globalPayload.items)
+          ? globalPayload.items
+          : [];
+        bindFilter(allItems);
+        renderWithFilter(allItems);
         return;
       }
 
@@ -273,13 +419,14 @@
 
         const payload = await response.json();
         const allItems = Array.isArray(payload.items) ? payload.items : [];
-        const items = Number.isFinite(limit)
-          ? allItems.slice(0, limit)
-          : allItems;
-        renderNotesItems(node, items, base);
+        bindFilter(allItems);
+        renderWithFilter(allItems);
       } catch (_) {
         node.innerHTML =
           '<li class="outline-empty">Notes index is unavailable right now.</li>';
+        if (filterMeta) {
+          filterMeta.textContent = "Search is unavailable while notes index is unavailable.";
+        }
       }
     });
   }

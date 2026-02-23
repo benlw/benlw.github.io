@@ -35,11 +35,24 @@
       </header>
 
       <section class="section reveal">
+        <div class="notes-filter">
+          <label for="notes-query" class="notes-filter-label">Search notes</label>
+          <input
+            id="notes-query"
+            class="notes-filter-input"
+            type="search"
+            placeholder="Filter by title or tag..."
+            autocomplete="off"
+          />
+          <p class="notes-filter-meta" data-notes-filter-meta aria-live="polite"></p>
+        </div>
         <ul
           class="outline-list notes-list"
           data-notes-list
           data-base="../"
           data-source="notes/notes-index.json"
+          data-filter-input="#notes-query"
+          data-filter-meta="[data-notes-filter-meta]"
         ></ul>
       </section>
 
@@ -66,7 +79,7 @@
       </section>
 
       <footer class="footer">
-        <p><a href="../index.html" class="section-link">Back to homepage</a></p>
+        <p><a href="../" class="section-link">Back to homepage</a></p>
       </footer>
     </div>
 

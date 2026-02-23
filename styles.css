@@ -366,10 +366,74 @@ body {
 }
 
 .notes-list li {
+  margin: 0.42rem 0;
+}
+
+.notes-list li.note-row {
   display: flex;
   align-items: baseline;
-  gap: 0.55rem;
   flex-wrap: wrap;
+  column-gap: 0.52rem;
+  row-gap: 0.1rem;
+  padding-left: 0.16rem;
+}
+
+.note-title {
+  min-width: 0;
+  flex: 1 1 20rem;
+  overflow-wrap: anywhere;
+}
+
+.notes-filter {
+  margin: 0 0 0.72rem;
+  display: grid;
+  gap: 0.38rem;
+}
+
+.notes-filter-label {
+  font-size: 0.84rem;
+  color: #5b6c79;
+  font-weight: 600;
+}
+
+.notes-filter-input {
+  width: 100%;
+  border: 1px solid #cfd9de;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  padding: 0.52rem 0.62rem;
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+.notes-filter-input:focus {
+  outline: 2px solid #d7e9f1;
+  outline-offset: 1px;
+  border-color: var(--brand);
+}
+
+.notes-filter-meta {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #6a7884;
+}
+
+.note-pin {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.08rem 0.42rem;
+  border-radius: 999px;
+  border: 1px solid #d3dce2;
+  background: #f4f8fa;
+  color: #4e6474;
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.note-pin-inline {
+  flex: 0 0 auto;
 }
 
 .outline-date {
@@ -377,6 +441,8 @@ body {
   font-size: 0.83rem;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.01em;
+  min-width: 5.8rem;
+  flex: 0 0 auto;
 }
 
 .outline-empty {
@@ -621,6 +687,15 @@ body {
     font-size: 0.78rem;
   }
 
+  .notes-list li.note-row {
+    column-gap: 0.4rem;
+    row-gap: 0.15rem;
+  }
+
+  .outline-date {
+    min-width: auto;
+  }
+
   .research-media img {
     height: 156px;
   }
@@ -633,5 +708,9 @@ body {
 
   .comment-wrapper {
     padding: 0;
+  }
+
+  .notes-filter-input {
+    min-height: 40px;
   }
 }
