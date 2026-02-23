@@ -50,6 +50,43 @@
         color: #5b6f7d;
         font-size: 0.9rem;
       }
+      .related-notes {
+        margin-top: 1rem;
+        padding-top: 0.86rem;
+        border-top: 1px dashed #d5e0e6;
+      }
+      .related-notes h2 {
+        margin: 0;
+        font-size: 1.02rem;
+        color: #213643;
+      }
+      .related-notes-mode {
+        margin: 0.26rem 0 0.3rem;
+        font-size: 0.82rem;
+        color: #687a88;
+      }
+      .related-notes-list {
+        margin: 0;
+        padding-left: 1.15rem;
+      }
+      .related-notes-list li {
+        margin: 0.3rem 0;
+        color: #50616f;
+        font-size: 0.9rem;
+      }
+      .related-notes-list a {
+        color: #1b5e7a;
+        text-decoration: none;
+      }
+      .related-notes-list a:hover {
+        text-decoration: underline;
+      }
+      .related-date {
+        margin-right: 0.5rem;
+        color: #6a7884;
+        font-size: 0.8rem;
+        font-variant-numeric: tabular-nums;
+      }
       .comment-wrapper {
         margin-top: 1.4rem;
         padding-top: 1rem;
@@ -165,9 +202,14 @@
         <p class="meta">2026-02-19 · #tag-a #tag-b</p>
         <p>Write note here.</p>
       </article>
+      <section class="related-notes" data-related-notes hidden>
+        <h2>Related notes</h2>
+        <p class="related-notes-mode" data-related-notes-mode></p>
+        <ul class="related-notes-list" data-related-notes-list></ul>
+      </section>
       <div class="comment-wrapper">
-        <script
-          src="https://giscus.app/client.js"
+        <div
+          data-giscus-lazy
           data-repo="benlw/benlw.github.io"
           data-repo-id="MDEwOlJlcG9zaXRvcnkyNDEwMzQwNjU="
           data-category="Website Comments"
@@ -180,11 +222,12 @@
           data-theme="light"
           data-lang="en"
           data-loading="lazy"
-          crossorigin="anonymous"
-          async
-        ></script>
+        ></div>
       </div>
     </main>
-    <script src="note-map.js"></script>
+    <script src="notes-index.js" defer></script>
+    <script src="note-related.js" defer></script>
+    <script src="../assets/js/giscus-lazy.js" defer></script>
+    <script src="note-map.js" defer></script>
   </body>
 </html>

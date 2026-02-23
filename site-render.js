@@ -361,6 +361,7 @@
       const sectionNode = node.closest(".section") || document;
       const inputSelector = node.dataset.filterInput || "";
       const metaSelector = node.dataset.filterMeta || "";
+      const filterParam = node.dataset.filterParam || "q";
       const filterInput = inputSelector
         ? sectionNode.querySelector(inputSelector) ||
           document.querySelector(inputSelector)
@@ -369,6 +370,39 @@
         ? sectionNode.querySelector(metaSelector) ||
           document.querySelector(metaSelector)
         : null;
+
+      function readFilterFromUrl() {
+        if (!filterInput) return "";
+        try {
+          const url = new URL(window.location.href);
+          return String(url.searchParams.get(filterParam) || "").trim();
+        } catch (_) {
+          return "";
+        }
+      }
+
+      function syncFilterToUrl(queryText) {
+        if (!filterInput || !window.history || !window.history.replaceState) return;
+        try {
+          const url = new URL(window.location.href);
+          if (queryText) {
+            url.searchParams.set(filterParam, queryText);
+          } else {
+            url.searchParams.delete(filterParam);
+          }
+          const nextUrl = `${url.pathname}${url.search}${url.hash}`;
+          window.history.replaceState(window.history.state, "", nextUrl);
+        } catch (_) {
+          // no-op for environments where URL operations are unavailable
+        }
+      }
+
+      if (filterInput && filterInput.dataset.notesFilterInit !== "1") {
+        const initialQuery = readFilterFromUrl();
+        if (initialQuery) filterInput.value = initialQuery;
+        filterInput.dataset.notesFilterInit = "1";
+      }
+
       const globalPayload =
         window.NOTES_INDEX && Array.isArray(window.NOTES_INDEX.items)
           ? window.NOTES_INDEX
@@ -384,6 +418,7 @@
           ? matchedItems.slice(0, limit)
           : matchedItems;
         const queryText = String(query || "").trim();
+        syncFilterToUrl(queryText);
         const emptyMessage = queryText
           ? "No matching notes."
           : "No notes available yet.";

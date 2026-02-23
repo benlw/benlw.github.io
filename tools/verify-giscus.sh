@@ -10,13 +10,14 @@ required_files=(
 )
 
 required_tokens=(
-  'src="https://giscus.app/client.js"'
+  'data-giscus-lazy'
   'data-repo="benlw/benlw.github.io"'
   'data-repo-id="MDEwOlJlcG9zaXRvcnkyNDEwMzQwNjU="'
   'data-category="Website Comments"'
   'data-category-id="DIC_kwDODl3jUc4C25Z4"'
   'data-mapping="pathname"'
   'data-strict="1"'
+  'assets/js/giscus-lazy.js'
 )
 
 for file in "${required_files[@]}"; do

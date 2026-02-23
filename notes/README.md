@@ -10,7 +10,9 @@
    - `<meta name="note-pin-order" content="1" />` (smaller number = higher priority)
 5. Add canonical URL in the head:
    - `<link rel="canonical" href="https://5imcs.com/notes/<file-name>.html" />`
-6. Commit and push to `master`.
+6. Run local checks before commit:
+   - `node tools/validate-notes.mjs`
+7. Commit and push to `master`.
 
 After push, GitHub Actions will automatically refresh:
 - `notes/notes-index.json`
@@ -20,3 +22,7 @@ After push, GitHub Actions will automatically refresh:
 
 The homepage and `notes/index.html` read the notes index and render items as:
 `date + title + link`.
+
+Notes page UX notes:
+- Search input supports URL sync via `?q=...`.
+- Tags are used for filtering and related-note recommendation.

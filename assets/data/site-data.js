@@ -3,7 +3,7 @@ window.SITE_DATA = {
     {
       title:
         "Constraint Realization-Based Hamel Field Integrator for Geometrically Exact Euler-Bernoulli Beam Dynamics",
-      image: "assets/research/constraint-integrator-comparison.png",
+      image: "assets/research/constraint-integrator-comparison.webp",
       alt: "Constraint realization based Hamel integrator comparison",
       authors: [
         {
@@ -33,7 +33,7 @@ window.SITE_DATA = {
     },
     {
       title: "Efficient Hamel's Integrator for Vehicle-Manipulator Systems",
-      image: "assets/research/vms-integrator-comparison.png",
+      image: "assets/research/vms-integrator-comparison.webp",
       alt: "Efficient Hamel integrator for vehicle-manipulator systems",
       authors: [
         {
@@ -59,7 +59,7 @@ window.SITE_DATA = {
     },
     {
       title: "Curvature Shaping Control of Nonlinear Mechanical Systems",
-      image: "assets/research/curvature-sectional-map.png",
+      image: "assets/research/curvature-sectional-map.webp",
       alt: "Curvature shaping control visualization",
       authors: [
         {
@@ -99,7 +99,7 @@ window.SITE_DATA = {
     {
       title:
         "Stabilization of a Geometrically Exact Beam Hinged on a Cart: Controlled Lagrangian Method",
-      image: "assets/research/geb_hinged_on_cart.png",
+      image: "assets/research/geb_hinged_on_cart.webp",
       alt: "Stabilization of a geometrically exact beam hinged on a cart",
       authors: [
         {

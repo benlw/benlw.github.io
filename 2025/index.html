@@ -41,12 +41,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="nav-overlay.css" />
-    <script src="scripts.js"></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.js"
-      xintegrity="sha384-+BSz3oj3ILMYvOBr16U9i0H4RZRmGyQQ+1q9eqr8T3skmAFrJk8GmgwgqlCZdNSo"
-      crossorigin="anonymous"
-    ></script>
+    <script src="scripts.js" defer></script>
     <link rel="stylesheet" href="styles.css" />
     <style>
       /* This wrapper is now ONLY for layout (centering and width) */
@@ -133,8 +128,8 @@
       </section>
 
       <div class="comment-wrapper">
-        <script
-          src="https://giscus.app/client.js"
+        <div
+          data-giscus-lazy
           data-repo="benlw/benlw.github.io"
           data-repo-id="MDEwOlJlcG9zaXRvcnkyNDEwMzQwNjU="
           data-category="Website Comments"
@@ -147,9 +142,7 @@
           data-theme="light"
           data-lang="en"
           data-loading="lazy"
-          crossorigin="anonymous"
-          async
-        ></script>
+        ></div>
       </div>
     </main>
 
@@ -157,7 +150,8 @@
       <p><a href="../" class="contact-link">Back to homepage</a></p>
     </footer>
 
-    <script src="../assets/data/site-data.js"></script>
-    <script src="../site-render.js"></script>
+    <script src="../assets/data/site-data.js" defer></script>
+    <script src="../site-render.js" defer></script>
+    <script src="../assets/js/giscus-lazy.js" defer></script>
   </body>
 </html>

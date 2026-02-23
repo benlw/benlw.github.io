@@ -53,13 +53,14 @@
           data-source="notes/notes-index.json"
           data-filter-input="#notes-query"
           data-filter-meta="[data-notes-filter-meta]"
+          data-filter-param="q"
         ></ul>
       </section>
 
       <section class="section reveal">
         <div class="comment-wrapper">
-          <script
-            src="https://giscus.app/client.js"
+          <div
+            data-giscus-lazy
             data-repo="benlw/benlw.github.io"
             data-repo-id="MDEwOlJlcG9zaXRvcnkyNDEwMzQwNjU="
             data-category="Website Comments"
@@ -72,9 +73,7 @@
             data-theme="light"
             data-lang="en"
             data-loading="lazy"
-            crossorigin="anonymous"
-            async
-          ></script>
+          ></div>
         </div>
       </section>
 
@@ -83,9 +82,10 @@
       </footer>
     </div>
 
-    <script src="../assets/data/site-data.js"></script>
-    <script src="../notes/notes-index.js"></script>
-    <script src="../site-render.js"></script>
-    <script src="../site.js"></script>
+    <script src="../assets/data/site-data.js" defer></script>
+    <script src="../notes/notes-index.js" defer></script>
+    <script src="../site-render.js" defer></script>
+    <script src="../site.js" defer></script>
+    <script src="../assets/js/giscus-lazy.js" defer></script>
   </body>
 </html>

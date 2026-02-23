@@ -7,6 +7,7 @@ on:
     paths:
       - "notes/**/*.html"
       - "tools/build-notes-index.mjs"
+      - "tools/validate-notes.mjs"
       - "tools/build-sitemap.mjs"
       - ".github/workflows/update-notes-index.yml"
       - "CNAME"
@@ -34,8 +35,9 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Rebuild notes index
+      - name: Validate and rebuild notes index
         run: |
+          node tools/validate-notes.mjs
           node tools/build-notes-index.mjs
           node tools/build-sitemap.mjs
 
