@@ -1,6 +1,21 @@
 window.NOTES_INDEX = {
-  "generatedAt": "2026-02-27T19:51:08.525Z",
+  "generatedAt": "2026-02-28T03:24:08.677Z",
   "items": [
+    {
+      "date": "2021-01-01",
+      "title": "机器人动力学与控制研究记录",
+      "href": "notes/2021-01-01-pre-2021-robotics-dynamics-control-archive.html",
+      "tags": [
+        "robotics",
+        "dynamics",
+        "control",
+        "optimal-control",
+        "reactive-planning",
+        "inverse-kinematics"
+      ],
+      "pinned": true,
+      "pinOrder": 2
+    },
     {
       "date": "2026-02-19",
       "title": "Notes & Logs 自动更新教程（GitHub Actions）",
@@ -11,9 +26,7 @@ window.NOTES_INDEX = {
         "github-actions",
         "sitemap",
         "automation"
-      ],
-      "pinned": true,
-      "pinOrder": 1
+      ]
     },
     {
       "date": "2025-09-24",

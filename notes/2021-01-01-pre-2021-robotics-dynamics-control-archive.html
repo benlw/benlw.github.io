@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>机器人动力学与控制研究记录</title>
+    <meta name="note-date" content="2021-01-01" />
+    <meta
+      name="note-tags"
+      content="robotics, dynamics, control, optimal-control, reactive-planning, inverse-kinematics"
+    />
+    <meta name="note-pinned" content="1" />
+    <meta name="note-pin-order" content="2" />
+    <link
+      rel="canonical"
+      href="https://5imcs.com/notes/2021-01-01-pre-2021-robotics-dynamics-control-archive.html"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 2rem 1rem 3rem;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        line-height: 1.68;
+        color: #1f2d38;
+        background: #f6f8f7;
+      }
+      main {
+        max-width: 980px;
+        margin: 0 auto;
+        background: #fff;
+        border: 1px solid #d9e3e8;
+        border-radius: 14px;
+        padding: 1.4rem 1.2rem;
+      }
+      .top-links {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.9rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.92rem;
+        flex-wrap: wrap;
+      }
+      .top-links a {
+        color: #1b5e7a;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;
+      }
+      .top-links a:hover {
+        text-decoration: underline;
+      }
+      article a.inline-ref {
+        color: #1b5e7a;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+      article {
+        max-width: 760px;
+        margin: 0 auto;
+      }
+      .meta {
+        margin: 0.28rem 0 0.6rem;
+        color: #5b6f7d;
+        font-size: 0.9rem;
+      }
+      .lead {
+        margin: 0.6rem 0 1rem;
+        padding: 0.72rem 0.84rem;
+        border-left: 3px solid #6ca0b5;
+        background: #f5f9fb;
+        border-radius: 8px;
+      }
+      .highlight {
+        margin: 0.9rem 0 1.1rem;
+        padding: 0.72rem 0.84rem;
+        border: 1px solid #d6e2e8;
+        border-radius: 10px;
+        background: #fbfdfe;
+      }
+      .highlight ul {
+        margin: 0.35rem 0 0;
+        padding-left: 1.1rem;
+      }
+      .media-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.9rem;
+        margin: 0.8rem 0 1rem;
+      }
+      .media-grid figure {
+        display: flex;
+        flex-direction: column;
+      }
+      .media-grid figure,
+      .media-single figure {
+        margin: 0;
+        padding: 0.45rem;
+        border: 1px solid #d7e3e9;
+        border-radius: 10px;
+        background: #fcfeff;
+      }
+      .media-grid img,
+      .media-single img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        display: block;
+      }
+      figcaption {
+        font-size: 0.84rem;
+        color: #5f7281;
+        text-align: center;
+        min-height: 2.4em;
+      }
+      .media-grid figcaption {
+        margin-top: auto;
+        padding-top: 0.42rem;
+      }
+      .media-single figcaption {
+        margin-top: 0.42rem;
+      }
+      .media-single {
+        margin: 0.76rem 0 1rem;
+      }
+      .media-single figure.framework-figure {
+        max-width: 560px;
+        margin: 0 auto;
+      }
+      .ref {
+        margin-top: 1rem;
+        font-size: 0.92rem;
+        color: #455b69;
+      }
+      .related-notes {
+        margin-top: 1rem;
+        padding-top: 0.86rem;
+        border-top: 1px dashed #d5e0e6;
+      }
+      .related-notes h2 {
+        margin: 0;
+        font-size: 1.02rem;
+        color: #213643;
+      }
+      .related-notes-mode {
+        margin: 0.26rem 0 0.3rem;
+        font-size: 0.82rem;
+        color: #687a88;
+      }
+      .related-notes-list {
+        margin: 0;
+        padding-left: 1.15rem;
+      }
+      .related-notes-list li {
+        margin: 0.3rem 0;
+        color: #50616f;
+        font-size: 0.9rem;
+      }
+      .related-notes-list a {
+        color: #1b5e7a;
+        text-decoration: none;
+      }
+      .related-notes-list a:hover {
+        text-decoration: underline;
+      }
+      .related-date {
+        margin-right: 0.5rem;
+        color: #6a7884;
+        font-size: 0.8rem;
+        font-variant-numeric: tabular-nums;
+      }
+      .comment-wrapper {
+        margin-top: 1.4rem;
+        padding-top: 1rem;
+        border-top: 1px solid #d9e3e8;
+      }
+      .reading-map {
+        margin: 0 auto 0.9rem;
+        max-width: 760px;
+        border: 1px solid #d9e3e8;
+        border-radius: 10px;
+        background: #f8fbfc;
+        padding: 0.56rem 0.62rem;
+      }
+      .reading-map-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        font-size: 0.84rem;
+        color: #506676;
+      }
+      .reading-map details {
+        margin-top: 0.32rem;
+      }
+      .reading-map summary {
+        color: #1b5e7a;
+        cursor: pointer;
+        font-size: 0.86rem;
+        font-weight: 600;
+      }
+      .reading-map ul {
+        margin: 0.35rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .reading-map li {
+        margin: 0.2rem 0;
+      }
+      .reading-map li.toc-sub {
+        margin-left: 0.58rem;
+      }
+      .reading-map a {
+        color: #1b5e7a;
+        text-decoration: none;
+        font-size: 0.84rem;
+      }
+      .reading-map a:hover {
+        text-decoration: underline;
+      }
+      .reading-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        z-index: 40;
+        pointer-events: none;
+      }
+      .reading-progress-bar {
+        display: block;
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #1b5e7a 0%, #2f8aa8 100%);
+      }
+      @media (max-width: 760px) {
+        .media-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 640px) {
+        body {
+          padding: 1rem 0.8rem 2rem;
+        }
+        main {
+          padding: 1rem 0.85rem;
+        }
+        .top-links {
+          font-size: 0.88rem;
+          margin-bottom: 0.65rem;
+        }
+        .comment-wrapper {
+          margin-top: 1rem;
+          padding-top: 0.8rem;
+        }
+        .reading-map {
+          padding: 0.5rem 0.56rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reading-progress" aria-hidden="true">
+      <span class="reading-progress-bar" data-reading-progress-bar></span>
+    </div>
+    <main>
+      <div class="top-links">
+        <a href="../">Back to homepage</a>
+        <a href="./">Back to Notes &amp; Logs</a>
+      </div>
+
+      <section class="reading-map" data-reading-map>
+        <div class="reading-map-head">
+          <span data-reading-time>--</span>
+          <span data-reading-progress-text>0% read</span>
+        </div>
+        <details data-reading-toc-wrap open>
+          <summary>Reading map</summary>
+          <ul data-reading-toc></ul>
+        </details>
+      </section>
+
+      <article data-reading-content>
+        <h1>机器人动力学与控制研究记录</h1>
+        <p class="meta">2021-01-01 · #robotics #dynamics #control #optimal-control #reactive-planning #inverse-kinematics</p>
+
+        <p class="lead">
+          本文归档我在 2021 年前后开展的一组机器人动力学与控制相关工作，覆盖最优控制、反应规划、逆运动学/关节控制三条主线。
+          内容以阶段性可复现结果和动画展示为主，侧重方法路径与结果特征的梳理。
+        </p>
+
+        <div class="highlight">
+          <strong>归档范围</strong>
+          <ul>
+            <li>最优控制：机械臂避障轨迹规划问题的复现与数值验证。</li>
+            <li>反应规划：几何力学框架下反馈 Hamel 变分积分子与人工势场增强避障。</li>
+            <li>逆运动学控制：多类机器人模型的关节位置/速度/前馈/计算力矩控制实践。</li>
+          </ul>
+        </div>
+
+        <h2>最优控制复现：三连杆机械臂避障</h2>
+        <p>
+          该部分聚焦机械臂最优轨迹规划与避障约束处理，参考文献为
+          <a
+            class="inline-ref"
+            href="https://opus4.kobv.de/opus4-matheon/frontdoor/deliver/index/docId/910/file/GeHeHoLa11.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Gerdts M (2011)</a
+          >
+          关于路径规划与碰撞规避的工作。
+          我在 Matlab 中基于 <code>fmincon</code> 结合 Euler 积分实现数值求解，复现了论文同类场景下的求解行为与轨迹特征。
+        </p>
+        <p>
+          在当时的场景设置下，求解得到的终止时间为 <code>t_f = 0.4412s</code>。
+          在调参过程中，初值选择、控制量缩放与约束平衡对收敛稳定性影响较大。
+        </p>
+        <p>
+          在这一阶段，特别感谢
+          <a href="https://scholar.google.com/citations?user=y46fh4sAAAAJ&amp;hl=en&amp;oi=sra" target="_blank" rel="noopener noreferrer"
+            >Matthias Gerdts</a
+          >
+          教授提供的持续指导。关于初值构造、同伦路径与缩放策略的建议，
+          对复现工作从“可求解”走向“稳定收敛”起到了关键作用。
+        </p>
+
+        <div class="media-grid">
+          <figure>
+            <img
+              src="media/2021-01-01-robotics-archive/ocp-3link-scene.webp"
+              alt="三连杆机械臂最优控制问题的场景设置"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>场景设置</figcaption>
+          </figure>
+          <figure>
+            <img
+              src="media/2021-01-01-robotics-archive/ocp-3link.webp"
+              alt="三连杆机械臂最优控制求解结果动画"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>结果动画：避障过程</figcaption>
+          </figure>
+        </div>
+
+        <h2>反馈 Hamel 变分积分子与反应规划</h2>
+        <p>
+          在几何力学框架下，我们推导了开链机械臂的反馈 Hamel 变分积分子，并通过反馈控制算法实现积分子求根；
+          随后将其用于反应规划正向动力学计算。
+          在此基础上，将回转力引入传统人工势场法设计斥力项，用于缓解局部极小陷阱问题，实现整臂实时避障轨迹规划。
+        </p>
+
+        <div class="media-grid">
+          <figure>
+            <img
+              src="media/2021-01-01-robotics-archive/planar-3link-variational-integrator.webp"
+              alt="平面三连杆反馈 Hamel 变分积分子数值仿真动画"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>平面三连杆</figcaption>
+          </figure>
+          <figure>
+            <img
+              src="media/2021-01-01-robotics-archive/artificial-potential.webp"
+              alt="人工势场增强后的机械臂避障动画"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>实时避障轨迹规划</figcaption>
+          </figure>
+        </div>
+
+        <h2>逆运动学与关节控制：多模型验证</h2>
+        <p>
+          该阶段完成了多类机器人系统的运动学/动力学建模，并实现关节位置环、速度环、模型前馈与计算力矩等控制算法，
+          目标是保证各关节对给定轨迹的稳定、高精度跟踪。
+        </p>
+
+        <div class="media-single">
+          <figure class="framework-figure">
+            <img
+              src="media/2021-01-01-robotics-archive/planning-reactive-framework.webp"
+              alt="路径规划与反应规划整体框架图"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>路径规划与反应规划框架</figcaption>
+          </figure>
+        </div>
+
+        <h3>蛇形机器人模型</h3>
+        <div class="media-grid">
+          <figure>
+            <img
+              src="media/2021-01-01-robotics-archive/snakerobot-frame.webp"
+              alt="蛇形机器人运动过程动画"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>Snake robot</figcaption>
+          </figure>
+          <figure>
+            <img
+              src="media/2021-01-01-robotics-archive/snakerobot-joint-limit.webp"
+              alt="蛇形机器人含关节限位的运动动画"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>考虑关节限位</figcaption>
+          </figure>
+        </div>
+
+        <h3>工业机器人与门架系统</h3>
+        <div class="media-single">
+          <figure>
+            <img
+              src="media/2021-01-01-robotics-archive/industrial-7link-a.webp"
+              alt="七轴工业机器人动画示例一"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>七轴工业机器人示例 A</figcaption>
+          </figure>
+        </div>
+        <div class="media-grid">
+          <figure>
+            <img
+              src="media/2021-01-01-robotics-archive/industrial-7link-b.webp"
+              alt="七轴工业机器人动画示例二"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>七轴工业机器人示例 B</figcaption>
+          </figure>
+          <figure>
+            <img
+              src="media/2021-01-01-robotics-archive/industrial-gantry.webp"
+              alt="门架机器人运动动画"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>门架机器人示例</figcaption>
+          </figure>
+        </div>
+
+        <h2>小结</h2>
+        <p>
+          回看这批工作，最大的收获并不只是算法实现本身，而是形成了从建模、数值方法、规划到控制落地的一体化流程意识。
+          早期在最优控制与避障问题上的调参与稳定性处理经验，也为后续更复杂模型的研究提供了实践基础。
+        </p>
+        <p>
+          在此感谢当时给予指导和建议的老师与合作者。很多关键细节（如初值构造、同伦思路、缩放策略）对推进工作起到了直接作用。
+        </p>
+
+        <p class="ref">
+          参考：Gerdts, M., Henrion, R., Hömberg, D., &amp; Landry, C. (2011). Path planning and collision avoidance for robots.<br />
+          相关工作：沈伟清, 王本亮, 史东华. 开链机械臂的反馈 Hamel 变分积分子. 动力学与控制学报, 2022, 20(3): 8-14.
+        </p>
+      </article>
+
+      <section class="related-notes" data-related-notes hidden>
+        <h2>Related notes</h2>
+        <p class="related-notes-mode" data-related-notes-mode></p>
+        <ul class="related-notes-list" data-related-notes-list></ul>
+      </section>
+
+      <div class="comment-wrapper">
+        <div
+          data-giscus-lazy
+          data-repo="benlw/benlw.github.io"
+          data-repo-id="MDEwOlJlcG9zaXRvcnkyNDEwMzQwNjU="
+          data-category="Website Comments"
+          data-category-id="DIC_kwDODl3jUc4C25Z4"
+          data-mapping="pathname"
+          data-strict="1"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="top"
+          data-theme="light"
+          data-lang="en"
+          data-loading="lazy"
+        ></div>
+      </div>
+    </main>
+    <script src="notes-index.js" defer></script>
+    <script src="note-related.js" defer></script>
+    <script src="../assets/js/giscus-lazy.js" defer></script>
+    <script src="note-map.js" defer></script>
+  </body>
+</html>
