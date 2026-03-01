@@ -414,19 +414,79 @@
         .archive-tools {
           grid-template-columns: 1fr;
         }
+        .archive-shell {
+          margin: 0.72rem 0 0.85rem;
+          max-width: none;
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+          padding: 0;
+        }
+        .archive-list {
+          gap: 0;
+          max-width: none;
+          border-top: 1px solid #dbe5eb;
+          border-bottom: 1px solid #dbe5eb;
+        }
         .archive-row {
+          width: 100%;
           grid-template-columns: 1fr;
-          gap: 0.28rem;
+          grid-template-areas:
+            "main"
+            "meta"
+            "side";
+          gap: 0.2rem;
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+          box-shadow: none;
+          padding: 0.56rem 0 0.6rem;
+          border-bottom: 1px solid #e2eaef;
+          transition: none;
+        }
+        .archive-main {
+          grid-area: main;
+          width: 100%;
+        }
+        .archive-meta-col {
+          grid-area: meta;
+          gap: 0.12rem;
+          width: 100%;
         }
         .archive-side {
+          grid-area: side;
           justify-items: start;
+          align-content: start;
+          gap: 0.2rem;
+          width: 100%;
+        }
+        .archive-row:hover {
+          box-shadow: none;
+          border-color: transparent;
+        }
+        .archive-row:last-child {
+          border-bottom: 0;
+        }
+        .archive-row.type-formal,
+        .archive-row.type-support,
+        .archive-row.type-dropped,
+        .archive-row.type-extra {
+          border-left: 0;
+        }
+        .archive-title {
+          font-size: 0.91rem;
+        }
+        .archive-rule-inline {
+          font-size: 0.8rem;
+        }
+        .archive-meta,
+        .archive-result-inline,
+        .archive-players-inline {
+          font-size: 0.8rem;
         }
         .archive-badges,
         .archive-tags {
           justify-content: flex-start;
-        }
-        .archive-shell {
-          padding: 0.62rem 0.6rem 0.66rem;
         }
       }
       @media (max-width: 640px) {
