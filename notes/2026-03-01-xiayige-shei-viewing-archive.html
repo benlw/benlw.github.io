@@ -1,0 +1,852 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>《下一个是谁》观影档案：游戏与规则索引</title>
+    <meta name="note-date" content="2026-03-01" />
+    <meta name="note-tags" content="variety-show, viewing-note, archive, bilibili, games" />
+    <meta name="note-pinned" content="0" />
+    <meta name="note-pin-order" content="" />
+    <link rel="canonical" href="https://5imcs.com/notes/2026-03-01-xiayige-shei-viewing-archive.html" />
+    <style>
+      body {
+        margin: 0;
+        padding: 2rem 1rem 3rem;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        line-height: 1.68;
+        color: #1f2d38;
+        background: #f6f8f7;
+      }
+      main {
+        max-width: 960px;
+        margin: 0 auto;
+        background: #fff;
+        border: 1px solid #d9e3e8;
+        border-radius: 14px;
+        padding: 1.4rem 1.2rem;
+      }
+      .top-links {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.9rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.92rem;
+        flex-wrap: wrap;
+      }
+      .top-links a {
+        color: #1b5e7a;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;
+      }
+      .top-links a:hover {
+        text-decoration: underline;
+      }
+      article {
+        max-width: 820px;
+        margin: 0 auto;
+      }
+      .meta {
+        margin: 0.28rem 0 0.7rem;
+        color: #5b6f7d;
+        font-size: 0.9rem;
+      }
+      .lead {
+        margin: 0.6rem 0 1rem;
+        padding: 0.72rem 0.84rem;
+        border-left: 3px solid #6ca0b5;
+        background: #f5f9fb;
+        border-radius: 8px;
+      }
+      .source-box {
+        margin: 0.9rem 0 1.2rem;
+        padding: 0.72rem 0.84rem;
+        border: 1px solid #d6e2e8;
+        border-radius: 10px;
+        background: #fbfdfe;
+      }
+      .source-box p {
+        margin: 0.35rem 0;
+      }
+      .source-box a {
+        color: #1b5e7a;
+      }
+      .theme-wrap {
+        margin: 0.9rem auto 1.15rem;
+        max-width: 680px;
+      }
+      .theme-player {
+        border: 1px solid #d7e3e9;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #000;
+        box-shadow: 0 12px 28px rgba(31, 45, 56, 0.15);
+      }
+      .theme-player iframe {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        display: block;
+        border: 0;
+      }
+      .theme-tip {
+        margin: 0.45rem 0 0;
+        font-size: 0.86rem;
+        color: #596f7d;
+      }
+      .theme-tip a {
+        color: #1b5e7a;
+      }
+      .archive-shell {
+        margin: 0.85rem auto 0.95rem;
+        max-width: 760px;
+        border: 1px solid #d4e1e8;
+        border-radius: 12px;
+        background: linear-gradient(180deg, #f7fbfd 0%, #fbfdff 100%);
+        padding: 0.7rem 0.75rem 0.78rem;
+      }
+      .archive-tools {
+        display: grid;
+        grid-template-columns: 1fr 140px 140px;
+        gap: 0.6rem;
+        margin: 0;
+      }
+      .archive-tools input,
+      .archive-tools select {
+        border: 1px solid #cfdce3;
+        border-radius: 10px;
+        font-size: 0.92rem;
+        padding: 0.54rem 0.62rem;
+        color: #1f2d38;
+        background: #fff;
+      }
+      .archive-stats {
+        margin: 0.52rem 0 0;
+        color: #556a78;
+        font-size: 0.88rem;
+      }
+      .archive-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-top: 0.35rem;
+      }
+      .archive-pill {
+        border: 1px solid #d4e0e7;
+        border-radius: 999px;
+        padding: 0.2rem 0.55rem;
+        background: #f7fbfd;
+        color: #4f6574;
+        font-size: 0.8rem;
+      }
+      .archive-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.52rem;
+        max-width: 760px;
+        margin: 0 auto;
+      }
+      .archive-row {
+        border: 1px solid #d7e3e9;
+        border-radius: 10px;
+        background: #fcfeff;
+        padding: 0.58rem 0.66rem;
+        display: grid;
+        grid-template-columns: minmax(0, 2.4fr) minmax(190px, 1.25fr) minmax(170px, 1.1fr);
+        gap: 0.32rem 0.72rem;
+        align-items: start;
+        overflow: hidden;
+        transition: box-shadow 160ms ease, border-color 160ms ease;
+      }
+      .archive-row:hover {
+        box-shadow: 0 8px 18px rgba(31, 45, 56, 0.08);
+        border-color: #c7d9e4;
+      }
+      .archive-row * {
+        min-width: 0;
+      }
+      .archive-row.type-formal {
+        border-left: 4px solid #7ab2cf;
+      }
+      .archive-row.type-support {
+        border-left: 4px solid #9bbf9b;
+      }
+      .archive-row.type-dropped {
+        border-left: 4px solid #c8a8a8;
+      }
+      .archive-row.type-extra {
+        border-left: 4px solid #bca5c9;
+      }
+      .archive-main {
+        min-width: 0;
+      }
+      .archive-title {
+        margin: 0;
+        color: #1f2d38;
+        font-size: 0.93rem;
+        line-height: 1.32;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .archive-rule-inline {
+        margin: 0.26rem 0 0;
+        font-size: 0.82rem;
+        color: #5a6e7b;
+        white-space: normal;
+        line-height: 1.34;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        word-break: break-word;
+      }
+      .archive-meta-col {
+        display: grid;
+        gap: 0.22rem;
+      }
+      .archive-meta {
+        margin: 0;
+        font-size: 0.82rem;
+        color: #5c6f7c;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .archive-result-inline,
+      .archive-players-inline {
+        margin: 0;
+        font-size: 0.82rem;
+        color: #445d6c;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .archive-side {
+        display: grid;
+        gap: 0.28rem;
+        justify-items: end;
+      }
+      .archive-badges {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.34rem;
+        flex-wrap: wrap;
+      }
+      .archive-type {
+        font-size: 0.78rem;
+        border-radius: 999px;
+        padding: 0.14rem 0.52rem;
+        border: 1px solid #c4d7e2;
+        color: #3f6478;
+        background: #eef6fa;
+        white-space: nowrap;
+      }
+      .archive-type.type-formal {
+        border-color: #7ab2cf;
+        color: #155571;
+        background: #e8f4fb;
+      }
+      .archive-type.type-support {
+        border-color: #9bbf9b;
+        color: #355e35;
+        background: #edf7ed;
+      }
+      .archive-type.type-dropped {
+        border-color: #c8a8a8;
+        color: #7a4444;
+        background: #fbefef;
+      }
+      .archive-type.type-extra {
+        border-color: #bca5c9;
+        color: #5b4770;
+        background: #f4eef9;
+      }
+      .archive-source {
+        color: #1b5e7a;
+        font-size: 0.82rem;
+        text-decoration: none;
+      }
+      .archive-source:hover {
+        text-decoration: underline;
+      }
+      .archive-source[aria-disabled="true"] {
+        color: #80929f;
+        pointer-events: none;
+        text-decoration: none;
+      }
+      .archive-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.2rem;
+        justify-content: flex-end;
+        margin: 0;
+      }
+      .archive-tag {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        border: 1px solid #d5e1e8;
+        background: #f7fbfd;
+        color: #536b7a;
+        font-size: 0.74rem;
+        padding: 0.05rem 0.4rem;
+        line-height: 1.2;
+      }
+      .archive-tag.archive-tag-more {
+        border-style: dashed;
+        color: #667b89;
+        background: #fbfdfe;
+      }
+      .archive-empty {
+        margin: 0;
+        border: 1px dashed #d2e0e8;
+        border-radius: 10px;
+        background: #f8fbfd;
+        color: #5b7281;
+        font-size: 0.9rem;
+        padding: 0.7rem 0.75rem;
+      }
+      .related-notes {
+        margin-top: 1rem;
+        padding-top: 0.86rem;
+        border-top: 1px dashed #d5e0e6;
+      }
+      .related-notes h2 {
+        margin: 0;
+        font-size: 1.02rem;
+        color: #213643;
+      }
+      .related-notes-mode {
+        margin: 0.26rem 0 0.3rem;
+        font-size: 0.82rem;
+        color: #687a88;
+      }
+      .related-notes-list {
+        margin: 0;
+        padding-left: 1.15rem;
+      }
+      .related-notes-list li {
+        margin: 0.3rem 0;
+        color: #50616f;
+        font-size: 0.9rem;
+      }
+      .related-notes-list a {
+        color: #1b5e7a;
+        text-decoration: none;
+      }
+      .related-notes-list a:hover {
+        text-decoration: underline;
+      }
+      .related-date {
+        margin-right: 0.5rem;
+        color: #6a7884;
+        font-size: 0.8rem;
+        font-variant-numeric: tabular-nums;
+      }
+      .comment-wrapper {
+        margin-top: 1.4rem;
+        padding-top: 1rem;
+        border-top: 1px solid #d9e3e8;
+      }
+      .reading-map {
+        margin: 0 auto 0.9rem;
+        max-width: 820px;
+        border: 1px solid #d9e3e8;
+        border-radius: 10px;
+        background: #f8fbfc;
+        padding: 0.56rem 0.62rem;
+      }
+      .reading-map-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        font-size: 0.84rem;
+        color: #506676;
+      }
+      .reading-map details {
+        margin-top: 0.32rem;
+      }
+      .reading-map summary {
+        color: #1b5e7a;
+        cursor: pointer;
+        font-size: 0.86rem;
+        font-weight: 600;
+      }
+      .reading-map ul {
+        margin: 0.35rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .reading-map li {
+        margin: 0.2rem 0;
+      }
+      .reading-map li.toc-sub {
+        margin-left: 0.58rem;
+      }
+      .reading-map a {
+        color: #1b5e7a;
+        text-decoration: none;
+        font-size: 0.84rem;
+      }
+      .reading-map a:hover {
+        text-decoration: underline;
+      }
+      .reading-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        z-index: 40;
+        pointer-events: none;
+      }
+      .reading-progress-bar {
+        display: block;
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #1b5e7a 0%, #2f8aa8 100%);
+      }
+      @media (max-width: 760px) {
+        .archive-tools {
+          grid-template-columns: 1fr;
+        }
+        .archive-row {
+          grid-template-columns: 1fr;
+          gap: 0.28rem;
+        }
+        .archive-side {
+          justify-items: start;
+        }
+        .archive-badges,
+        .archive-tags {
+          justify-content: flex-start;
+        }
+        .archive-shell {
+          padding: 0.62rem 0.6rem 0.66rem;
+        }
+      }
+      @media (max-width: 640px) {
+        body {
+          padding: 1rem 0.8rem 2rem;
+        }
+        main {
+          padding: 1rem 0.85rem;
+        }
+        .top-links {
+          font-size: 0.88rem;
+          margin-bottom: 0.65rem;
+        }
+        .comment-wrapper {
+          margin-top: 1rem;
+          padding-top: 0.8rem;
+        }
+        .reading-map {
+          padding: 0.5rem 0.56rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reading-progress" aria-hidden="true">
+      <span class="reading-progress-bar" data-reading-progress-bar></span>
+    </div>
+    <main>
+      <div class="top-links">
+        <a href="../">Back to homepage</a>
+        <a href="./">Back to Notes &amp; Logs</a>
+      </div>
+
+      <section class="reading-map" data-reading-map>
+        <div class="reading-map-head">
+          <span data-reading-time>--</span>
+          <span data-reading-progress-text>0% read</span>
+        </div>
+        <details data-reading-toc-wrap open>
+          <summary>Reading map</summary>
+          <ul data-reading-toc></ul>
+        </details>
+      </section>
+
+      <article data-reading-content>
+        <h1>《下一个是谁》观影档案：游戏与规则索引</h1>
+        <p class="meta">2026-03-01 · #variety-show #viewing-note #archive #bilibili #games</p>
+
+        <p class="lead">
+          这篇笔记是给《下一个是谁》做的一份长期观影档案。它对我不是一档“看完就过”的节目，而是陪我走过一段岁月的精神锚点。
+          所以这篇内容更偏向“可检索的记忆索引”：把各季游戏、规则、结果和时间点统一整理，方便回看与复盘。
+        </p>
+
+        <h2>数据来源与范围</h2>
+        <div class="source-box">
+          <p>
+            核心来源：霖羽涣整理的《下一个是谁》（含番外、前传）游戏规则统计。（感谢）
+            <a href="https://www.bilibili.com/read/cv21581471/?opus_fallback=1" target="_blank" rel="noopener noreferrer"
+              >原文链接</a
+            >
+          </p>
+          <p>
+            当前版本覆盖第 1-6 季，含正式/辅助性/废弃/番外条目。
+          </p>
+          <p>说明：本页定位为观影笔记档案，不替代节目官方规则解释。</p>
+        </div>
+
+        <h2>游戏档案检索</h2>
+        <p>可按关键词、季数、类型筛选。关键词会同时匹配游戏名、规则、参与者和标签。</p>
+
+        <div class="archive-shell">
+          <div class="archive-tools" role="search">
+            <input
+              id="xygs-q"
+              type="search"
+              placeholder="搜索：游戏名 / 规则 / 参与UP主 / 标签"
+              autocomplete="off"
+            />
+            <select id="xygs-season" aria-label="按季筛选">
+              <option value="">全部季</option>
+            </select>
+            <select id="xygs-type" aria-label="按类型筛选">
+              <option value="">全部类型</option>
+            </select>
+          </div>
+          <div class="archive-stats" id="xygs-stats"></div>
+        </div>
+        <div class="archive-list" id="xygs-list"></div>
+
+        <template id="xygs-card-template">
+          <article class="archive-row">
+            <div class="archive-main">
+              <h3 class="archive-title"></h3>
+              <p class="archive-rule-inline"></p>
+            </div>
+            <div class="archive-meta-col">
+              <p class="archive-meta"></p>
+              <p class="archive-result-inline"></p>
+              <p class="archive-players-inline"></p>
+            </div>
+            <div class="archive-side">
+              <div class="archive-badges">
+                <span class="archive-type"></span>
+                <a class="archive-source" target="_blank" rel="noopener noreferrer">原视频</a>
+              </div>
+              <p class="archive-tags"></p>
+            </div>
+          </article>
+        </template>
+
+        <h2>主题曲回放: 下一个是谁!</h2>
+        <div class="theme-wrap">
+          <div class="theme-player">
+            <iframe
+              src="https://player.bilibili.com/player.html?bvid=BV1Mcunz1E39&page=1&high_quality=1"
+              title="《下一个是谁5》主题曲"
+              allowfullscreen="true"
+            ></iframe>
+          </div>
+          <p class="theme-tip">
+            如果嵌入加载失败，可直接访问
+            <a href="https://www.bilibili.com/video/BV1Mcunz1E39/" target="_blank" rel="noopener noreferrer">BV1Mcunz1E39</a>
+          </p>
+        </div>
+      </article>
+
+      <section class="related-notes" data-related-notes hidden>
+        <h2>Related notes</h2>
+        <p class="related-notes-mode" data-related-notes-mode></p>
+        <ul class="related-notes-list" data-related-notes-list></ul>
+      </section>
+
+      <div class="comment-wrapper">
+        <div
+          data-giscus-lazy
+          data-repo="benlw/benlw.github.io"
+          data-repo-id="MDEwOlJlcG9zaXRvcnkyNDEwMzQwNjU="
+          data-category="Website Comments"
+          data-category-id="DIC_kwDODl3jUc4C25Z4"
+          data-mapping="pathname"
+          data-strict="1"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="top"
+          data-theme="light"
+          data-lang="en"
+          data-loading="lazy"
+        ></div>
+      </div>
+    </main>
+
+    <script src="notes-index.js" defer></script>
+    <script src="note-related.js" defer></script>
+    <script src="../assets/js/giscus-lazy.js" defer></script>
+    <script src="note-map.js" defer></script>
+    <script>
+      (function () {
+        const DATA_URL = "data/2026-03-01-xiayige-shei-games.json";
+        const qEl = document.getElementById("xygs-q");
+        const seasonEl = document.getElementById("xygs-season");
+        const typeEl = document.getElementById("xygs-type");
+        const statsEl = document.getElementById("xygs-stats");
+        const listEl = document.getElementById("xygs-list");
+        const tpl = document.getElementById("xygs-card-template");
+
+        const state = {
+          all: [],
+          filtered: [],
+        };
+
+        function parseEpisodeLabel(episode) {
+          if (Number(episode) === 0) return "前传/番外";
+          return "第" + episode + "集";
+        }
+
+        function typeClass(type) {
+          if (type === "正式") return "type-formal";
+          if (type === "辅助性") return "type-support";
+          if (type === "废弃") return "type-dropped";
+          if (type === "番外") return "type-extra";
+          return "";
+        }
+
+        function lower(input) {
+          return String(input || "").toLowerCase();
+        }
+
+        function normalizeTags(tags) {
+          if (!Array.isArray(tags)) return [];
+          return tags
+            .map((tag) => String(tag || "").trim())
+            .filter(Boolean);
+        }
+
+        function renderTagPills(container, tags) {
+          container.innerHTML = "";
+          if (!Array.isArray(tags) || tags.length === 0) {
+            const empty = document.createElement("span");
+            empty.className = "archive-tag archive-tag-more";
+            empty.textContent = "—";
+            container.appendChild(empty);
+            return;
+          }
+
+          const shown = tags.slice(0, 4);
+          for (const tag of shown) {
+            const el = document.createElement("span");
+            el.className = "archive-tag";
+            el.textContent = "#" + tag;
+            container.appendChild(el);
+          }
+
+          if (tags.length > shown.length) {
+            const more = document.createElement("span");
+            more.className = "archive-tag archive-tag-more";
+            more.textContent = "+" + (tags.length - shown.length);
+            container.appendChild(more);
+          }
+        }
+
+        function matches(item, q, season, type) {
+          if (season && String(item.season) !== season) return false;
+          if (type && item.type !== type) return false;
+          if (!q) return true;
+
+          const haystack = [
+            item.id,
+            item.title,
+            item.type,
+            String(item.season),
+            String(item.episode),
+            item.time,
+            item.rule,
+            item.result,
+            ...(Array.isArray(item.players) ? item.players : []),
+            ...(Array.isArray(item.tags) ? item.tags : []),
+          ]
+            .join(" ")
+            .toLowerCase();
+
+          return haystack.includes(lower(q));
+        }
+
+        function updateUrl(q, season, type) {
+          const url = new URL(window.location.href);
+          if (q) url.searchParams.set("q", q);
+          else url.searchParams.delete("q");
+
+          if (season) url.searchParams.set("season", season);
+          else url.searchParams.delete("season");
+
+          if (type) url.searchParams.set("type", type);
+          else url.searchParams.delete("type");
+
+          window.history.replaceState({}, "", url);
+        }
+
+        function renderStats() {
+          const bySeason = new Map();
+          for (const item of state.filtered) {
+            const key = "S" + item.season;
+            bySeason.set(key, (bySeason.get(key) || 0) + 1);
+          }
+
+          const pills = Array.from(bySeason.entries())
+            .sort((a, b) => Number(a[0].slice(1)) - Number(b[0].slice(1))
+            )
+            .map(([season, count]) => '<span class="archive-pill">' + season + ": " + count + "</span>")
+            .join("");
+
+          statsEl.innerHTML =
+            "显示 " +
+            state.filtered.length +
+            " 条（总计 " +
+            state.all.length +
+            " 条）" +
+            (pills ? '<div class="archive-pills">' + pills + "</div>" : "");
+        }
+
+        function renderList() {
+          listEl.innerHTML = "";
+
+          if (state.filtered.length === 0) {
+            const empty = document.createElement("p");
+            empty.className = "archive-empty";
+            empty.textContent = "当前筛选条件下没有匹配记录。";
+            listEl.appendChild(empty);
+            return;
+          }
+
+          for (const item of state.filtered) {
+            const node = tpl.content.firstElementChild.cloneNode(true);
+
+            const titleText = item.id + " · " + item.title;
+            const titleNode = node.querySelector(".archive-title");
+            titleNode.textContent = titleText;
+            titleNode.title = titleText;
+
+            const typeNode = node.querySelector(".archive-type");
+            typeNode.textContent = item.type || "未分类";
+            const cls = typeClass(item.type);
+            if (cls) {
+              typeNode.classList.add(cls);
+              node.classList.add(cls);
+            }
+
+            node.querySelector(".archive-meta").textContent =
+              "第" +
+              item.season +
+              "季 · " +
+              parseEpisodeLabel(item.episode) +
+              " · 时间点 " +
+              (item.time || "--:--");
+
+            const ruleText = item.rule || "—";
+            const resultText = item.result || "—";
+            const playersText =
+              Array.isArray(item.players) && item.players.length > 0 ? item.players.join("、") : "—";
+            const tagsList = normalizeTags(item.tags);
+
+            const ruleNode = node.querySelector(".archive-rule-inline");
+            const resultNode = node.querySelector(".archive-result-inline");
+            const playersNode = node.querySelector(".archive-players-inline");
+            const tagsNode = node.querySelector(".archive-tags");
+
+            ruleNode.textContent = "规则：" + ruleText;
+            resultNode.textContent = "结果：" + resultText;
+            playersNode.textContent = "参与：" + playersText;
+            ruleNode.title = ruleText;
+            resultNode.title = resultText;
+            playersNode.title = playersText;
+            renderTagPills(tagsNode, tagsList);
+            tagsNode.title = tagsList.length > 0 ? tagsList.map((tag) => "#" + tag).join(" ") : "—";
+
+            const link = node.querySelector(".archive-source");
+            link.href = item.source || "#";
+            link.textContent = item.source ? "原视频" : "无链接";
+            if (!item.source) link.setAttribute("aria-disabled", "true");
+
+            listEl.appendChild(node);
+          }
+        }
+
+        function render() {
+          const q = qEl.value.trim();
+          const season = seasonEl.value;
+          const type = typeEl.value;
+
+          state.filtered = state.all.filter((item) => matches(item, q, season, type));
+          renderStats();
+          renderList();
+          updateUrl(q, season, type);
+        }
+
+        function sortItems(items) {
+          return items.slice().sort((a, b) => {
+            const seasonDiff = Number(a.season) - Number(b.season);
+            if (seasonDiff !== 0) return seasonDiff;
+
+            const episodeDiff = Number(a.episode) - Number(b.episode);
+            if (episodeDiff !== 0) return episodeDiff;
+
+            return String(a.id).localeCompare(String(b.id));
+          });
+        }
+
+        function fillSelectOptions(items) {
+          const seasons = Array.from(new Set(items.map((item) => String(item.season)))).sort(
+            (a, b) => Number(a) - Number(b)
+          );
+          const types = Array.from(new Set(items.map((item) => String(item.type || "")))).filter(Boolean);
+
+          for (const season of seasons) {
+            const op = document.createElement("option");
+            op.value = season;
+            op.textContent = "第" + season + "季";
+            seasonEl.appendChild(op);
+          }
+
+          for (const type of types) {
+            const op = document.createElement("option");
+            op.value = type;
+            op.textContent = type;
+            typeEl.appendChild(op);
+          }
+        }
+
+        function restoreQuery() {
+          const params = new URLSearchParams(window.location.search);
+          const q = params.get("q") || "";
+          const season = params.get("season") || "";
+          const type = params.get("type") || "";
+
+          qEl.value = q;
+          if (season) seasonEl.value = season;
+          if (type) typeEl.value = type;
+        }
+
+        async function init() {
+          try {
+            const response = await fetch(DATA_URL);
+            if (!response.ok) throw new Error("Failed to load archive data");
+            const data = await response.json();
+
+            state.all = sortItems(Array.isArray(data) ? data : []);
+            fillSelectOptions(state.all);
+            restoreQuery();
+            render();
+          } catch (error) {
+            console.error(error);
+            statsEl.textContent = "数据加载失败，请稍后重试。";
+          }
+        }
+
+        qEl.addEventListener("input", render);
+        seasonEl.addEventListener("change", render);
+        typeEl.addEventListener("change", render);
+
+        init();
+      })();
+    </script>
+  </body>
+</html>
