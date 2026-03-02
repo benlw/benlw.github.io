@@ -601,8 +601,10 @@
         <div class="theme-wrap">
           <div class="theme-player">
             <iframe
-              src="https://player.bilibili.com/player.html?bvid=BV1Mcunz1E39&page=1&high_quality=1"
+              src="https://player.bilibili.com/player.html?bvid=BV1Mcunz1E39&page=1&high_quality=1&autoplay=0"
               title="《下一个是谁5》主题曲"
+              loading="lazy"
+              allow="fullscreen"
               allowfullscreen="true"
             ></iframe>
           </div>
@@ -679,6 +681,64 @@
           return tags
             .map((tag) => String(tag || "").trim())
             .filter(Boolean);
+        }
+
+        function parseTimeToSeconds(raw) {
+          const text = String(raw || "").trim();
+          if (!text) return null;
+
+          const parts = text.split(":").map((p) => Number.parseInt(p, 10));
+          if (parts.some((v) => !Number.isFinite(v))) return null;
+
+          if (parts.length === 2) {
+            const [mm, ss] = parts;
+            return mm * 60 + ss;
+          }
+          if (parts.length === 3) {
+            const [hh, mm, ss] = parts;
+            return hh * 3600 + mm * 60 + ss;
+          }
+          return null;
+        }
+
+        function isBilibiliVideoUrl(url) {
+          return /bilibili\.com\/video\//i.test(String(url || ""));
+        }
+
+        function addTimestampToUrl(url, seconds) {
+          try {
+            const u = new URL(url);
+            if (Number.isFinite(seconds) && seconds > 0) {
+              u.searchParams.set("t", String(seconds));
+            }
+            return u.toString();
+          } catch {
+            return url;
+          }
+        }
+
+        function resolveVideoUrl(item) {
+          const source = String(item.source || "").trim();
+          const explicit = [
+            item.video,
+            item.videoUrl,
+            item.video_url,
+            item.videoSource,
+            item.video_source,
+          ]
+            .map((v) => String(v || "").trim())
+            .find(Boolean);
+
+          const bvid = String(item.bvid || "").trim();
+          let base = "";
+
+          if (explicit) base = explicit;
+          else if (isBilibiliVideoUrl(source)) base = source;
+          else if (bvid) base = `https://www.bilibili.com/video/${bvid}/`;
+          else return null;
+
+          const seconds = parseTimeToSeconds(item.time);
+          return addTimestampToUrl(base, seconds);
         }
 
         function renderTagPills(container, tags) {
@@ -822,9 +882,23 @@
             tagsNode.title = tagsList.length > 0 ? tagsList.map((tag) => "#" + tag).join(" ") : "—";
 
             const link = node.querySelector(".archive-source");
-            link.href = item.source || "#";
-            link.textContent = item.source ? "原视频" : "无链接";
-            if (!item.source) link.setAttribute("aria-disabled", "true");
+            const sourceUrl = String(item.source || "").trim();
+            const videoUrl = resolveVideoUrl(item);
+            const seconds = parseTimeToSeconds(item.time);
+
+            if (videoUrl) {
+              link.href = videoUrl;
+              link.textContent = Number.isFinite(seconds) && seconds > 0 ? "原视频（时间点）" : "原视频";
+              link.removeAttribute("aria-disabled");
+            } else if (sourceUrl) {
+              link.href = sourceUrl;
+              link.textContent = "来源原文";
+              link.removeAttribute("aria-disabled");
+            } else {
+              link.href = "#";
+              link.textContent = "无链接";
+              link.setAttribute("aria-disabled", "true");
+            }
 
             listEl.appendChild(node);
           }
