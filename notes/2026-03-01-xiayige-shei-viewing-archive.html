@@ -715,7 +715,7 @@
             <div class="archive-side">
               <div class="archive-badges">
                 <span class="archive-type"></span>
-                <a class="archive-source" target="_blank" rel="noopener noreferrer">原视频</a>
+                <a class="archive-source" target="_blank" rel="noopener noreferrer">观看正片</a>
               </div>
               <p class="archive-tags"></p>
             </div>
@@ -1134,10 +1134,10 @@
             if (videoUrl) {
               link.href = videoUrl;
               if (Number.isFinite(seconds) && seconds > 0) {
-                link.textContent = "视频（空降）";
+                link.textContent = "空降观看";
                 link.classList.add("kind-jump");
               } else {
-                link.textContent = "原视频";
+                link.textContent = "观看正片";
                 link.classList.add("kind-video");
               }
               link.removeAttribute("aria-disabled");
