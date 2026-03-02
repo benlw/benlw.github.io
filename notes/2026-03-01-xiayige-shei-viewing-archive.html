@@ -223,6 +223,10 @@
         cursor: pointer;
         font-family: inherit;
       }
+      .archive-copy-link:disabled {
+        cursor: default;
+        opacity: 0.78;
+      }
       .archive-rule-inline {
         margin: 0.26rem 0 0;
         font-size: 0.82rem;
@@ -318,15 +322,54 @@
         background: #f4eef9;
       }
       .archive-source {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.22rem;
+        border-radius: 999px;
+        border: 1px solid #c9dbe6;
+        background: #f3f9fc;
         color: #1b5e7a;
-        font-size: 0.82rem;
+        font-size: 0.76rem;
+        line-height: 1.1;
+        padding: 0.18rem 0.5rem;
         text-decoration: none;
       }
+      .archive-source::before {
+        font-size: 0.72rem;
+        line-height: 1;
+      }
+      .archive-source.kind-jump {
+        background: #e8f4fb;
+        border-color: #8ebad0;
+        color: #0f4f6a;
+        font-weight: 600;
+      }
+      .archive-source.kind-jump::before {
+        content: "↘";
+      }
+      .archive-source.kind-video {
+        background: #f2f8fc;
+        border-color: #c7dbe7;
+        color: #2a5f77;
+      }
+      .archive-source.kind-video::before {
+        content: "▶";
+      }
+      .archive-source.kind-article {
+        background: #f7fafc;
+        border-color: #d3e0e7;
+        color: #456375;
+      }
+      .archive-source.kind-article::before {
+        content: "↗";
+      }
       .archive-source:hover {
-        text-decoration: underline;
+        filter: brightness(0.98);
       }
       .archive-source[aria-disabled="true"] {
         color: #80929f;
+        border-color: #d5e1e8;
+        background: #f7fbfd;
         pointer-events: none;
         text-decoration: none;
       }
@@ -741,6 +784,12 @@
           filtered: [],
         };
         const RULE_TOGGLE_THRESHOLD = 58;
+        const PAGE_BASE_URL = (function () {
+          const url = new URL(window.location.href);
+          url.search = "";
+          url.hash = "";
+          return url.toString();
+        })();
 
         function normalizeAnchorId(raw) {
           const text = String(raw || "").trim();
@@ -753,10 +802,7 @@
         }
 
         function buildEntryUrl(anchorId) {
-          const url = new URL(window.location.href);
-          url.search = "";
-          url.hash = anchorId;
-          return url.toString();
+          return PAGE_BASE_URL + "#" + anchorId;
         }
 
         async function copyTextToClipboard(text) {
@@ -1013,13 +1059,24 @@
             anchorLink.setAttribute("aria-label", "跳转到 " + titleText);
 
             const copyLinkBtn = node.querySelector(".archive-copy-link");
-            copyLinkBtn.addEventListener("click", async () => {
-              const copied = await copyTextToClipboard(buildEntryUrl(anchorId));
-              const fallbackLabel = "复制链接";
-              copyLinkBtn.textContent = copied ? "已复制" : "复制失败";
-              window.setTimeout(() => {
-                copyLinkBtn.textContent = fallbackLabel;
-              }, 1300);
+            copyLinkBtn.dataset.copyUrl = buildEntryUrl(anchorId);
+            copyLinkBtn.addEventListener("click", () => {
+              const copyUrl = String(copyLinkBtn.dataset.copyUrl || "");
+              const currentTimer = Number(copyLinkBtn.dataset.resetTimer || "0");
+              if (currentTimer) window.clearTimeout(currentTimer);
+
+              copyLinkBtn.disabled = true;
+              copyLinkBtn.textContent = "复制中";
+
+              void copyTextToClipboard(copyUrl).then((copied) => {
+                copyLinkBtn.textContent = copied ? "已复制" : "复制失败";
+                const timerId = window.setTimeout(() => {
+                  copyLinkBtn.textContent = "复制链接";
+                  copyLinkBtn.disabled = false;
+                  copyLinkBtn.dataset.resetTimer = "0";
+                }, copied ? 880 : 1200);
+                copyLinkBtn.dataset.resetTimer = String(timerId);
+              });
             });
 
             const typeNode = node.querySelector(".archive-type");
@@ -1072,13 +1129,22 @@
             const videoUrl = resolveVideoUrl(item);
             const seconds = parseTimeToSeconds(item.time);
 
+            link.classList.remove("kind-jump", "kind-video", "kind-article");
+
             if (videoUrl) {
               link.href = videoUrl;
-              link.textContent = Number.isFinite(seconds) && seconds > 0 ? "视频（空降）" : "原视频";
+              if (Number.isFinite(seconds) && seconds > 0) {
+                link.textContent = "视频（空降）";
+                link.classList.add("kind-jump");
+              } else {
+                link.textContent = "原视频";
+                link.classList.add("kind-video");
+              }
               link.removeAttribute("aria-disabled");
             } else if (sourceUrl) {
               link.href = sourceUrl;
               link.textContent = "来源原文";
+              link.classList.add("kind-article");
               link.removeAttribute("aria-disabled");
             } else {
               link.href = "#";
