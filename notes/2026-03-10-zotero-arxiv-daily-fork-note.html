@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>zotero-arxiv-daily：fork 与工作流梳理</title>
+    <meta
+      name="description"
+      content="记录我如何基于 TideDra/zotero-arxiv-daily 做个人研究流程适配，包括端到端数据流、项目结构、fork 改动与邮件结果。"
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="note-date" content="2026-03-10" />
+    <meta
+      name="note-tags"
+      content="zotero, arxiv, github-actions, workflow, llm, email, research-automation"
+    />
+    <meta name="note-pinned" content="0" />
+    <meta name="note-pin-order" content="" />
+    <link rel="canonical" href="https://5imcs.com/notes/2026-03-10-zotero-arxiv-daily-fork-note.html" />
+    <style>
+      body {
+        margin: 0;
+        padding: 2rem 1rem 3rem;
+        font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+        line-height: 1.75;
+        color: #1f2d38;
+        background: #f6f8f7;
+      }
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        background: #fff;
+        border: 1px solid #d9e3e8;
+        border-radius: 14px;
+        padding: 1.4rem 1.2rem;
+      }
+      h1,
+      h2,
+      h3 {
+        color: #122532;
+      }
+      h1 {
+        margin: 0.2rem 0 0.7rem;
+        font-size: 1.52rem;
+      }
+      h2 {
+        margin: 1.3rem 0 0.7rem;
+        font-size: 1.15rem;
+      }
+      h3 {
+        margin: 1rem 0 0.45rem;
+        font-size: 1rem;
+      }
+      p {
+        margin: 0.5rem 0;
+      }
+      ul,
+      ol {
+        margin: 0.45rem 0 0.6rem 1.25rem;
+      }
+      li + li {
+        margin-top: 0.22rem;
+      }
+      pre {
+        overflow: auto;
+        border-radius: 10px;
+        border: 1px solid #d5e0e5;
+        background: #f8fbfc;
+        padding: 0.75rem;
+        line-height: 1.62;
+        -webkit-overflow-scrolling: touch;
+      }
+      code {
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+          monospace;
+        font-size: 0.9rem;
+      }
+      table {
+        width: 80%;
+        max-width: 720px;
+        border-collapse: collapse;
+        margin: 0.7rem auto 0.9rem;
+        font-size: 0.94rem;
+      }
+      th,
+      td {
+        border: 1px solid #d8e2e7;
+        padding: 0.55rem 0.62rem;
+        text-align: left;
+        vertical-align: top;
+      }
+      th {
+        background: #f7fafb;
+        color: #193142;
+        font-weight: 600;
+      }
+      tbody tr:nth-child(even) {
+        background: #fbfcfd;
+      }
+      a {
+        color: #1b5e7a;
+      }
+      .meta {
+        color: #5b6f7d;
+        font-size: 0.9rem;
+      }
+      .top-links {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.9rem;
+        margin-bottom: 0.85rem;
+        font-size: 0.92rem;
+        flex-wrap: wrap;
+      }
+      .top-links a {
+        color: #1b5e7a;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;
+      }
+      .top-links a:hover {
+        text-decoration: underline;
+      }
+      .summary {
+        margin: 0.7rem 0 0.95rem;
+        padding: 0.7rem 0.8rem;
+        border-left: 3px solid #6ca0b5;
+        background: #f5f9fb;
+        border-radius: 8px;
+      }
+      .summary p {
+        margin: 0.28rem 0;
+      }
+      .summary-line {
+        margin: 0.55rem 0 0.8rem;
+        padding: 0.55rem 0.72rem;
+        border-left: 3px solid #6ca0b5;
+        background: #f5f9fb;
+        border-radius: 8px;
+      }
+      .summary-line p {
+        margin: 0;
+      }
+      .link-index {
+        margin: 0.15rem 0 0.85rem;
+        color: #5c6f7c;
+        font-size: 0.88rem;
+      }
+      .link-index a {
+        color: #506d7d;
+        text-decoration: none;
+      }
+      .link-index a:hover {
+        color: #1b5e7a;
+        text-decoration: underline;
+      }
+      .pipeline {
+        width: 80%;
+        max-width: 760px;
+        margin: 0.55rem auto 0.45rem;
+        color: #2a3f4d;
+        font-size: 0.93rem;
+        line-height: 1.8;
+      }
+      .pipeline code {
+        white-space: nowrap;
+      }
+      .pipeline-note {
+        width: 80%;
+        max-width: 760px;
+        margin: 0.15rem auto 0.8rem;
+        color: #5c6f7c;
+        font-size: 0.88rem;
+      }
+      .tree-block {
+        width: 82%;
+        max-width: 760px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .figure {
+        margin: 0.55rem 0 0.45rem;
+      }
+      .figure img {
+        display: block;
+        width: 100%;
+        max-width: 620px;
+        margin: 0 auto;
+        border: 1px solid #d9e3e8;
+        border-radius: 10px;
+      }
+      .compact-table th:nth-child(1),
+      .compact-table td:nth-child(1) {
+        width: 19%;
+        white-space: nowrap;
+      }
+      .compact-table th:nth-child(3),
+      .compact-table td:nth-child(3) {
+        width: 28%;
+      }
+      .compact-table td code {
+        font-size: 0.84rem;
+      }
+      .related-notes {
+        margin-top: 1rem;
+        padding-top: 0.86rem;
+        border-top: 1px dashed #d5e0e6;
+      }
+      .related-notes h2 {
+        margin: 0;
+        font-size: 1.02rem;
+        color: #213643;
+      }
+      .related-notes-mode {
+        margin: 0.26rem 0 0.3rem;
+        font-size: 0.82rem;
+        color: #687a88;
+      }
+      .related-notes-list {
+        margin: 0;
+        padding-left: 1.15rem;
+      }
+      .related-notes-list li {
+        margin: 0.3rem 0;
+        color: #50616f;
+        font-size: 0.9rem;
+      }
+      .related-notes-list a {
+        color: #1b5e7a;
+        text-decoration: none;
+      }
+      .related-notes-list a:hover {
+        text-decoration: underline;
+      }
+      .related-date {
+        margin-right: 0.5rem;
+        color: #6a7884;
+        font-size: 0.8rem;
+        font-variant-numeric: tabular-nums;
+      }
+      .comment-wrapper {
+        margin-top: 1.4rem;
+        padding-top: 1rem;
+        border-top: 1px solid #d9e3e8;
+      }
+      .reading-map {
+        margin: 0 0 0.9rem;
+        border: 1px solid #d9e3e8;
+        border-radius: 10px;
+        background: #f8fbfc;
+        padding: 0.56rem 0.62rem;
+      }
+      .reading-map-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        font-size: 0.84rem;
+        color: #506676;
+      }
+      .reading-map details {
+        margin-top: 0.32rem;
+      }
+      .reading-map summary {
+        color: #1b5e7a;
+        cursor: pointer;
+        font-size: 0.86rem;
+        font-weight: 600;
+      }
+      .reading-map ul {
+        margin: 0.35rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .reading-map li {
+        margin: 0.2rem 0;
+      }
+      .reading-map li.toc-sub {
+        margin-left: 0.58rem;
+      }
+      .reading-map a {
+        color: #1b5e7a;
+        text-decoration: none;
+        font-size: 0.84rem;
+      }
+      .reading-map a:hover {
+        text-decoration: underline;
+      }
+      .reading-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        z-index: 40;
+        pointer-events: none;
+      }
+      .reading-progress-bar {
+        display: block;
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #1b5e7a 0%, #2f8aa8 100%);
+      }
+      @media (max-width: 640px) {
+        body {
+          padding: 1rem 0.8rem 2rem;
+        }
+        main {
+          padding: 1rem 0.85rem;
+        }
+        .top-links {
+          font-size: 0.88rem;
+          margin-bottom: 0.65rem;
+        }
+        .comment-wrapper {
+          margin-top: 1rem;
+          padding-top: 0.8rem;
+        }
+        table {
+          width: 100%;
+          max-width: none;
+        }
+        .tree-block {
+          width: auto;
+          max-width: none;
+        }
+        .pipeline,
+        .pipeline-note {
+          width: auto;
+          max-width: none;
+        }
+        pre {
+          padding: 0.62rem;
+        }
+        .reading-map {
+          padding: 0.5rem 0.56rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reading-progress" aria-hidden="true">
+      <span class="reading-progress-bar" data-reading-progress-bar></span>
+    </div>
+    <main>
+      <div class="top-links">
+        <a href="../">Back to homepage</a>
+        <a href="./">Back to Notes &amp; Logs</a>
+      </div>
+      <section class="reading-map" data-reading-map>
+        <div class="reading-map-head">
+          <span data-reading-time>--</span>
+          <span data-reading-progress-text>0% read</span>
+        </div>
+        <details data-reading-toc-wrap open>
+          <summary>阅读地图</summary>
+          <ul data-reading-toc></ul>
+        </details>
+      </section>
+      <article data-reading-content>
+        <h1>zotero-arxiv-daily：fork 与工作流梳理</h1>
+        <p class="meta">
+          2026-03-10 · #zotero #arxiv #github-actions #workflow #llm #email
+          #research-automation
+        </p>
+        <p class="link-index">
+          <a href="https://github.com/TideDra/zotero-arxiv-daily" target="_blank" rel="noopener">upstream</a>
+          /
+          <a href="https://github.com/benlw/zotero-arxiv-daily" target="_blank" rel="noopener">fork</a>
+          /
+          <a
+            href="https://github.com/benlw/zotero-arxiv-daily/compare/TideDra:main...benlw:main"
+            target="_blank"
+            rel="noopener"
+            >compare</a
+          >
+        </p>
+
+        <p>
+          这篇 note 记录这个 fork 的背景与主要调整。重点不放在“怎么安装”，而放在“它在研究日常里到底解决什么问题”和“这一版如何贴近自己的流程”。
+        </p>
+
+        <div class="summary">
+          <p>
+            原作者把“每日追踪前沿论文”做成了一个几乎零运维的 GitHub Actions 流水线，这件事本身就很有价值。它让文献追踪从一件需要额外分配精力的事，变成了一个稳定、低成本、可预期的日常入口。
+          </p>
+          <p>
+            我的 fork 不是重写，而是在这个开源基础上做个人适配：更贴近自己的研究方向、更偏中文研究导读、更重视邮件可读性与发送链路稳定性。
+          </p>
+        </div>
+
+        <h2>1. 目标与边界</h2>
+        <p>如果把这个项目抽象成一句话，它做的是：</p>
+        <div class="summary-line">
+          <p>
+            用 Zotero 历史语料近似表示当前研究兴趣，再从每日新增 arXiv 论文里筛出高相关候选，最后生成一封可以直接扫读的邮件摘要。
+          </p>
+        </div>
+        <p>它的输入、输出和约束可以压缩成下面三点：</p>
+        <ul>
+          <li><strong>输入</strong>：Zotero 文献库 + 每日 arXiv 新论文。</li>
+          <li><strong>输出</strong>：排序后的候选论文、中文摘要，以及最终邮件。</li>
+          <li><strong>约束</strong>：GitHub Actions 上可运行，维护成本低，失败时容易定位。</li>
+        </ul>
+
+        <h2>2. 端到端数据流</h2>
+        <div class="pipeline" aria-label="End-to-end data flow">
+          <code>Zotero corpus</code> -> <code>category inference</code> -> <code>arXiv fetch</code> ->
+          <code>deduplicate + rerank</code> -> <code>top-k full-text enrich</code> ->
+          <code>TL;DR / Q1 / Q2</code> -> <code>email render</code> ->
+          <code>SMTP / Actions</code>
+        </div>
+        <p class="pipeline-note">
+          其中 <code>top-k</code> 走全文增强，其余候选保持 abstract-only summary。
+        </p>
+        <p>fork 中几处改动，主要落在类别选择、Top-K 全文增强、邮件渲染和发送可靠性这几层。</p>
+
+        <h2>3. 项目结构</h2>
+        <p>下面列出主链路相关的主要目录与文件。</p>
+        <pre class="tree-block"><code>zotero-arxiv-daily/
+├─ .github/
+│  └─ workflows/
+│     ├─ main.yml                  # 每日主任务；fork 默认直接读取 committed config
+│     ├─ test-email.yml            # 新增：手动发送真实测试邮件
+│     ├─ test.yml                  # 调试/测试任务
+│     └─ ci.yml                    # 基础 CI
+├─ config/
+│  ├─ base.yaml                    # 配置基线：类别、摘要、SMTP、执行参数
+│  └─ custom.yaml                  # 个人研究画像与默认运行参数
+├─ src/
+│  └─ zotero_arxiv_daily/
+│     ├─ main.py                   # 入口
+│     ├─ executor.py               # 主调度：抓取、推断、重排、摘要、发送
+│     ├─ protocol.py               # Paper / CorpusPaper 与摘要逻辑
+│     ├─ construct_email.py        # 邮件 HTML 组装
+│     ├─ utils.py                  # SMTP、HTML/PDF 文本抽取等工具
+│     ├─ retriever/
+│     │  └─ arxiv_retriever.py     # arXiv 拉取与 code url 抽取
+│     └─ reranker/
+│        └─ local.py               # 本地 embedding rerank
+└─ tests/
+   └─ test_email.py                # 邮件链路相关测试</code></pre>
+
+        <table>
+          <thead>
+            <tr>
+              <th>目录/文件</th>
+              <th>作用</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>.github/workflows/</code></td>
+              <td>定义任务什么时候跑、读取什么配置、如何测试发送链路。</td>
+            </tr>
+            <tr>
+              <td><code>config/</code></td>
+              <td>定义研究画像、类别兜底、摘要语言、SMTP 参数。</td>
+            </tr>
+            <tr>
+              <td><code>executor.py</code></td>
+              <td>串起整个 E2E pipeline。</td>
+            </tr>
+            <tr>
+              <td><code>construct_email.py</code> / <code>utils.py</code></td>
+              <td>决定最终邮件长什么样，以及能否稳定发出去。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>4. 主要修改</h2>
+        <table class="compact-table">
+          <thead>
+            <tr>
+              <th>位置</th>
+              <th>调整</th>
+              <th>文件</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>配置回退</td>
+              <td>
+                主 workflow 不再强依赖 repo variable <code>CUSTOM_CONFIG</code>。变量为空时，直接回退到仓库里的 <code>config/custom.yaml</code>。
+              </td>
+              <td>
+                <code>.github/workflows/main.yml</code><br />
+                <code>.github/workflows/test.yml</code>
+              </td>
+            </tr>
+            <tr>
+              <td>手动邮件测试</td>
+              <td>新增 <code>test-email.yml</code>，把“只测真实发送链路”从日常任务里拆出来。</td>
+              <td><code>.github/workflows/test-email.yml</code></td>
+            </tr>
+            <tr>
+              <td>类别推断与兜底</td>
+              <td>
+                增加 <code>interest_profile</code>、<code>required_categories</code>、
+                <code>auto_category_from_zotero</code>，在未显式给定类别时，从 Zotero 语料自动推断，并保留一组兜底类别。
+              </td>
+              <td>
+                <code>config/base.yaml</code><br />
+                <code>config/custom.yaml</code><br />
+                <code>executor.py</code><br />
+                <code>arxiv_retriever.py</code>
+              </td>
+            </tr>
+            <tr>
+              <td>Top-K 全文增强</td>
+              <td>
+                不是对所有论文都做全文抽取，而是只对排序靠前的候选做 HTML/PDF enrich，然后再生成更深的总结。
+              </td>
+              <td><code>executor.py</code><br /><code>protocol.py</code></td>
+            </tr>
+            <tr>
+              <td>中文研究导读</td>
+              <td>
+                在 full-text 模式下输出 <code>TL;DR + Q1 + Q2</code>，而不是只给一句话摘要；并把默认语言切到中文。
+              </td>
+              <td><code>protocol.py</code><br /><code>config/custom.yaml</code></td>
+            </tr>
+            <tr>
+              <td>邮件输出层</td>
+              <td>
+                重写邮件 HTML 结构，支持更稳定的标题/作者/机构/摘要布局；同时从 arXiv 元信息中尽量抽取 code URL。
+              </td>
+              <td><code>construct_email.py</code><br /><code>arxiv_retriever.py</code></td>
+            </tr>
+            <tr>
+              <td>发送可靠性</td>
+              <td>SMTP 增加 retry，降低偶发失败直接中断的概率，并补邮件链路测试。</td>
+              <td><code>utils.py</code><br /><code>tests/test_email.py</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>5. 结果</h2>
+        <figure class="figure">
+          <img
+            src="media/2026-03-10-zotero-arxiv-daily/github-action-email.png"
+            alt="GitHub Action 发送的 arXiv Daily Digest 邮件截图，包含分类、相关性、中文摘要和 Q1 结构化说明。"
+          />
+        </figure>
+
+        <h2>6. 边界与后续</h2>
+        <p>目前比较明显的边界有三点：</p>
+        <ul>
+          <li>仍然以 arXiv 为主，尚未覆盖更广的期刊/数据库生态。</li>
+          <li>类别推断依赖启发式关键词与语料分布，不是一个严格的兴趣建模系统。</li>
+          <li>fork 目前仍落后 upstream 10 个提交，因此长期维护上仍应坚持 upstream-first。</li>
+        </ul>
+        <p>如果后面继续做，我更感兴趣的是：</p>
+        <ol>
+          <li>把兴趣画像从 Zotero 进一步解耦，允许显式主题词、排除词、权重与时间衰减。</li>
+          <li>扩展多数据源，但保持“轻量日报”而不是重新变成一个搜索平台。</li>
+          <li>继续把个人适配控制在少数核心文件里，降低未来同步 upstream 的成本。</li>
+        </ol>
+      </article>
+      <section class="related-notes" data-related-notes hidden>
+        <h2>Related notes</h2>
+        <p class="related-notes-mode" data-related-notes-mode></p>
+        <ul class="related-notes-list" data-related-notes-list></ul>
+      </section>
+      <div class="comment-wrapper">
+        <div
+          data-giscus-lazy
+          data-repo="benlw/benlw.github.io"
+          data-repo-id="MDEwOlJlcG9zaXRvcnkyNDEwMzQwNjU="
+          data-category="Website Comments"
+          data-category-id="DIC_kwDODl3jUc4C25Z4"
+          data-mapping="pathname"
+          data-strict="1"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="top"
+          data-theme="light"
+          data-lang="en"
+          data-loading="lazy"
+        ></div>
+      </div>
+    </main>
+    <script src="notes-index.js" defer></script>
+    <script src="note-related.js" defer></script>
+    <script src="../assets/js/giscus-lazy.js" defer></script>
+    <script src="note-map.js" defer></script>
+  </body>
+</html>

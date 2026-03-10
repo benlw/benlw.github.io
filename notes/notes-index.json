@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-09T19:55:37.324Z",
+  "generatedAt": "2026-03-10T04:44:40.066Z",
   "items": [
     {
       "date": "2021-01-01",
@@ -15,6 +15,20 @@
       ],
       "pinned": true,
       "pinOrder": 2
+    },
+    {
+      "date": "2026-03-10",
+      "title": "zotero-arxiv-daily：fork 与工作流梳理",
+      "href": "notes/2026-03-10-zotero-arxiv-daily-fork-note.html",
+      "tags": [
+        "zotero",
+        "arxiv",
+        "github-actions",
+        "workflow",
+        "llm",
+        "email",
+        "research-automation"
+      ]
     },
     {
       "date": "2026-03-01",
