@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>集群密度控制：Wasserstein 跟踪与非完整系统镇定</title>
+    <meta name="note-date" content="2026-03-06" />
+    <meta
+      name="note-tags"
+      content="density-control, swarm, wasserstein, nonholonomic, paper-note"
+    />
+    <meta name="note-pinned" content="0" />
+    <meta name="note-pin-order" content="" />
+    <link rel="canonical" href="https://5imcs.com/notes/2026-03-06-swarm-density-control-note.html" />
+    <style>
+      body {
+        margin: 0;
+        padding: 2rem 1rem 3rem;
+        font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+        line-height: 1.75;
+        color: #1f2d38;
+        background: #f6f8f7;
+      }
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        background: #fff;
+        border: 1px solid #d9e3e8;
+        border-radius: 14px;
+        padding: 1.4rem 1.2rem;
+      }
+      h1,
+      h2,
+      h3 {
+        margin: 0.2rem 0 0.7rem;
+        color: #122532;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+      h2 {
+        font-size: 1.15rem;
+        margin-top: 1.25rem;
+      }
+      h3 {
+        font-size: 1rem;
+        margin-top: 0.9rem;
+      }
+      p {
+        margin: 0.5rem 0;
+      }
+      ul,
+      ol {
+        margin: 0.45rem 0 0.6rem 1.25rem;
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 0.9rem;
+      }
+      pre {
+        overflow: auto;
+        border-radius: 10px;
+        border: 1px solid #d5e0e5;
+        background: #f8fbfc;
+        padding: 0.75rem;
+      }
+      a {
+        color: #1b5e7a;
+      }
+      .meta {
+        color: #5b6f7d;
+        font-size: 0.9rem;
+      }
+      .top-links {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.9rem;
+        margin-bottom: 0.85rem;
+        font-size: 0.92rem;
+        flex-wrap: wrap;
+      }
+      .top-links a {
+        color: #1b5e7a;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;
+      }
+      .top-links a:hover {
+        text-decoration: underline;
+      }
+      .reading-map {
+        margin: 0 0 0.9rem;
+        border: 1px solid #d9e3e8;
+        border-radius: 10px;
+        background: #f8fbfc;
+        padding: 0.56rem 0.62rem;
+      }
+      .reading-map-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        font-size: 0.84rem;
+        color: #506676;
+      }
+      .reading-map details {
+        margin-top: 0.32rem;
+      }
+      .reading-map summary {
+        color: #1b5e7a;
+        cursor: pointer;
+        font-size: 0.86rem;
+        font-weight: 600;
+      }
+      .reading-map ul {
+        margin: 0.35rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .reading-map li {
+        margin: 0.2rem 0;
+      }
+      .reading-map li.toc-sub {
+        margin-left: 0.58rem;
+      }
+      .reading-map a {
+        color: #1b5e7a;
+        text-decoration: none;
+        font-size: 0.84rem;
+      }
+      .reading-map a:hover {
+        text-decoration: underline;
+      }
+      .reading-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        z-index: 40;
+        pointer-events: none;
+      }
+      .reading-progress-bar {
+        display: block;
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #1b5e7a 0%, #2f8aa8 100%);
+      }
+      .lead {
+        margin: 0.75rem 0 1rem;
+        padding: 0.62rem 0.72rem;
+        border-left: 3px solid #1b5e7a;
+        background: #f8fbfc;
+      }
+      .figure {
+        width: 52%;
+        margin: 0.85rem auto;
+      }
+      .figure img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border: 1px solid #d5e0e5;
+        border-radius: 10px;
+        background: #ffffff;
+      }
+      .figure figcaption {
+        margin-top: 0.35rem;
+        color: #5c6d79;
+        font-size: 0.86rem;
+      }
+      .figure-triplet {
+        width: 78%;
+        margin: 0.85rem auto;
+        display: flex;
+        gap: 0.6rem;
+        justify-content: space-between;
+      }
+      .figure-triplet .figure {
+        width: calc(33.333% - 0.4rem);
+        margin: 0;
+      }
+      .cite {
+        font-size: 0.86em;
+        vertical-align: super;
+      }
+      .cite a {
+        color: #1b5e7a;
+        text-decoration: none;
+      }
+      .cite a:hover {
+        text-decoration: underline;
+      }
+      .refs li {
+        margin: 0.42rem 0;
+      }
+      .mjx-container {
+        max-width: 100%;
+      }
+      .mjx-container[display="true"] {
+        display: block;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        margin: 0.7rem 0 !important;
+        padding-bottom: 0.12rem;
+      }
+      .mjx-container[display="true"] > mjx-math {
+        min-width: max-content;
+      }
+      .related-notes {
+        margin-top: 1rem;
+        padding-top: 0.86rem;
+        border-top: 1px dashed #d5e0e6;
+      }
+      .related-notes h2 {
+        margin: 0;
+        font-size: 1.02rem;
+        color: #213643;
+      }
+      .related-notes-mode {
+        margin: 0.26rem 0 0.3rem;
+        font-size: 0.82rem;
+        color: #687a88;
+      }
+      .related-notes-list {
+        margin: 0;
+        padding-left: 1.15rem;
+      }
+      .related-notes-list li {
+        margin: 0.3rem 0;
+        color: #50616f;
+        font-size: 0.9rem;
+      }
+      .related-notes-list a {
+        color: #1b5e7a;
+        text-decoration: none;
+      }
+      .related-notes-list a:hover {
+        text-decoration: underline;
+      }
+      .related-date {
+        margin-right: 0.5rem;
+        color: #6a7884;
+        font-size: 0.8rem;
+        font-variant-numeric: tabular-nums;
+      }
+      .comment-wrapper {
+        margin-top: 1.4rem;
+        padding-top: 1rem;
+        border-top: 1px solid #d9e3e8;
+      }
+      @media (max-width: 760px) {
+        .figure,
+        .figure-triplet {
+          width: 100%;
+        }
+        .figure-triplet {
+          flex-direction: column;
+        }
+        .figure-triplet .figure {
+          width: 100%;
+        }
+      }
+      @media (max-width: 640px) {
+        body {
+          padding: 1rem 0.8rem 2rem;
+        }
+        main {
+          padding: 1rem 0.85rem;
+        }
+        .top-links {
+          font-size: 0.88rem;
+          margin-bottom: 0.65rem;
+        }
+        .comment-wrapper {
+          margin-top: 1rem;
+          padding-top: 0.8rem;
+        }
+        pre {
+          padding: 0.62rem;
+        }
+        .reading-map {
+          padding: 0.5rem 0.56rem;
+        }
+        .mjx-container {
+          font-size: 0.96em;
+        }
+        .mjx-container[display="true"] {
+          margin: 0.58rem 0 !important;
+        }
+      }
+    </style>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [
+            ["$", "$"],
+            ["\\(", "\\)"],
+          ],
+          displayMath: [
+            ["$$", "$$"],
+            ["\\[", "\\]"],
+          ],
+        },
+      };
+    </script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+  </head>
+  <body>
+    <div class="reading-progress" aria-hidden="true">
+      <span class="reading-progress-bar" data-reading-progress-bar></span>
+    </div>
+    <main>
+      <div class="top-links">
+        <a href="../">Back to homepage</a>
+        <a href="./">Back to Notes &amp; Logs</a>
+      </div>
+      <section class="reading-map" data-reading-map>
+        <div class="reading-map-head">
+          <span data-reading-time>--</span>
+          <span data-reading-progress-text>0% read</span>
+        </div>
+        <details data-reading-toc-wrap open>
+          <summary>阅读地图</summary>
+          <ul data-reading-toc></ul>
+        </details>
+      </section>
+      <article data-reading-content>
+        <h1>集群密度控制：Wasserstein 跟踪与非完整系统镇定</h1>
+        <p class="meta">
+          2026-03-11 · #density-control #swarm #wasserstein #nonholonomic #paper-note
+        </p>
+
+        <p>
+          这篇 note 联读两篇把“集群控制”提升到“概率密度演化控制”的论文：一篇从
+          2-Wasserstein 几何讨论连续体 swarm 的最优跟踪，另一篇处理非完整约束下的密度镇定。
+          前者回答“往哪走、走多快”，后者回答“当个体受运动学约束时，密度反馈如何仍然可达且可稳”。
+        </p>
+
+        <p class="lead">
+          P1 把密度跟踪写成 Wasserstein 流形上的几何最优控制，P2 则说明在非完整约束下，集群密度依然可以通过可达性与局部反馈被稳定到目标分布。
+        </p>
+
+        <h2>1. 问题与文献定位</h2>
+        <p>
+          这两篇文献的共同点，是都不再把控制目标停留在单个 agent 的轨迹层，而是直接控制集群在空间上的分布形态。差别在于：P1 讨论的是
+          <em>tracking</em> 与运动代价之间的几何折中，P2 处理的是非完整约束下的
+          <em>stabilization</em> 与可达性问题。P1 对应的是
+          <a href="https://doi.org/10.1109/CDC49753.2023.10384000">CDC 2023 会议论文</a
+          >，并保留
+          <a href="https://arxiv.org/abs/2303.15638">arXiv 版本</a>；P2 已发表于
+          <a href="https://doi.org/10.1109/TAC.2023.3326060">IEEE TAC 2024</a
+          >，预印本见
+          <a href="https://arxiv.org/abs/2308.15755">arXiv</a
+          ><span class="cite"><a href="#ref-1">[R1]</a></span
+          ><span class="cite"><a href="#ref-2">[R2]</a></span>。
+        </p>
+
+        <h2>2. P1：Wasserstein 空间中的几何降维与调度</h2>
+        <p>
+          P1 的关键做法是把原始 PDE 控制问题改写成 Wasserstein 空间
+          $\mathcal{W}_2$ 上的曲线优化问题。这样一来，原来混在一起的“匹配代价”和“移动代价”，可以分别落到密度间距离与流形速度上。
+        </p>
+
+        <figure class="figure">
+          <img
+            src="media/2026-03-11-swarm-density-control/math-model-drawing.webp"
+            alt="P1 建模示意：当前集群密度、目标密度与控制变量之间的关系"
+          />
+          <figcaption>
+            P1 建模示意：服务代价由密度之间的 Wasserstein 距离刻画，运动代价由速度场能量刻画。
+          </figcaption>
+        </figure>
+
+        <h3>关键</h3>
+        <ol>
+          <li>
+            把控制输入 $V_t$ 诱导的运动耗散，通过连续性方程与 Benamou-Brenier 表述，解释为密度曲线
+            $R_t$ 在 Wasserstein 流形上的速度平方 $|R_t'|^2$。
+          </li>
+          <li>
+            在静态目标分布 $D$ 下，最优密度演化不再需要在函数空间里“盲搜”，而是被压缩为沿
+            $R_0 \to D$ 的 Wasserstein 测地线前进。
+          </li>
+          <li>
+            因此，“往哪走”由几何测地线决定，“走多快”退化为一个一维标量调度问题，对应的反馈律可写成
+            $$V_t = -\frac{f(t)}{\alpha}(\mathcal{I} - \bar{M}_t),$$
+            其中 $\bar{M}_t$ 是当前分布到目标分布的最优传输映射。
+          </li>
+        </ol>
+
+        <p>
+          这一步最重要的收益，不只是得到一个漂亮的公式，而是把无穷维最优控制里的“空间方向”和“时间调度”拆开了。对后续做近似实现或模型预测控制，这种分层非常关键。
+        </p>
+
+        <figure class="figure">
+          <img
+            src="media/2026-03-11-swarm-density-control/riemannian-submersion.webp"
+            alt="P1 的几何桥梁示意：映射空间与 Wasserstein 流形之间的投影关系"
+          />
+          <figcaption>
+            P1 的几何桥梁：通过投影映射 $\Pi$ 将映射空间上的变分问题联系到 Wasserstein 流形上的测地结构。
+          </figcaption>
+        </figure>
+
+        <h2>3. P2：非完整约束下的可达性与密度镇定</h2>
+        <p>
+          P2 的关键点不在于再做一次椭圆型扩散稳定性分析，而在于把个体的非完整运动学约束保留下来。由于生成元退化为次椭圆算子，常见的强椭圆工具不能直接照搬，因此需要先证明可达，再讨论稳定。
+        </p>
+
+        <h3>关键</h3>
+        <ol>
+          <li>
+            若受限向量场满足 Hörmander 条件，则虽然个体运动学是退化的，但对应算子仍能建立闭性、自伴性与正半群，从而保证宏观密度演化模型本身是合法的。
+          </li>
+          <li>
+            当目标密度有严格正下界时，可以构造状态反馈使系统指数收敛到目标密度。
+          </li>
+          <li>
+            为了处理更实际的“目标分布含空腔”情形，文中引入 hybrid switching diffusion 与局部密度反馈
+            $$ (F_i(f))(x) = r_i\bigl(f(x) - y^d(x)\bigr), $$
+            并进一步证明对应的半线性 PDE 在 $L^1$ 意义下全局渐近稳定。
+          </li>
+        </ol>
+
+        <div class="figure-triplet">
+          <figure class="figure">
+            <img
+              src="media/2026-03-11-swarm-density-control/heisen-initial.webp"
+              alt="P2 Brockett 积分子示例中的初始分布"
+            />
+            <figcaption>P2 仿真：Brockett 积分子下的初始集群分布。</figcaption>
+          </figure>
+          <figure class="figure">
+            <img
+              src="media/2026-03-11-swarm-density-control/heisen-steady.webp"
+              alt="P2 Brockett 积分子示例中的后期分布"
+            />
+            <figcaption>P2 仿真：后期时刻分布，逐步收敛到目标形态。</figcaption>
+          </figure>
+          <figure class="figure">
+            <img
+              src="media/2026-03-11-swarm-density-control/l1-error.webp"
+              alt="P2 的 L1 误差演化曲线"
+            />
+            <figcaption>P2 的 $L^1$ 误差曲线，显示全局渐近收敛趋势。</figcaption>
+          </figure>
+        </div>
+
+        <h2>4. 两点启发</h2>
+        <p>
+          如果把问题放回塑形视角，这两篇文献真正提供的不是“更多功能”，而是两类底层结构。
+        </p>
+        <ol>
+          <li>
+            <strong>度量层：</strong> P1 说明密度控制里“代价几何”不是附属品，而是核心建模对象。有限维系统里的动能矩阵，在这里被 2-Wasserstein 度量接管；控制器首先要决定的是在什么几何下比较两条密度轨迹。
+          </li>
+          <li>
+            <strong>受限驱动层：</strong> P2 说明即使瞬时可控方向不够，仍然可以借助李括号可达性、交互扩散与局部密度反馈，在宏观分布层实现稳定。这为把欠驱动或非完整约束引入密度层面的塑形提供了合法性基础。
+          </li>
+        </ol>
+
+        <h2>5. 参考文献</h2>
+        <ol class="refs">
+          <li id="ref-1">
+            Max Emerick, Bassam Bamieh.
+            <em>Continuum Swarm Tracking Control: A Geometric Perspective in Wasserstein Space</em>.
+            In <em>62nd IEEE Conference on Decision and Control (CDC)</em>, pp. 1367-1374, 2023.
+            <a href="https://doi.org/10.1109/CDC49753.2023.10384000">DOI</a> ·
+            <a href="https://arxiv.org/abs/2303.15638">arXiv</a>
+          </li>
+          <li id="ref-2">
+            Karthik Elamvazhuthi, Spring Berman.
+            <em>Density Stabilization Strategies for Nonholonomic Agents on Compact Manifolds</em>.
+            <em>IEEE Transactions on Automatic Control</em>, 69(3):1448-1463, 2024.
+            <a href="https://doi.org/10.1109/TAC.2023.3326060">DOI</a> ·
+            <a href="https://arxiv.org/abs/2308.15755">arXiv</a>
+          </li>
+        </ol>
+      </article>
+      <section class="related-notes" data-related-notes hidden>
+        <h2>Related notes</h2>
+        <p class="related-notes-mode" data-related-notes-mode></p>
+        <ul class="related-notes-list" data-related-notes-list></ul>
+      </section>
+      <div class="comment-wrapper">
+        <div
+          data-giscus-lazy
+          data-repo="benlw/benlw.github.io"
+          data-repo-id="MDEwOlJlcG9zaXRvcnkyNDEwMzQwNjU="
+          data-category="Website Comments"
+          data-category-id="DIC_kwDODl3jUc4C25Z4"
+          data-mapping="pathname"
+          data-strict="1"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="top"
+          data-theme="light"
+          data-lang="en"
+          data-loading="lazy"
+        ></div>
+      </div>
+    </main>
+    <script src="notes-index.js" defer></script>
+    <script src="note-related.js" defer></script>
+    <script src="../assets/js/giscus-lazy.js" defer></script>
+    <script src="note-map.js" defer></script>
+  </body>
+</html>

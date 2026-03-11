@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-10T19:55:42.336Z",
+  "generatedAt": "2026-03-11T12:07:43.705Z",
   "items": [
     {
       "date": "2021-01-01",
@@ -28,6 +28,18 @@
         "llm",
         "email",
         "research-automation"
+      ]
+    },
+    {
+      "date": "2026-03-06",
+      "title": "集群密度控制：Wasserstein 跟踪与非完整系统镇定",
+      "href": "notes/2026-03-06-swarm-density-control-note.html",
+      "tags": [
+        "density-control",
+        "swarm",
+        "wasserstein",
+        "nonholonomic",
+        "paper-note"
       ]
     },
     {
