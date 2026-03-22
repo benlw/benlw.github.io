@@ -49,8 +49,13 @@
       <header class="hero reveal" id="about">
         <div class="hero-layout">
           <div>
-            <h1>Benliang Wang</h1>
-            <p>
+            <div class="hero-header-mobile">
+              <div class="profile-photo profile-photo-mobile">
+                <img src="assets/photo/photo.webp" alt="Portrait of Benliang Wang" loading="lazy" />
+              </div>
+              <h1>Benliang Wang</h1>
+            </div>
+            <p class="hero-text">
               PhD Student at Beijing Institute of Technology. My research
               focuses on structure-preserving numerical integrators, controlled
               Lagrangian methods for nonlinear and infinite-dimensional systems,
@@ -139,7 +144,7 @@
               </a>
             </div>
           </div>
-          <div class="profile-photo">
+          <div class="profile-photo profile-photo-desktop">
             <img src="assets/photo/photo.webp" alt="Portrait of Benliang Wang" loading="lazy" />
           </div>
         </div>
@@ -169,14 +174,16 @@
         <ul class="outline-list" data-project-list data-base="" data-limit="2"></ul>
         <div class="heatmap-block" data-heatmap>
           <p class="heatmap-title"><i class="fa-brands fa-github"></i> GitHub Contribution Heatmap</p>
-          <a href="https://github.com/benlw" target="_blank" rel="noopener noreferrer" aria-label="GitHub contribution heatmap">
-            <img
-              src="https://ghchart.rshah.org/benlw"
-              alt="GitHub contribution heatmap for benlw"
-              loading="lazy"
-              data-heatmap-img
-            />
-          </a>
+          <div class="heatmap-scroll">
+            <a href="https://github.com/benlw" target="_blank" rel="noopener noreferrer" aria-label="GitHub contribution heatmap">
+              <img
+                src="https://ghchart.rshah.org/benlw"
+                alt="GitHub contribution heatmap for benlw"
+                loading="lazy"
+                data-heatmap-img
+              />
+            </a>
+          </div>
           <p class="heatmap-fallback" data-heatmap-fallback hidden>
             Heatmap is temporarily unavailable.
             <a href="https://github.com/benlw" target="_blank" rel="noopener noreferrer"

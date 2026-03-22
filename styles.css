@@ -61,6 +61,11 @@ body {
   background: #eaf1f4;
 }
 
+.nav-links a:active {
+  transform: scale(0.96);
+  background: #dfe8ec;
+}
+
 .hero {
   margin-top: 0.55rem;
   background: var(--surface);
@@ -70,10 +75,22 @@ body {
 }
 
 .hero-layout {
-  display: grid;
-  grid-template-columns: 1fr 160px;
-  gap: 1rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
   align-items: center;
+}
+
+.hero-layout > div:first-child {
+  flex: 1;
+}
+
+.hero-header-mobile {
+  margin-bottom: 0.5rem;
+}
+
+.profile-photo-mobile {
+  display: none;
 }
 
 .hero h1 {
@@ -83,40 +100,24 @@ body {
   line-height: 1.15;
 }
 
-.hero p {
+.hero-text {
   margin: 0.5rem 0 0;
   color: var(--ink-muted);
   font-size: 0.94rem;
-}
-
-.research-interests {
-  margin-top: 0.58rem;
-}
-
-.interest-inline {
-  margin: 0;
-  color: var(--ink-muted);
-  font-size: 0.9rem;
-}
-
-.interest-label {
-  font-weight: 700;
-  color: #33444f;
-}
-
-.about-updated {
-  margin: 0.32rem 0 0;
-  font-size: 0.82rem;
-  color: #6a7884;
+  max-width: 680px;
+  line-height: 1.6;
 }
 
 .profile-photo {
-  width: 160px;
-  height: 160px;
-  border-radius: 12px;
+  width: 140px;
+  height: 140px;
+  border-radius: 16px;
   overflow: hidden;
   border: 1px solid #d8e0e4;
   background: #f3f7fa;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(22, 50, 66, 0.06);
+  order: 2; /* Move photo to the right of the name */
 }
 
 .profile-photo img {
@@ -180,6 +181,12 @@ body {
   background: #f8fbfc;
 }
 
+.social-link:active,
+.social-link-button:active {
+  transform: scale(0.98);
+  background: #eaf1f4;
+}
+
 .social-link.is-copied {
   border-color: var(--brand);
   background: #eaf1f4;
@@ -235,6 +242,10 @@ body {
 .section-link:hover,
 .section-link:focus-visible {
   text-decoration: underline;
+}
+
+.section-link:active {
+  opacity: 0.7;
 }
 
 .research-list {
@@ -328,6 +339,11 @@ body {
 .title-link:focus-visible {
   text-decoration: none;
   border-color: var(--brand);
+}
+
+.title-link:active {
+  transform: scale(0.98);
+  background: #f8fbfc;
 }
 
 .research-meta {
@@ -531,14 +547,42 @@ body {
   gap: 0.32rem;
 }
 
-.heatmap-block img {
+.heatmap-scroll {
   width: 100%;
-  height: auto;
-  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-radius: 6px;
   border: 1px solid #dce6ea;
   background: #fff;
   padding: 0.32rem;
+}
+
+.heatmap-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.heatmap-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.heatmap-scroll::-webkit-scrollbar-thumb {
+  background: #dce6ea;
+  border-radius: 3px;
+}
+
+.heatmap-scroll::-webkit-scrollbar-thumb:hover {
+  background: #b0c4cf;
+}
+
+.heatmap-scroll a {
+  display: block;
+}
+
+.heatmap-block img {
+  min-width: 680px;
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .heatmap-fallback {
@@ -576,12 +620,6 @@ body {
 }
 
 @media (max-width: 860px) {
-  .hero-layout {
-    grid-template-columns: 1fr 120px;
-    gap: 0.75rem;
-    align-items: start;
-  }
-
   .profile-photo {
     width: 120px;
     height: 120px;
@@ -622,7 +660,7 @@ body {
   }
 
   .nav-links a {
-    font-size: 0.86rem;
+    font-size: 0.92rem;
     display: inline-flex;
     align-items: center;
     min-height: 40px;
@@ -635,12 +673,12 @@ body {
   }
 
   .title-link {
-    font-size: 0.72rem;
+    font-size: 0.82rem;
     padding: 0.08rem 0.4rem;
   }
 
   .social-link {
-    font-size: 0.78rem;
+    font-size: 0.88rem;
     padding: 0.22rem 0.44rem;
     min-height: 40px;
   }
@@ -648,7 +686,29 @@ body {
   .social-icon {
     width: 22px;
     height: 22px;
-    font-size: 0.82rem;
+    font-size: 0.9rem;
+  }
+
+  .hero-header-mobile {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .profile-photo-desktop {
+    display: none;
+  }
+
+  .profile-photo-mobile {
+    display: block;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    margin-bottom: 0;
+  }
+
+  .hero h1 {
+    font-size: 1.8rem;
   }
 
   .social-links {
@@ -660,31 +720,19 @@ body {
   .social-link,
   .social-link-button {
     width: 100%;
-    justify-content: space-between;
-  }
-
-  .hero-layout {
-    grid-template-columns: 1fr;
-    gap: 0.72rem;
-  }
-
-  .profile-photo {
-    width: 108px;
-    height: 108px;
-    border-radius: 10px;
-    justify-self: flex-start;
+    justify-content: flex-start;
   }
 
   .interest-inline {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 
   .about-updated {
-    font-size: 0.78rem;
+    font-size: 0.85rem;
   }
 
   .outline-date {
-    font-size: 0.78rem;
+    font-size: 0.85rem;
   }
 
   .notes-list li.note-row {
