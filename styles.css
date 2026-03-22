@@ -117,7 +117,6 @@ body {
   background: #f3f7fa;
   flex-shrink: 0;
   box-shadow: 0 4px 12px rgba(22, 50, 66, 0.06);
-  order: 2; /* Move photo to the right of the name */
 }
 
 .profile-photo img {
