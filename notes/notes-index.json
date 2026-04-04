@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-04T01:21:02.491Z",
+  "generatedAt": "2026-04-04T01:24:21.084Z",
   "items": [
     {
       "date": "2021-01-01",
@@ -18,7 +18,7 @@
     },
     {
       "date": "2026-04-04",
-      "title": "摄动 Hamel 场积分子：并行推进动画",
+      "title": "几何精确 Euler-Bernoulli 梁的 Hamel 场积分子（并行计算）",
       "href": "notes/2026-04-04-hamel-parallel-note.html",
       "tags": [
         "hamel-integrator",
