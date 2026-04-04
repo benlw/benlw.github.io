@@ -1,5 +1,5 @@
 window.NOTES_INDEX = {
-  "generatedAt": "2026-04-03T19:56:22.573Z",
+  "generatedAt": "2026-04-04T01:20:27.496Z",
   "items": [
     {
       "date": "2021-01-01",
@@ -15,6 +15,18 @@ window.NOTES_INDEX = {
       ],
       "pinned": true,
       "pinOrder": 2
+    },
+    {
+      "date": "2026-04-04",
+      "title": "摄动 Hamel 场积分子：并行推进动画",
+      "href": "notes/2026-04-04-hamel-parallel-note.html",
+      "tags": [
+        "hamel-integrator",
+        "euler-bernoulli",
+        "beam-dynamics",
+        "animation",
+        "numerical-methods"
+      ]
     },
     {
       "date": "2026-03-10",

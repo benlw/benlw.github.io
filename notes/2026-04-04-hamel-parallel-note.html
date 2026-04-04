@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>摄动 Hamel 场积分子：并行推进动画</title>
+    <meta name="note-date" content="2026-04-04" />
+    <meta
+      name="note-tags"
+      content="hamel-integrator, euler-bernoulli, beam-dynamics, animation, numerical-methods"
+    />
+    <meta name="note-pinned" content="0" />
+    <meta name="note-pin-order" content="" />
+    <link
+      rel="canonical"
+      href="https://5imcs.com/notes/2026-04-04-hamel-parallel-note.html"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 2rem 1rem 3rem;
+        font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+        line-height: 1.75;
+        color: #1f2d38;
+        background: #f6f8f7;
+      }
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        background: #fff;
+        border: 1px solid #d9e3e8;
+        border-radius: 14px;
+        padding: 1.4rem 1.2rem;
+      }
+      h1,
+      h2 {
+        margin: 0.2rem 0 0.7rem;
+        color: #122532;
+      }
+      h1 {
+        font-size: 1.48rem;
+      }
+      h2 {
+        font-size: 1.12rem;
+        margin-top: 1.2rem;
+      }
+      p {
+        margin: 0.5rem 0;
+      }
+      ul,
+      ol {
+        margin: 0.45rem 0 0.6rem 1.25rem;
+      }
+      code {
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+          monospace;
+        font-size: 0.9rem;
+      }
+      a {
+        color: #1b5e7a;
+      }
+      .meta {
+        margin: 0.28rem 0 0.6rem;
+        color: #5b6f7d;
+        font-size: 0.9rem;
+      }
+      .top-links {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.9rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.92rem;
+        flex-wrap: wrap;
+      }
+      .top-links a {
+        color: #1b5e7a;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;
+      }
+      .top-links a:hover {
+        text-decoration: underline;
+      }
+      .summary {
+        margin: 0.7rem 0 0.95rem;
+        padding: 0.7rem 0.8rem;
+        border-left: 3px solid #6ca0b5;
+        background: #f5f9fb;
+        border-radius: 8px;
+      }
+      .summary p {
+        margin: 0;
+      }
+      .figure {
+        margin: 0.8rem 0 0.55rem;
+      }
+      .figure img {
+        display: block;
+        width: 100%;
+        max-width: 720px;
+        margin: 0 auto;
+        border: 1px solid #d9e3e8;
+        border-radius: 10px;
+      }
+      .figure figcaption {
+        margin-top: 0.4rem;
+        color: #5c6f7c;
+        font-size: 0.88rem;
+        text-align: center;
+      }
+      .related-notes {
+        margin-top: 1rem;
+        padding-top: 0.86rem;
+        border-top: 1px dashed #d5e0e6;
+      }
+      .related-notes h2 {
+        margin: 0;
+        font-size: 1.02rem;
+        color: #213643;
+      }
+      .related-notes-mode {
+        margin: 0.26rem 0 0.3rem;
+        font-size: 0.82rem;
+        color: #687a88;
+      }
+      .related-notes-list {
+        margin: 0;
+        padding-left: 1.15rem;
+      }
+      .related-notes-list li {
+        margin: 0.3rem 0;
+        color: #50616f;
+        font-size: 0.9rem;
+      }
+      .related-notes-list a {
+        color: #1b5e7a;
+        text-decoration: none;
+      }
+      .related-notes-list a:hover {
+        text-decoration: underline;
+      }
+      .related-date {
+        margin-right: 0.5rem;
+        color: #6a7884;
+        font-size: 0.8rem;
+        font-variant-numeric: tabular-nums;
+      }
+      .comment-wrapper {
+        margin-top: 1.4rem;
+        padding-top: 1rem;
+        border-top: 1px solid #d9e3e8;
+      }
+      .reading-map {
+        margin: 0 0 0.9rem;
+        border: 1px solid #d9e3e8;
+        border-radius: 10px;
+        background: #f8fbfc;
+        padding: 0.56rem 0.62rem;
+      }
+      .reading-map-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        font-size: 0.84rem;
+        color: #506676;
+      }
+      .reading-map details {
+        margin-top: 0.32rem;
+      }
+      .reading-map summary {
+        color: #1b5e7a;
+        cursor: pointer;
+        font-size: 0.86rem;
+        font-weight: 600;
+      }
+      .reading-map ul {
+        margin: 0.35rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .reading-map li {
+        margin: 0.2rem 0;
+      }
+      .reading-map li.toc-sub {
+        margin-left: 0.58rem;
+      }
+      .reading-map a {
+        color: #1b5e7a;
+        text-decoration: none;
+        font-size: 0.84rem;
+      }
+      .reading-map a:hover {
+        text-decoration: underline;
+      }
+      .reading-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        z-index: 40;
+        pointer-events: none;
+      }
+      .reading-progress-bar {
+        display: block;
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #1b5e7a 0%, #2f8aa8 100%);
+      }
+      .mjx-container {
+        max-width: 100%;
+      }
+      .mjx-container[display="true"] {
+        display: block;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        margin: 0.7rem 0 !important;
+        padding-bottom: 0.12rem;
+      }
+      .mjx-container[display="true"] > mjx-math {
+        min-width: max-content;
+      }
+      @media (max-width: 640px) {
+        body {
+          padding: 1rem 0.8rem 2rem;
+        }
+        main {
+          padding: 1rem 0.85rem;
+        }
+        .top-links {
+          font-size: 0.88rem;
+          margin-bottom: 0.65rem;
+        }
+        .comment-wrapper {
+          margin-top: 1rem;
+          padding-top: 0.8rem;
+        }
+        .reading-map {
+          padding: 0.5rem 0.56rem;
+        }
+        .mjx-container {
+          font-size: 0.96em;
+        }
+      }
+    </style>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [
+            ["$", "$"],
+            ["\\(", "\\)"],
+          ],
+          displayMath: [
+            ["$$", "$$"],
+            ["\\[", "\\]"],
+          ],
+        },
+      };
+    </script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+  </head>
+  <body>
+    <div class="reading-progress" aria-hidden="true">
+      <span class="reading-progress-bar" data-reading-progress-bar></span>
+    </div>
+    <main>
+      <div class="top-links">
+        <a href="../">Back to homepage</a>
+        <a href="./">Back to Notes &amp; Logs</a>
+      </div>
+      <section class="reading-map" data-reading-map>
+        <div class="reading-map-head">
+          <span data-reading-time>--</span>
+          <span data-reading-progress-text>0% read</span>
+        </div>
+        <details data-reading-toc-wrap open>
+          <summary>阅读地图</summary>
+          <ul data-reading-toc></ul>
+        </details>
+      </section>
+      <article data-reading-content>
+        <h1>摄动 Hamel 场积分子：并行推进动画</h1>
+        <p class="meta">
+          2026-04-04 · #hamel-integrator #euler-bernoulli #beam-dynamics #animation
+        </p>
+
+        <p class="summary">
+          这段动画对应主页 Selected Research 中
+          <a href="https://doi.org/10.1002/nme.7603"
+            >Constraint Realization-Based Hamel Field Integrator for Geometrically Exact
+            Euler-Bernoulli Beam Dynamics</a
+          >
+          的摄动积分子单步推进过程。动画展示的是交错网格上一个时间步如何先更新
+          $\zeta^{n+\frac12}$，再由相容性条件更新 $\gamma^{n+1}$。
+        </p>
+
+        <h2>1. 计算步骤</h2>
+        <ol>
+          <li>
+            阶段 1：利用仅依赖相邻节点状态的 Hamel 方程，计算下一步
+            $\zeta^{n+\frac12}$。
+          </li>
+          <li>
+            这一步的局部依赖关系使各节点状态可以独立求解，因此 $\zeta$ 层能够在空间网格上并行更新。
+          </li>
+          <li>
+            阶段 2：再通过相容性条件，确定下一步 $\gamma^{n+1}$。
+          </li>
+          <li>
+            因而 $\gamma$ 层也可以按同样方式在空间网格上并行推进。
+          </li>
+          <li>
+            一个时间步完成后，交错网格上的状态整体前推一层。
+          </li>
+        </ol>
+
+        <h2>2. 动画</h2>
+        <figure class="figure">
+          <img
+            src="media/2026-04-04-hamel-field-integrator/hamel-parallel.gif"
+            alt="Hamel 场积分子在交错网格上的并行计算结构动画"
+          />
+          <figcaption>
+            单步推进被拆成 $\zeta$ 层与 $\gamma$ 层两次并行更新。
+          </figcaption>
+        </figure>
+      </article>
+      <section class="related-notes" data-related-notes hidden>
+        <h2>Related notes</h2>
+        <p class="related-notes-mode" data-related-notes-mode></p>
+        <ul class="related-notes-list" data-related-notes-list></ul>
+      </section>
+      <div class="comment-wrapper">
+        <div
+          data-giscus-lazy
+          data-repo="benlw/benlw.github.io"
+          data-repo-id="MDEwOlJlcG9zaXRvcnkyNDEwMzQwNjU="
+          data-category="Website Comments"
+          data-category-id="DIC_kwDODl3jUc4C25Z4"
+          data-mapping="pathname"
+          data-strict="1"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="top"
+          data-theme="light"
+          data-lang="en"
+          data-loading="lazy"
+        ></div>
+      </div>
+    </main>
+    <script src="notes-index.js" defer></script>
+    <script src="note-related.js" defer></script>
+    <script src="../assets/js/giscus-lazy.js" defer></script>
+    <script src="note-map.js" defer></script>
+  </body>
+</html>

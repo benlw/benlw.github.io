@@ -29,6 +29,11 @@ window.SITE_DATA = {
           label: "DOI",
           href: "https://doi.org/10.1002/nme.7603",
         },
+        {
+          icon: "fa-regular fa-note-sticky",
+          label: "Note",
+          href: "notes/2026-04-04-hamel-parallel-note.html",
+        },
       ],
     },
     {
