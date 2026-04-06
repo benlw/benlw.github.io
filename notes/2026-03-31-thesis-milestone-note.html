@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>先记一声感谢</title>
+    <meta name="note-date" content="2026-03-31" />
+    <meta
+      name="note-tags"
+      content="phd-thesis, thesis-writing, milestone, pre-defense, blind-review"
+    />
+    <meta name="note-pinned" content="0" />
+    <meta name="note-pin-order" content="" />
+    <link rel="canonical" href="https://5imcs.com/notes/2026-03-31-thesis-milestone-note.html" />
+    <style>
+      body {
+        margin: 0;
+        padding: 2rem 1rem 3rem;
+        font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+        line-height: 1.72;
+        color: #1f2d38;
+        background: #f6f8f7;
+      }
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        background: #fff;
+        border: 1px solid #d9e3e8;
+        border-radius: 14px;
+        padding: 1.4rem 1.2rem;
+      }
+      .top-links {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.9rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.92rem;
+        flex-wrap: wrap;
+      }
+      .top-links a {
+        color: #1b5e7a;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;
+      }
+      .top-links a:hover {
+        text-decoration: underline;
+      }
+      h1,
+      h2 {
+        color: #162a36;
+      }
+      h1 {
+        margin: 0.2rem 0 0.5rem;
+      }
+      h2 {
+        margin: 1.3rem 0 0.5rem;
+        font-size: 1.06rem;
+      }
+      p {
+        margin: 0.52rem 0;
+      }
+      .meta {
+        margin: 0.28rem 0 0.7rem;
+        color: #5b6f7d;
+        font-size: 0.9rem;
+      }
+      .lead {
+        margin: 0.8rem 0 1rem;
+        padding-left: 0.9rem;
+        border-left: 3px solid #d2e0e8;
+        color: #223743;
+      }
+      .reading-map {
+        margin: 0 0 0.9rem;
+        border: 1px solid #d9e3e8;
+        border-radius: 10px;
+        background: #f8fbfc;
+        padding: 0.56rem 0.62rem;
+      }
+      .reading-map-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        font-size: 0.84rem;
+        color: #506676;
+      }
+      .reading-map details {
+        margin-top: 0.32rem;
+      }
+      .reading-map summary {
+        color: #1b5e7a;
+        cursor: pointer;
+        font-size: 0.86rem;
+        font-weight: 600;
+      }
+      .reading-map ul {
+        margin: 0.35rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .reading-map li {
+        margin: 0.2rem 0;
+      }
+      .reading-map li.toc-sub {
+        margin-left: 0.58rem;
+      }
+      .reading-map a {
+        color: #1b5e7a;
+        text-decoration: none;
+        font-size: 0.84rem;
+      }
+      .reading-map a:hover {
+        text-decoration: underline;
+      }
+      .reading-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        z-index: 40;
+        pointer-events: none;
+      }
+      .reading-progress-bar {
+        display: block;
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #1b5e7a 0%, #2f8aa8 100%);
+      }
+      ul {
+        margin: 0.45rem 0 0.55rem 1.1rem;
+        padding: 0;
+      }
+      li {
+        margin: 0.25rem 0;
+      }
+      .figure {
+        width: 72%;
+        margin: 0.95rem auto;
+      }
+      .figure img {
+        display: block;
+        width: 100%;
+        border: 1px solid #d9e3e8;
+        border-radius: 10px;
+      }
+      figcaption {
+        margin-top: 0.35rem;
+        font-size: 0.84rem;
+        color: #5d6f7b;
+        text-align: center;
+      }
+      .related-notes {
+        margin-top: 1rem;
+        padding-top: 0.86rem;
+        border-top: 1px dashed #d5e0e6;
+      }
+      .related-notes h2 {
+        margin: 0;
+        font-size: 1.02rem;
+        color: #213643;
+      }
+      .related-notes-mode {
+        margin: 0.26rem 0 0.3rem;
+        font-size: 0.82rem;
+        color: #687a88;
+      }
+      .related-notes-list {
+        margin: 0;
+        padding-left: 1.15rem;
+      }
+      .related-notes-list li {
+        margin: 0.3rem 0;
+        color: #50616f;
+        font-size: 0.9rem;
+      }
+      .related-notes-list a {
+        color: #1b5e7a;
+        text-decoration: none;
+      }
+      .related-notes-list a:hover {
+        text-decoration: underline;
+      }
+      .related-date {
+        margin-right: 0.5rem;
+        color: #6a7884;
+        font-size: 0.8rem;
+        font-variant-numeric: tabular-nums;
+      }
+      .comment-wrapper {
+        margin-top: 1.4rem;
+        padding-top: 1rem;
+        border-top: 1px solid #d9e3e8;
+      }
+      @media (max-width: 640px) {
+        body {
+          padding: 1rem 0.8rem 2rem;
+        }
+        main {
+          padding: 1rem 0.85rem;
+        }
+        .top-links {
+          font-size: 0.88rem;
+          margin-bottom: 0.65rem;
+        }
+        .reading-map {
+          padding: 0.5rem 0.56rem;
+        }
+        .figure {
+          width: 100%;
+        }
+        .comment-wrapper {
+          margin-top: 1rem;
+          padding-top: 0.8rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reading-progress" aria-hidden="true">
+      <span class="reading-progress-bar" data-reading-progress-bar></span>
+    </div>
+    <main>
+      <div class="top-links">
+        <a href="../">Back to homepage</a>
+        <a href="./">Back to Notes &amp; Logs</a>
+      </div>
+      <section class="reading-map" data-reading-map>
+        <div class="reading-map-head">
+          <span data-reading-time>--</span>
+          <span data-reading-progress-text>0% read</span>
+        </div>
+        <details data-reading-toc-wrap open>
+          <summary>阅读地图</summary>
+          <ul data-reading-toc></ul>
+        </details>
+      </section>
+      <article data-reading-content>
+        <h1>先记一声感谢</h1>
+        <p class="meta">
+          2026-03-31 · #phd-thesis #thesis-writing #milestone #pre-defense #blind-review
+        </p>
+
+        <p>
+          今天去打印店打印了几份博士论文，后来又去北湖晒了会太阳。走到这里，忽然更想先记下一声感谢。论文其实很早之前就已经进入尾声，但真正走到送印这一刻，才会更清楚地知道：这篇论文背后，也留着一路上收到的善意、支持、讨论与陪伴。
+        </p>
+
+        <p class="lead">
+          如果把这份论文当作一个长期迭代的版本库来看，那么从
+          <code>v0.0.1</code> 走到 <code>v0.0.97</code>，距离
+          <code>v1.0.0</code> 已经不远了。
+        </p>
+
+        <h2>1. 感谢</h2>
+        <p>
+          回头看这些年，真正支撑我走到这里的，不只是论文里的公式、证明和文字，也是在许多具体日子里得到的关照与扶持。给予方向与耐心的师长，彼此启发、相互扶持的同伴，始终包容与陪伴的家人，图书馆那些洒满阳光又安静的时光，以及学术长河中那些先行者留下的成果，共同构成了这篇论文背后的底色。也正因为如此，走到这里，心里最先浮现出来的不是“终于快写完了”，而是一句很朴素的感谢。
+        </p>
+        <p>
+          接下来的环节，就是预答辩以及最终的盲审。写下这篇 note，也算是在这个节点上，先向这一路上的善意认真道一声谢。
+        </p>
+
+        <h2>2. 这个阶段的一个简短注脚</h2>
+        <figure class="figure">
+          <img
+            src="media/2026-03-31-thesis-milestone/thesis-latex-repo.webp"
+            alt="博士论文 LaTeX 仓库首页截图，显示仓库已接近一百次提交"
+          />
+        </figure>
+
+        <figure class="figure">
+          <img
+            src="media/2026-03-31-thesis-milestone/contribution-activity.webp"
+            alt="GitHub Contribution Activity 截图，显示 2026 年 3 月的集中提交记录"
+          />
+        </figure>
+
+      </article>
+      <section class="related-notes" data-related-notes hidden>
+        <h2>Related notes</h2>
+        <p class="related-notes-mode" data-related-notes-mode></p>
+        <ul class="related-notes-list" data-related-notes-list></ul>
+      </section>
+      <div class="comment-wrapper">
+        <div
+          data-giscus-lazy
+          data-repo="benlw/benlw.github.io"
+          data-repo-id="MDEwOlJlcG9zaXRvcnkyNDEwMzQwNjU="
+          data-category="Website Comments"
+          data-category-id="DIC_kwDODl3jUc4C25Z4"
+          data-mapping="pathname"
+          data-strict="1"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="top"
+          data-theme="light"
+          data-lang="en"
+          data-loading="lazy"
+        ></div>
+      </div>
+    </main>
+    <script src="notes-index.js" defer></script>
+    <script src="note-related.js" defer></script>
+    <script src="../assets/js/giscus-lazy.js" defer></script>
+    <script src="note-map.js" defer></script>
+  </body>
+</html>
