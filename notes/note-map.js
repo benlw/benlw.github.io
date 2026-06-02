@@ -53,6 +53,51 @@
       .replace(/'/g, "&#39;");
   }
 
+  function installResponsiveMapLayout() {
+    if (document.getElementById("reading-map-responsive-layout")) return;
+
+    const style = document.createElement("style");
+    style.id = "reading-map-responsive-layout";
+    style.textContent = `
+      @media (min-width: 1120px) {
+        body.has-reading-sidebar main {
+          max-width: 1120px;
+          display: grid;
+          grid-template-columns: minmax(220px, 250px) minmax(0, 850px);
+          column-gap: 1rem;
+          align-items: start;
+        }
+
+        body.has-reading-sidebar .top-links {
+          grid-column: 1 / -1;
+        }
+
+        body.has-reading-sidebar [data-reading-map] {
+          grid-column: 1;
+          grid-row: 2;
+          position: sticky;
+          top: 1rem;
+          max-height: calc(100vh - 2rem);
+          overflow: auto;
+          margin: 0;
+        }
+
+        body.has-reading-sidebar [data-reading-content] {
+          grid-column: 2;
+          grid-row: 2;
+          min-width: 0;
+        }
+
+        body.has-reading-sidebar [data-related-notes],
+        body.has-reading-sidebar .comment-wrapper {
+          grid-column: 2;
+          min-width: 0;
+        }
+      }
+    `;
+    document.head.append(style);
+  }
+
   const contentNode = document.querySelector("[data-reading-content]");
   const mapNode = document.querySelector("[data-reading-map]");
   if (!contentNode || !mapNode) return;
@@ -63,10 +108,16 @@
   const progressTextNode = mapNode.querySelector("[data-reading-progress-text]");
   const progressBarNode = document.querySelector("[data-reading-progress-bar]");
   const isZh = document.documentElement.lang === "zh-CN";
+  const desktopSidebarQuery = window.matchMedia("(min-width: 1120px)");
 
   const headings = Array.from(contentNode.querySelectorAll("h2, h3"));
   const usedIds = new Set();
   headings.forEach((heading) => ensureHeadingId(heading, usedIds));
+  const collapsedTocThreshold = 10;
+  if (headings.length > 0) {
+    document.body.classList.add("has-reading-sidebar");
+    installResponsiveMapLayout();
+  }
 
   if (tocNode) {
     if (headings.length === 0) {
@@ -80,6 +131,9 @@
           )}</a></li>`;
         })
         .join("");
+      if (tocWrap && headings.length > collapsedTocThreshold) {
+        tocWrap.open = desktopSidebarQuery.matches;
+      }
     }
   }
 

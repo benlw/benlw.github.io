@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-01T22:18:49.680Z",
+  "generatedAt": "2026-06-02T06:13:04.993Z",
   "items": [
     {
       "date": "2021-01-01",
@@ -15,6 +15,20 @@
       ],
       "pinned": true,
       "pinOrder": 2
+    },
+    {
+      "date": "2026-06-02",
+      "title": "Cloudflare Wrangler 实战：工具站的部署与维护",
+      "href": "notes/2026-06-02-cloudflare-wrangler-subdomain-tools-note.html",
+      "tags": [
+        "cloudflare",
+        "wrangler",
+        "workers",
+        "email",
+        "pastebin",
+        "image-hosting",
+        "self-hosted"
+      ]
     },
     {
       "date": "2026-04-04",
