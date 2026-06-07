@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>先记一声感谢</title>
+    <title>致谢页之外</title>
     <meta name="note-date" content="2026-03-31" />
     <meta
       name="note-tags"
@@ -71,6 +71,69 @@
         padding-left: 0.9rem;
         border-left: 3px solid #d2e0e8;
         color: #223743;
+      }
+      .timeline-story {
+        margin: 1.05rem 0 0;
+      }
+      .timeline-entry {
+        display: grid;
+        grid-template-columns: 6.8rem 1rem minmax(0, 1fr);
+        column-gap: 0.78rem;
+        position: relative;
+        margin: 0;
+        padding-bottom: 1.45rem;
+      }
+      .timeline-entry:last-child {
+        padding-bottom: 0;
+      }
+      .timeline-date {
+        padding-top: 0.18rem;
+        color: #5f7280;
+        font-size: 0.86rem;
+        font-variant-numeric: tabular-nums;
+        text-align: right;
+        white-space: nowrap;
+      }
+      .timeline-marker {
+        position: relative;
+        min-height: 100%;
+      }
+      .timeline-marker::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 0.55rem;
+        bottom: -1.45rem;
+        width: 1px;
+        background: #c8d8e0;
+        transform: translateX(-50%);
+      }
+      .timeline-entry:last-child .timeline-marker::before {
+        bottom: 0.55rem;
+      }
+      .timeline-marker::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 0.32rem;
+        width: 0.52rem;
+        height: 0.52rem;
+        border: 2px solid #8fb0bf;
+        border-radius: 999px;
+        background: #fff;
+        transform: translateX(-50%);
+      }
+      .timeline-content {
+        min-width: 0;
+      }
+      .timeline-content h2 {
+        margin: 0 0 0.45rem;
+      }
+      .timeline-content h3 {
+        margin: 1rem 0 0.36rem;
+        color: #1e3542;
+        font-size: 1rem;
+        line-height: 1.45;
       }
       .reading-map {
         margin: 0 0 0.9rem;
@@ -212,6 +275,45 @@
         .figure {
           width: 100%;
         }
+        .timeline-story {
+          margin-top: 0.95rem;
+        }
+        .timeline-entry {
+          grid-template-columns: 1rem minmax(0, 1fr);
+          column-gap: 0.7rem;
+          padding-bottom: 1.35rem;
+        }
+        .timeline-date {
+          grid-column: 2;
+          grid-row: 1;
+          padding-top: 0;
+          margin-bottom: 0.08rem;
+          text-align: left;
+          font-size: 0.82rem;
+        }
+        .timeline-marker {
+          grid-column: 1;
+          grid-row: 1 / span 2;
+        }
+        .timeline-marker::before {
+          top: 0.32rem;
+          bottom: -1.35rem;
+        }
+        .timeline-entry:last-child .timeline-marker::before {
+          bottom: 0.52rem;
+        }
+        .timeline-marker::after {
+          top: 0.2rem;
+          width: 0.46rem;
+          height: 0.46rem;
+        }
+        .timeline-content {
+          grid-column: 2;
+          grid-row: 2;
+        }
+        .timeline-content h2 {
+          font-size: 1.05rem;
+        }
         .comment-wrapper {
           margin-top: 1rem;
           padding-top: 0.8rem;
@@ -239,64 +341,122 @@
         </details>
       </section>
       <article data-reading-content>
-        <h1>先记一声感谢</h1>
+        <h1>致谢页之外</h1>
         <p class="meta">
           2026-03-31 · #phd-thesis #thesis-writing #milestone #pre-defense #blind-review
         </p>
 
-        <p>
-          今天去打印店打印了几份博士论文，后来又去北湖晒了会太阳。走到这里，忽然更想先记下一声感谢。论文其实很早之前就已经进入尾声，但真正走到送印这一刻，才会更清楚地知道：这篇论文背后，也留着一路上收到的善意、支持、讨论与陪伴。
-        </p>
+        <section class="timeline-story" aria-label="博士论文收尾时间轴">
+          <section class="timeline-entry" id="timeline-2026-03-31">
+            <div class="timeline-date">
+              <time datetime="2026-03-31">2026-03-31</time>
+            </div>
+            <div class="timeline-marker" aria-hidden="true"></div>
+            <div class="timeline-content">
+              <h2>打印论文，预答辩</h2>
+              <p>
+                今天去学服打印了几份论文用于预答辩，后来又去北湖晒了会太阳。走到这里，忽然更想先记下一声感谢。其实很早之前论文就已经进入尾声，但真正把它打印出来、拿在手里时，才更清楚地意识到这背后也一路留着许多善意、支持、讨论与陪伴。
+              </p>
 
-        <p class="lead">
-          如果把这份论文当作一个长期迭代的版本库来看，那么从
-          <code>v0.0.1</code> 走到 <code>v0.0.97</code>，距离
-          <code>v1.0.0</code> 已经不远了。
-        </p>
+              <p>
+                回头看这些年，真正支撑我走到这里的，不只是论文里的公式、证明和文字，也是在许多具体日子里得到的关照与扶持。给予方向与耐心指导的师长，彼此启发、相互鼓励的同伴，始终包容与陪伴的家人，图书馆那些洒满阳光又安静的时光，以及学术长河中先行者留下的思考与探索，共同构成了论文背后的底色。
+              </p>
+              <p>
+                接下来便是正式的预答辩和盲审环节，先向这一路上的善意认真道一声谢。
+              </p>
 
-        <h2>1. 感谢</h2>
-        <p>
-          回头看这些年，真正支撑我走到这里的，不只是论文里的公式、证明和文字，也是在许多具体日子里得到的关照与扶持。给予方向与耐心的师长，彼此启发、相互扶持的同伴，始终包容与陪伴的家人，图书馆那些洒满阳光又安静的时光，以及学术长河中那些先行者留下的成果，共同构成了这篇论文背后的底色。也正因为如此，走到这里，心里最先浮现出来的不是“终于快写完了”，而是一句很朴素的感谢。
-        </p>
-        <p>
-          接下来的环节，就是预答辩以及最终的盲审。写下这篇 note，也算是在这个节点上，先向这一路上的善意认真道一声谢。
-        </p>
+              <p class="lead">
+                论文修订从
+                <code>v0.0.1</code> 走到 <code>v0.0.97</code>，距离
+                <code>v1.0.0</code> 已经不远了。
+              </p>
 
-        <h2>2. 预答辩</h2>
-        <figure class="figure">
-          <img
-            src="media/2026-03-31-thesis-milestone/thesis-latex-repo.webp"
-            alt="博士论文 LaTeX 仓库首页截图，显示仓库已接近一百次提交"
-          />
-        </figure>
+              <figure class="figure">
+                <img
+                  src="media/2026-03-31-thesis-milestone/thesis-latex-repo.webp"
+                  alt="博士论文 LaTeX 仓库首页截图，显示仓库已接近一百次提交"
+                />
+              </figure>
 
-        <figure class="figure">
-          <img
-            src="media/2026-03-31-thesis-milestone/contribution-activity.webp"
-            alt="GitHub Contribution Activity 截图，显示 2026 年 3 月的集中提交记录"
-          />
-        </figure>
+              <figure class="figure">
+                <img
+                  src="media/2026-03-31-thesis-milestone/contribution-activity.webp"
+                  alt="GitHub Contribution Activity 截图，显示 2026 年 3 月的集中提交记录"
+                />
+              </figure>
+            </div>
+          </section>
 
-        <h2>3. 论文送审</h2>
-        <p class="lead">
-          2026 年 4 月 16 日，论文正式提交送审。
-        </p>
-        <p>
-          第二天去了西安，参加第三届全国分析力学青年学者学术研讨会。送审之后还能出去开一次会、做一次报告，对我来说反而像是一个很自然的过渡：论文先交出去，自己也暂时从那种反复核对格式和细节的状态里退出来一点。
-        </p>
-        <p>
-          接下来等待盲审结果的这段时间，我想把在西安做的学术报告对应论文再往前推一推。这个题目主要围绕磁控几何精确梁的动力学与控制展开，前面也集中补了一轮文献：从无限维系统的稳定性与控制理论，到 Euler-Bernoulli 梁、Timoshenko 梁、几何精确梁与 Cosserat 连续体的边界控制，再到 port-Hamiltonian、能量塑形和磁控软体机器人的相关工作，脉络已经逐渐清楚了。除此之外，也想把手上的其他学术研究继续往前推进一点。
-        </p>
+          <section class="timeline-entry" id="timeline-2026-04-16">
+            <div class="timeline-date">
+              <time datetime="2026-04-16">2026-04-16</time>
+            </div>
+            <div class="timeline-marker" aria-hidden="true"></div>
+            <div class="timeline-content">
+              <h2>论文正式送审</h2>
+              <p class="lead">
+                2026 年 4 月 16 日，论文正式提交送审。
+              </p>
+              <p>
+                第二天去了西安，参加学术研讨会。送审之后还能出去开一次会、做一次报告，对我来说反而像是一个很自然的过渡：论文先交出去，自己也终于从反复校对格式和细节的状态里退出来一点，重新回到更开阔的学术讨论中。
+              </p>
 
-        <figure class="figure">
-          <img
-            src="media/2026-03-31-thesis-milestone/commits-apr-16.webp"
-            alt="2026 年 4 月 16 日论文送审当天的 GitHub 提交记录截图"
-          />
-          <figcaption>
-            2026 年 4 月 16 日的提交记录。
-          </figcaption>
-        </figure>
+              <figure class="figure">
+                <img
+                  src="media/2026-03-31-thesis-milestone/commits-apr-16.webp"
+                  alt="2026 年 4 月 16 日论文送审当天的 GitHub 提交记录截图"
+                />
+                <figcaption>
+                  2026 年 4 月 16 日的提交记录。
+                </figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <!-- <section class="timeline-entry" id="timeline-2026-05-08">
+            <div class="timeline-date">
+              <time datetime="2026-05-08">2026-05-08</time>
+            </div>
+            <div class="timeline-marker" aria-hidden="true"></div>
+            <div class="timeline-content">
+              <h2>盲审意见返回</h2>
+              <p class="lead">
+                2026 年 5 月 8 日，盲审意见返回。
+              </p>
+              <p>
+                收到盲审意见的那一刻，心里反而安定了一些。感谢好心人在百忙之中细致评阅。再修订论文时，心态和之前有些不太一样了，把一些容易被自己忽略的地方补清楚、说准确。这个节点并不喧闹，却让我对论文多了一份踏实。
+              </p>
+            </div>
+          </section> -->
+
+          <!-- <section class="timeline-entry" id="timeline-2026-05-25">
+            <div class="timeline-date">
+              <time datetime="2026-05-25">2026-05-25</time>
+            </div>
+            <div class="timeline-marker" aria-hidden="true"></div>
+            <div class="timeline-content">
+              <h2>博士论文答辩</h2>
+              <p class="lead">
+                2026 年 5 月 25 日，进行了博士论文答辩。
+              </p>
+              <p>
+
+              </p>
+            </div>
+          </section>
+
+          <section class="timeline-entry" id="timeline-2026-06-04">
+            <div class="timeline-date">
+              <time datetime="2026-06-04">2026-06-04</time>
+            </div>
+            <div class="timeline-marker" aria-hidden="true"></div>
+            <div class="timeline-content">
+              <h2>后记</h2>
+              <p class="lead">
+              </p>
+            </div>
+          </section>
+        </section> -->
 
       </article>
       <section class="related-notes" data-related-notes hidden>
