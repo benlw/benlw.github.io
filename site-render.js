@@ -93,7 +93,7 @@
           .toLowerCase()
           .replace(/[^a-z0-9]+/g, "-")
           .replace(/(^-|-$)/g, "");
-        return `<a class="title-link title-link-${escapeHtml(actionClass)}" href="${escapeHtml(href)}"${linkAttrs(href)}><i class="${escapeHtml(action.icon)}"></i> ${escapeHtml(action.label)}</a>`;
+        return `<a class="title-link title-link-${escapeHtml(actionClass)}" href="${escapeHtml(href)}"${linkAttrs(href)}><i class="${escapeHtml(action.icon)}" aria-hidden="true"></i> ${escapeHtml(action.label)}</a>`;
       })
       .join("");
 
@@ -147,6 +147,7 @@
       node.innerHTML = items
         .map((item) => {
           const idAttr = item.id ? ` id="${escapeHtml(item.id)}"` : "";
+          const actionsHtml = showLinks ? renderActions(item.actions, base) : "";
           const linksHtml =
             showLinks && Array.isArray(item.links)
               ? item.links
@@ -163,7 +164,7 @@
 
           return `<li${idAttr}><span class="outline-title">${escapeHtml(
             item.title
-          )}</span> ${escapeHtml(item.summary)}${linksHtml}</li>`;
+          )}</span>${actionsHtml} ${escapeHtml(item.summary)}${linksHtml}</li>`;
         })
         .join("");
     });

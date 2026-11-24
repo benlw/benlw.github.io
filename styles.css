@@ -470,7 +470,7 @@ body {
   font-weight: 600;
 }
 
-.outline-list a {
+.outline-list a:where(:not(.title-link)) {
   color: var(--brand);
   text-decoration: none;
 }
@@ -504,8 +504,8 @@ body {
   color: #0f5f5a;
 }
 
-.outline-list a:hover,
-.outline-list a:focus-visible {
+.outline-list a:where(:not(.title-link)):hover,
+.outline-list a:where(:not(.title-link)):focus-visible {
   text-decoration: underline;
 }
 

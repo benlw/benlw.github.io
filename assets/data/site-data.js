@@ -135,8 +135,12 @@ window.SITE_DATA = {
       title: "A parallel staggered Hamel field integrator for geometrically exact shell dynamics.",
       summary:
         "We derive a staggered Hamel field integrator for geometrically exact shell dynamics that solves the nodal half-step velocity equations in parallel and then updates the edge strains in both material directions by exact group transport.",
-      links: [
-        { label: "Research note", href: "notes/2026-11-24-hamel-shell-dynamics.html" },
+      actions: [
+        {
+          label: "Note",
+          icon: "fa-regular fa-note-sticky",
+          href: "notes/2026-11-24-hamel-shell-dynamics.html",
+        },
       ],
     },
     {
