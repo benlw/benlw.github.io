@@ -1,24 +1,3 @@
-window.MathJax = {
-  tex: {
-    inlineMath: [['$', '$']],
-    displayMath: [['$$', '$$'], ['\\[', '\\]']],
-    processEscapes: true,
-    processEnvironments: true,
-    tags: 'ams' 
-  },
-  svg: {
-    fontCache: 'global'
-  },
-  loader: {
-    load: ['output/svg', 'input/tex']
-  },
-  options: {
-    renderActions: {
-      addMenu: [0, '', '']
-    }
-  }
-};
-
 const dialog = document.querySelector('.demo-player');
 if (dialog && typeof dialog.showModal === 'function') {
   const video = dialog.querySelector('video');

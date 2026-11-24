@@ -1,0 +1,8 @@
+/* Scroll long displays individually, without clipping inline exponents or fractions. */
+@media screen {
+  mjx-container[jax="CHTML"][display="true"] {
+    max-width: 100%;
+    overflow-x: auto;
+    padding-block: 0.2em;
+  }
+}

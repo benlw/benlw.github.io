@@ -28,3 +28,16 @@ The homepage and `notes/index.html` read the notes index and render items as:
 Notes page UX notes:
 - Search input supports URL sync via `?q=...`.
 - Tags are used for filtering and related-note recommendation.
+
+### Mathematical notation
+
+For an article with equations, enable the two commented math includes in
+`_template.html`. Keep the script after the reading map so that formulas in
+section headings are also typeset in the table of contents. Prose-only notes
+do not need either include.
+
+Write inline mathematics as `\(L^2\)` and display equations as
+`\[ ... \]`. Numbered equations can use `\begin{equation}`,
+`\label{...}` and `\eqref{...}`, as on the 2024 research page. The shared
+MathJax configuration also accepts the dollar delimiters used in older notes.
+No separate per-article configuration is required.

@@ -15,6 +15,7 @@
       rel="canonical"
       href="https://5imcs.com/notes/2026-04-04-hamel-parallel-note.html"
     />
+    <link rel="stylesheet" href="../assets/math.css" />
     <style>
       body {
         margin: 0;
@@ -210,21 +211,6 @@
         height: 100%;
         background: linear-gradient(90deg, #1b5e7a 0%, #2f8aa8 100%);
       }
-      .mjx-container {
-        max-width: 100%;
-      }
-      .mjx-container[display="true"] {
-        display: block;
-        max-width: 100%;
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        margin: 0.7rem 0 !important;
-        padding-bottom: 0.12rem;
-      }
-      .mjx-container[display="true"] > mjx-math {
-        min-width: max-content;
-      }
       @media (max-width: 640px) {
         body {
           padding: 1rem 0.8rem 2rem;
@@ -243,30 +229,8 @@
         .reading-map {
           padding: 0.5rem 0.56rem;
         }
-        .mjx-container {
-          font-size: 0.96em;
-        }
       }
     </style>
-    <script>
-      window.MathJax = {
-        tex: {
-          inlineMath: [
-            ["$", "$"],
-            ["\\(", "\\)"],
-          ],
-          displayMath: [
-            ["$$", "$$"],
-            ["\\[", "\\]"],
-          ],
-        },
-      };
-    </script>
-    <script
-      id="MathJax-script"
-      async
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-    ></script>
   </head>
   <body>
     <div class="reading-progress" aria-hidden="true">
@@ -361,5 +325,6 @@
     <script src="note-related.js" defer></script>
     <script src="../assets/js/giscus-lazy.js" defer></script>
     <script src="note-map.js" defer></script>
+    <script src="../assets/js/site-math.js" defer></script>
   </body>
 </html>
