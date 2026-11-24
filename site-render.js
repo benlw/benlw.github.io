@@ -150,6 +150,7 @@
           const linksHtml =
             showLinks && Array.isArray(item.links)
               ? item.links
+                  .filter((link) => link.href !== node.dataset.omitHref)
                   .map((link) => {
                     const href = withBase(link.href, base);
                     const icon = link.icon
@@ -410,6 +411,12 @@
 
       function renderWithFilter(allItems) {
         const sortedItems = sortNotesItems(normalizeNotesItems(allItems));
+        const stamp = document.querySelector("time[data-site-updated]");
+        if (stamp) {
+          const latest = sortedItems.reduce((date, note) => note.date > date ? note.date : date, stamp.dateTime);
+          stamp.dateTime = latest;
+          stamp.textContent = latest;
+        }
         const query = filterInput ? filterInput.value : "";
         const matchedItems = sortedItems.filter((item) =>
           noteMatchesQuery(item, query)

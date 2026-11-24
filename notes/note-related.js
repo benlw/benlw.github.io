@@ -124,7 +124,8 @@
     const currentTags = parseTags(
       document.querySelector('meta[name="note-tags"]')?.content || ""
     );
-    const currentPath = normalizePathname(window.location.pathname);
+    const canonical = document.querySelector('link[rel="canonical"]');
+    const currentPath = normalizePathname(canonical?.href || window.location.pathname);
 
     try {
       const payload = await loadNotesPayload();

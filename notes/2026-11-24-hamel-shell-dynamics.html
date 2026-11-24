@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A parallel staggered Hamel field integrator for geometrically exact shell dynamics</title>
+    <meta name="note-date" content="2026-11-24" />
+    <meta name="note-tags" content="hamel-integrator, shell-dynamics, parallel-computing, numerical-methods" />
+    <meta name="note-pinned" content="0" />
+    <meta name="note-pin-order" content="" />
+    <meta name="author" content="Benliang_W" />
+    <meta name="description" content="A staggered Hamel field integrator for geometrically exact shells, with numerical examples and parallel scaling results." />
+    <link rel="icon" href="../assets/photo/favicon-32x32.png" />
+    <link rel="canonical" href="https://5imcs.com/notes/2026-11-24-hamel-shell-dynamics.html" />
+    <style>
+      body {
+        margin: 0;
+        padding: 2rem 1rem 3rem;
+        font-family: "Manrope", "Segoe UI", sans-serif;
+        line-height: 1.65;
+        color: #1f2d38;
+        background: #f6f8f7;
+      }
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        background: #fff;
+        border: 1px solid #d9e3e8;
+        border-radius: 14px;
+        padding: 1.4rem 1.2rem;
+      }
+      .top-links {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.9rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.92rem;
+        flex-wrap: wrap;
+      }
+      .top-links a {
+        color: #1b5e7a;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;
+      }
+      .top-links a:hover {
+        text-decoration: underline;
+      }
+      .meta {
+        margin: 0.28rem 0 0.6rem;
+        color: #5b6f7d;
+        font-size: 0.9rem;
+      }
+      .related-notes {
+        margin-top: 1rem;
+        padding-top: 0.86rem;
+        border-top: 1px dashed #d5e0e6;
+      }
+      .related-notes h2 {
+        margin: 0;
+        font-size: 1.02rem;
+        color: #213643;
+      }
+      .related-notes-mode {
+        margin: 0.26rem 0 0.3rem;
+        font-size: 0.82rem;
+        color: #687a88;
+      }
+      .related-notes-list {
+        margin: 0;
+        padding-left: 1.15rem;
+      }
+      .related-notes-list li {
+        margin: 0.3rem 0;
+        color: #50616f;
+        font-size: 0.9rem;
+      }
+      .related-notes-list a {
+        color: #1b5e7a;
+        text-decoration: none;
+      }
+      .related-notes-list a:hover {
+        text-decoration: underline;
+      }
+      .related-date {
+        margin-right: 0.5rem;
+        color: #6a7884;
+        font-size: 0.8rem;
+        font-variant-numeric: tabular-nums;
+      }
+      .comment-wrapper {
+        margin-top: 1.4rem;
+        padding-top: 1rem;
+        border-top: 1px solid #d9e3e8;
+      }
+      .reading-map {
+        margin: 0 0 0.9rem;
+        border: 1px solid #d9e3e8;
+        border-radius: 10px;
+        background: #f8fbfc;
+        padding: 0.56rem 0.62rem;
+      }
+      .reading-map-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        font-size: 0.84rem;
+        color: #506676;
+      }
+      .reading-map details {
+        margin-top: 0.32rem;
+      }
+      .reading-map summary {
+        color: #1b5e7a;
+        cursor: pointer;
+        font-size: 0.86rem;
+        font-weight: 600;
+      }
+      .reading-map ul {
+        margin: 0.35rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .reading-map li {
+        margin: 0.2rem 0;
+      }
+      .reading-map li.toc-sub {
+        margin-left: 0.58rem;
+      }
+      .reading-map a {
+        color: #1b5e7a;
+        text-decoration: none;
+        font-size: 0.84rem;
+      }
+      .reading-map a:hover {
+        text-decoration: underline;
+      }
+      .reading-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        z-index: 40;
+        pointer-events: none;
+      }
+      .reading-progress-bar {
+        display: block;
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #1b5e7a 0%, #2f8aa8 100%);
+      }
+      pre {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      @media (max-width: 640px) {
+        body {
+          padding: 1rem 0.8rem 2rem;
+        }
+        main {
+          padding: 1rem 0.85rem;
+        }
+        .top-links {
+          font-size: 0.88rem;
+          margin-bottom: 0.65rem;
+        }
+        .comment-wrapper {
+          margin-top: 1rem;
+          padding-top: 0.8rem;
+        }
+        pre {
+          padding: 0.62rem;
+        }
+        .reading-map {
+          padding: 0.5rem 0.56rem;
+        }
+      }
+
+      article h1 {
+        font-size: 1.55rem;
+        line-height: 1.3;
+        margin: 0 0 0.45rem;
+      }
+      article h2 { font-size: 1.22rem; margin: 1.5rem 0 0.5rem; }
+      article h3 { font-size: 1.04rem; margin: 1.1rem 0 0.5rem; }
+      .authors { margin: 0.4rem 0 1rem; }
+      figure { margin: 0.8rem 0; }
+      figure img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        margin-inline: auto;
+      }
+      .method img { width: 30rem; }
+      .case:not(.strip) img { max-height: 25rem; object-fit: contain; }
+      figcaption { margin-top: 0.4rem; color: #50616f; font-size: 0.9rem; }
+      .update { padding-left: 1.4rem; }
+      .update li + li { margin-top: 0.35rem; }
+      .plots {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+      @media (max-width: 640px) {
+        .plots { grid-template-columns: minmax(0, 1fr); }
+      }
+      @page { size: A3 portrait; margin: 10mm 12mm; }
+      @media print {
+        body { padding: 0; background: white; font: 11pt/1.3 Georgia, serif; }
+        body.has-reading-sidebar main, main { display: block; border: 0; padding: 0; max-width: none; }
+        .top-links, .reading-progress, .reading-map, .related-notes, .comment-wrapper, .meta { display: none; }
+        article h1 { font-size: 23pt; margin-bottom: 2mm; }
+        article h2 { margin: 3mm 0 2mm; font-size: 16pt; }
+        article h3 { margin: 2mm 0; font-size: 12pt; }
+        .authors { margin: 0 0 3mm; }
+        .method-layout, .gallery, .plots { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 6mm; }
+        .strip { grid-column: 1 / -1; }
+        figure { break-inside: avoid; margin: 1mm 0; }
+        .method img, .plots img { max-height: 46mm; }
+        .strip img { max-height: 48mm; }
+        .case:not(.strip) img { max-height: 58mm; }
+        figcaption { margin-top: 1mm; font-size: 10pt; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reading-progress" aria-hidden="true">
+      <span class="reading-progress-bar" data-reading-progress-bar></span>
+    </div>
+    <main>
+      <div class="top-links">
+        <a href="../index.html">Back to homepage</a>
+        <a href="index.html">Back to Notes &amp; Logs</a>
+      </div>
+      <section class="reading-map" data-reading-map>
+        <div class="reading-map-head">
+          <span data-reading-time>--</span>
+          <span data-reading-progress-text>0% read</span>
+        </div>
+        <details data-reading-toc-wrap open>
+          <summary>Reading map</summary>
+          <ul data-reading-toc></ul>
+        </details>
+      </section>
+      <article data-reading-content>
+        <h1>A parallel staggered Hamel field integrator for geometrically exact shell dynamics</h1>
+        <p class="meta"><time datetime="2026-11-24">2026-11-24</time> · #hamel-integrator #shell-dynamics #parallel-computing #numerical-methods</p>
+        <p class="authors">
+          Zhipeng An, <a href="https://www.researchgate.net/profile/Benliang-Wang-3" target="_blank" rel="noopener noreferrer">Benliang Wang</a>,
+          <a href="https://scholar.google.com/citations?hl=zh-CN&amp;user=szJq95oAAAAJ&amp;view_op=list_works&amp;sortby=pubdate" target="_blank" rel="noopener noreferrer">Donghua Shi</a> and Bin Huang
+        </p>
+        <section aria-labelledby="abstract" class="abstract-section">
+          <h2 id="abstract">Abstract</h2>
+          <p class="abstract">We derive a staggered time integrator for geometrically exact shells from the Hamilton–d’Alembert principle in Hamel’s field formalism. The method couples nodal motion to strain along the mesh edges and preserves closure around initially compatible cells. For smooth solutions on a fixed spatial mesh, consistent initialization gives second-order accuracy in time.</p>
+        </section>
+        <section aria-labelledby="method" class="method">
+          <h2 id="method">One staggered time step</h2>
+          <div class="method-layout">
+            <figure>
+              <img alt="Two spatial mesh layers joined by dashed time lines. Orange diamonds locate the half-step velocities. The shaded face follows one spatial edge between the two layers." height="726" src="media/2026-11-24-hamel-shell-dynamics/staggered-update.png" width="1142"/>
+              <figcaption>The diamonds mark half-step velocities. The shaded face follows one edge from time level <i>n</i> to <i>n</i> + 1.</figcaption>
+            </figure>
+            <ol class="update">
+              <li>
+                <strong>Assemble the forces.</strong> The edge strains at time level <i>n</i> determine the internal forces and moments at the nodes.</li>
+              <li>
+                <strong>Solve at each free node.</strong> With these forces, the applied loads and the preceding half-step momentum, each node solves its own Hamel equation for the new half-step velocity. This velocity gives the rigid-motion increment <i>T</i> at that node.</li>
+              <li>
+                <strong>Advance the mesh.</strong> Each node updates its position and orientation. Each edge uses the increments at its two ends to transport its stored relative motion and recover the new strain. Edges in both mesh directions can advance in parallel.</li>
+            </ol>
+          </div>
+        </section>
+        <section aria-labelledby="results" class="results">
+          <h2 id="results">Numerical results</h2>
+          <div class="gallery">
+            <section aria-labelledby="strip" class="case strip">
+              <h3 id="strip">Rolling a cantilever strip into a circle</h3>
+              <figure>
+                <img alt="Oblique views of the strip at 35% and 70% of the full end moment, followed by its nearly circular profile at full load, viewed along the width." height="829" src="media/2026-11-24-hamel-shell-dynamics/cantilever-strip.png" width="1743"/>
+                <figcaption>At an end moment of 2π<i>EI</i>/<i>L</i>, the analytical centerline makes one full turn. The final panel shows the computed profile in the bending plane, at the same scale as the two oblique views. The tip-to-clamp distance is 0.046% of the initial length <i>L</i>.</figcaption>
+              </figure>
+            </section>
+            <section aria-labelledby="tumbling" class="case">
+              <h3 id="tumbling">Tumbling cylinder</h3>
+              <figure>
+                <img alt="The rotating cylinder at six successive times from zero to five, shown about its moving center." height="790" src="media/2026-11-24-hamel-shell-dynamics/tumbling-cylinder.png" width="693"/>
+                <figcaption>Loading ends at <i>t</i> = 1. The cylinder continues to rotate and flex in free motion. Color shows deformation magnitude normalized by the radius.</figcaption>
+              </figure>
+            </section>
+            <section aria-labelledby="cup" class="case">
+              <h3 id="cup">Buckling and rebound of an open spherical shell</h3>
+              <figure>
+                <img alt="Four configurations at times 0, 2.5, 3.5 and 8.5 show the open shell buckling and rebounding under rim loads." height="988" src="media/2026-11-24-hamel-shell-dynamics/open-spherical-shell.png" width="1320"/>
+                <figcaption>Brank, Korelc and Ibrahimbegović studied this shell under 32 downward rim loads in Example 2 (<em>Computers &amp; Structures</em>, 2003). At point <i>A</i>, the Hamel vertical displacement history over 0 ≤ <i>t</i> ≤ 10 differs by 0.64% in the relative <i>L</i><sup>2</sup> norm from our independent implementation of their energy-conserving finite element scheme (ANS–EC).</figcaption>
+              </figure>
+            </section>
+          </div>
+        </section>
+        <section aria-labelledby="performance" class="performance">
+          <h2 id="performance">Parallel performance on a curved panel</h2>
+          <figure class="scaling">
+            <div class="plots">
+              <img alt="Strong scaling. At 16,641 nodes, four threads give a 2.15-fold speedup over one thread." height="781" src="media/2026-11-24-hamel-shell-dynamics/strong-scaling.png" width="807"/>
+              <img alt="Weak scaling. One, two and four threads take normalized wall times of 1.00, 1.46 and 1.95 as the mesh size grows." height="781" src="media/2026-11-24-hamel-shell-dynamics/weak-scaling.png" width="816"/>
+            </div>
+            <figcaption>On the 16,641-node mesh, 256 steps of the same update kernel took 10.29 s on one thread and 4.79 s on four, a 2.15-fold speedup. Timings are medians of five runs on a four-core Intel Core i5-8259U. Bars show the range across runs.</figcaption>
+          </figure>
+        </section>
+      </article>
+      <section class="related-notes" data-related-notes hidden>
+        <h2>Related notes</h2>
+        <p class="related-notes-mode" data-related-notes-mode></p>
+        <ul class="related-notes-list" data-related-notes-list></ul>
+      </section>
+      <div class="comment-wrapper">
+        <div
+          data-giscus-lazy
+          data-repo="benlw/benlw.github.io"
+          data-repo-id="MDEwOlJlcG9zaXRvcnkyNDEwMzQwNjU="
+          data-category="Website Comments"
+          data-category-id="DIC_kwDODl3jUc4C25Z4"
+          data-mapping="pathname"
+          data-strict="1"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="top"
+          data-theme="light"
+          data-lang="en"
+          data-loading="lazy"
+        ></div>
+      </div>
+    </main>
+    <script src="notes-index.js" defer></script>
+    <script src="note-related.js" defer></script>
+    <script src="../assets/js/giscus-lazy.js" defer></script>
+    <script src="note-map.js" defer></script>
+  </body>
+</html>

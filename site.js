@@ -1,7 +1,8 @@
 (function () {
   function initReveal() {
     const revealNodes = document.querySelectorAll('.reveal');
-    if (!revealNodes.length) return;
+    if (!revealNodes.length || !('IntersectionObserver' in window) ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -13,8 +14,7 @@
         });
       },
       {
-        threshold: 0.12,
-        rootMargin: '0px 0px -40px 0px',
+        threshold: 0,
       }
     );
 
@@ -70,20 +70,6 @@
     });
   }
 
-  function formatDateYYYYMMDD(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
-  function initLastUpdatedDate() {
-    const node = document.querySelector('[data-last-updated]');
-    if (!node) return;
-
-    node.textContent = `Last updated: ${formatDateYYYYMMDD(new Date())}`;
-  }
-
   function initHeatmapFallback() {
     document.querySelectorAll('[data-heatmap]').forEach((block) => {
       const image = block.querySelector('[data-heatmap-img]');
@@ -99,6 +85,5 @@
 
   initReveal();
   initCopyButtons();
-  initLastUpdatedDate();
   initHeatmapFallback();
 })();

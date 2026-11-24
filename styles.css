@@ -607,15 +607,15 @@ body {
   font-size: 0.86rem;
 }
 
-.reveal {
-  opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 0.55s ease, transform 0.55s ease;
-}
+@media screen and (prefers-reduced-motion: no-preference) {
+  .section.reveal.in-view {
+    animation: reveal-section 0.45s ease-out;
+  }
 
-.reveal.in-view {
-  opacity: 1;
-  transform: translateY(0);
+  @keyframes reveal-section {
+    from { opacity: 0.6; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
 }
 
 @media (max-width: 860px) {

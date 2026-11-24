@@ -131,6 +131,15 @@ window.SITE_DATA = {
 
   ongoingResearch: [
     {
+      id: "hamel-shell-dynamics",
+      title: "A parallel staggered Hamel field integrator for geometrically exact shell dynamics.",
+      summary:
+        "We derive a staggered Hamel field integrator for geometrically exact shell dynamics that solves the nodal half-step velocity equations in parallel and then updates the edge strains in both material directions by exact group transport.",
+      links: [
+        { label: "Research note", href: "notes/2026-11-24-hamel-shell-dynamics.html" },
+      ],
+    },
+    {
       id: "magneto-elastic",
       title: "Magneto-elastic Geometrically Exact Beam Control.",
       summary:
@@ -148,13 +157,6 @@ window.SITE_DATA = {
         "Hamel-Field Multi-Agent Deep Reinforcement Learning for Flexible Swarm Encirclement.",
       summary:
         "Within a flexible-swarm formation-control framework, this work develops deep reinforcement learning policies for cooperative encirclement of both stationary and moving targets.",
-    },
-    {
-      id: "leapfrog-multiflexible",
-      title:
-        "Fast Algorithms for Multi-Flexible-Body Dynamics Using Geometrically Exact Beams.",
-      summary:
-        "This study constructs a leapfrog-form integrator for jointed geometrically exact beams to achieve high computational efficiency while preserving qualitatively accurate long-horizon dynamics.",
     },
   ],
 
@@ -177,7 +179,7 @@ window.SITE_DATA = {
       link: {
         icon: "fa-brands fa-github",
         label: "kids directory",
-        href: "https://github.com/benlw/benlw.github.io/tree/main/kids",
+        href: "https://github.com/benlw/benlw.github.io/tree/master/kids",
       },
       suffix: ".",
       subLinks: [

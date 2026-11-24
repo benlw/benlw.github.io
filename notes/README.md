@@ -10,9 +10,11 @@
    - `<meta name="note-pin-order" content="1" />` (smaller number = higher priority)
 5. Add canonical URL in the head:
    - `<link rel="canonical" href="https://5imcs.com/notes/<file-name>.html" />`
-6. Run local checks before commit:
+6. Validate and generate the files before committing:
    - `node tools/validate-notes.mjs`
-7. Commit and push to `master`.
+   - `node tools/build-notes-index.mjs`
+   - `node tools/build-sitemap.mjs`
+7. Push to `master`. Commit the generated files with the article for a single deployment, or let the workflow generate them. When Pages publishes from the root of `master`, the workflow explicitly requests a Pages build after pushing an index update.
 
 After push, GitHub Actions will automatically refresh:
 - `notes/notes-index.json`

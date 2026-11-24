@@ -14,23 +14,9 @@ function cleanText(input) {
     .trim();
 }
 
-function formatDateYYYYMMDD(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
 function normalizeDate(input) {
-  if (!input) return null;
   const raw = cleanText(input);
-
-  const ymdMatch = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (ymdMatch) return raw;
-
-  const parsed = new Date(raw);
-  if (Number.isNaN(parsed.getTime())) return null;
-  return formatDateYYYYMMDD(parsed);
+  return /^\d{4}-\d{2}-\d{2}$/.test(raw) ? raw : null;
 }
 
 function extractTitle(htmlContent, fallback) {
@@ -142,14 +128,12 @@ async function buildNotesIndex() {
 
   for (const fileName of htmlFiles) {
     const fullPath = path.join(notesDir, fileName);
-    const [content, stats] = await Promise.all([
-      fs.readFile(fullPath, "utf8"),
-      fs.stat(fullPath),
-    ]);
+    const content = await fs.readFile(fullPath, "utf8");
 
     const fallbackTitle = fileName.replace(/\.html$/, "");
     const title = extractTitle(content, fallbackTitle);
-    const date = extractDate(content, fileName) || formatDateYYYYMMDD(stats.mtime);
+    const date = extractDate(content, fileName);
+    if (!date) throw new Error(`Missing publication date: ${fileName}`);
     const tags = extractTags(content);
     const pinned = extractPinned(content);
     const pinOrder = extractPinOrder(content);
@@ -169,10 +153,7 @@ async function buildNotesIndex() {
 
   items.sort(compareNotes);
 
-  const payload = {
-    generatedAt: new Date().toISOString(),
-    items,
-  };
+  const payload = { items };
 
   await fs.writeFile(outputFile, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
   await fs.writeFile(

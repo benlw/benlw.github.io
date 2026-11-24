@@ -108,50 +108,16 @@
           </tr>
           <tr>
             <td class="image-container">
-              <img
-                src="control_gains_24_optimize.webp"
-                alt="Simulation Animation"
-                style="width: 54%"
-                loading="lazy"
-                onclick="showAnimation('control_gains_24', 'progressBar_control_gains_24')"
-              />
-              <div
-                class="fullscreen-bg"
-                id="control_gains_24"
-                onclick="hideAnimation('control_gains_24')"
-              >
-                <img
-                  src="control_gains_24.gif"
-                  alt="Simulation Animation"
-                  loading="lazy"
-                />
-                <div class="loading-overlay">
-                  <div class="loading-message">
-                    <!-- 正在加载，请稍候。加载可能较慢，点击任意处退出. -->
-                    Loading in progress, please wait. The loading process may be
-                    slow, click anywhere to exit.
-                  </div>
-                  <div class="progress-bar-container">
-                    <div
-                      class="progress-bar"
-                      id="progressBar_control_gains_24"
-                    ></div>
-                  </div>
-                </div>
-              </div>
+              <a class="demo-preview" href="control_gains_24.mp4" data-original="control_gains_24.gif">
+                <img src="control_gains_24_poster.webp" alt="Motion of the controlled cart-pendulum in a curvature well" style="width: 54%" loading="lazy" />
+                <span>Play simulation</span>
+              </a>
             </td>
             <!-- <td class="video-description"> -->
             <td class="image-description">
-              <p class="red-text">
-                <span
-                  >Click on the GIF to view it in full size. The loading process
-                  may be slow.</span
-                >
-              </p>
               <p>
                 受控系统的运动曲线被约束在一个曲率阱中，直观地解释了曲率阱如何吸引摆向其底部移动.
               </p>
-              <!-- <p class="red-text">点击 GIF 可进入大图。</p> -->
               <p>
                 It is shown that the motion curve of the closed loop system are
                 trapped in a "curvature well".
@@ -163,55 +129,10 @@
           </tr>
           <tr>
             <td class="image-container">
-              <button
-                id="toggleButton_curvature"
-                onclick="toggleImage('image_curvature', 'animation_curvature', 'toggleButton_curvature')"
-                data-text="显示 PNG"
-              >
-                显示 GIF
-              </button>
-              <img
-                src="curvature_vs_control_gains_op.webp"
-                alt="Control Gains Image"
-                style="width: 70%"
-                id="image_curvature"
-              />
-              <!-- <a href="curvature_vs_control_gains.gif">
-                        <img src="curvature_vs_control_gains.webp" alt="Simulation Animation" style="display: none; width: 70%;" 
-                        id="animation_curvature" data-gif="curvature_vs_control_gains.webp">
-                        </a> -->
-              <img
-                src="curvature_vs_control_gains.webp"
-                alt="Simulation Animation"
-                style="display: none; width: 72%"
-                id="animation_curvature"
-                data-gif="curvature_vs_control_gains.webp"
-                onclick="showAnimation('curvature_vs_control_gains','progressBar_curvature_vs_control_gains')"
-              />
-              <div
-                class="fullscreen-bg"
-                id="curvature_vs_control_gains"
-                onclick="hideAnimation('curvature_vs_control_gains')"
-              >
-                <img
-                  src="curvature_vs_control_gains.gif"
-                  alt="Simulation Animation"
-                  loading="lazy"
-                />
-                <div class="loading-overlay">
-                  <div class="loading-message">
-                    <!-- 正在加载，请稍候。加载可能较慢，点击任意处退出. -->
-                    Loading in progress, please wait. The loading process may be
-                    slow, click anywhere to exit.
-                  </div>
-                  <div class="progress-bar-container">
-                    <div
-                      class="progress-bar"
-                      id="progressBar_curvature_vs_control_gains"
-                    ></div>
-                  </div>
-                </div>
-              </div>
+              <a class="demo-preview" href="curvature_vs_control_gains.mp4" data-original="curvature_vs_control_gains.gif">
+                <img src="curvature_vs_control_gains_op.webp" alt="Curvature wells at different control gains" style="width: 70%" loading="lazy" />
+                <span>Play simulation</span>
+              </a>
             </td>
             <td class="image-description">
               <p>
@@ -233,43 +154,10 @@
         <table>
           <tr>
             <td class="image-container">
-              <!-- <button id="toggleButton_geb" onclick="toggleImage('image_geb', 'animation_geb', 'toggleButton_geb')" data-text="显示 PNG">显示 GIF</button>  -->
-              <!-- <a href="geb_hinged_on_cart_under_gravity.gif">
-                        <img src="geb_hinged_on_cart_under_gravity_op.webp" alt="Uncontrolled Flexible Pendulum Under Gravity" style="width: 80%;" id="image_geb">
-                        </a> -->
-              <!-- <img src="geb_hinged_on_cart_under_gravity.gif" alt="Uncontrolled Flexible Pendulum Under Gravity" style="display: none;" id="animation_geb" data-gif="geb_hinged_on_cart_under_gravity.gif" loading="lazy"> -->
-              <img
-                src="geb_hinged_on_cart_under_gravity_op.webp"
-                alt="Uncontrolled Flexible Pendulum Under Gravity"
-                style="width: 80%"
-                loading="lazy"
-                onclick="showAnimation('geb_hinged_on_cart_under_gravity','progressBar_under_gravity')"
-              />
-              <div
-                class="fullscreen-bg"
-                id="geb_hinged_on_cart_under_gravity"
-                onclick="hideAnimation('geb_hinged_on_cart_under_gravity')"
-              >
-                <img
-                  src="geb_hinged_on_cart_under_gravity.gif"
-                  alt="Uncontrolled Flexible Pendulum Under Gravity"
-                  loading="lazy"
-                />
-                <div class="loading-overlay">
-                  <div class="loading-message">
-                    <!-- 正在加载，请稍候。加载可能较慢，点击任意处退出. -->
-                    Loading in progress, please wait. The loading process may be
-                    slow, click anywhere to exit.
-                  </div>
-                  <div class="progress-bar-container">
-                    <div
-                      class="progress-bar"
-                      id="progressBar_under_gravity"
-                    ></div>
-                  </div>
-                </div>
-              </div>
-              <!-- </div> -->
+              <a class="demo-preview" href="geb_hinged_on_cart_under_gravity.mp4" data-original="geb_hinged_on_cart_under_gravity.gif">
+                <img src="geb_hinged_on_cart_under_gravity_op.webp" alt="Free motion of the hinged beam under gravity" style="width: 80%" loading="lazy" />
+                <span>Play simulation</span>
+              </a>
             </td>
             <td class="image-description">
               <p>不施加控制，柔性摆在重力作用下自然下落.</p>
@@ -286,56 +174,10 @@
           </tr>
           <tr>
             <td class="image-container">
-              <button
-                id="toggleButton_geb_with_control"
-                onclick="toggleImage('image_geb_with_control', 'animation_geb_with_control', 'toggleButton_geb_with_control')"
-                data-text="显示 PNG"
-              >
-                显示 GIF
-              </button>
-              <img
-                src="geb_hinged_on_cart_op.webp"
-                alt="Simulation Animation"
-                style="width: 80%"
-                id="image_geb_with_control"
-              />
-              <!-- <a href="geb_hinged_on_cart.gif">
-                        <img src="geb_hinged_on_cart.webp" alt="Simulation Animation" style="display: none;" id="animation_geb_with_control" data-gif="geb_hinged_on_cart.webp"  loading="lazy">
-                        </a> -->
-              <img
-                src="geb_hinged_on_cart.webp"
-                alt="Simulation Animation"
-                style="display: none; width: 80%"
-                id="animation_geb_with_control"
-                data-gif="geb_hinged_on_cart.webp"
-                loading="lazy"
-                onclick="showAnimation('geb_hinged_on_cart','progressBar_geb_hinged_on_cart')"
-              />
-              <div
-                class="fullscreen-bg"
-                id="geb_hinged_on_cart"
-                onclick="hideAnimation('geb_hinged_on_cart')"
-              >
-                <img
-                  src="geb_hinged_on_cart.gif"
-                  alt="Simulation Animation"
-                  loading="lazy"
-                />
-                <div class="loading-overlay">
-                  <div class="loading-message">
-                    <!-- 正在加载，请稍候。加载可能较慢，点击任意处退出. -->
-                    Loading in progress, please wait. The loading process may be
-                    slow, click anywhere to exit.
-                  </div>
-                  <div class="progress-bar-container">
-                    <div
-                      class="progress-bar"
-                      id="progressBar_geb_hinged_on_cart"
-                    ></div>
-                  </div>
-                </div>
-              </div>
-              <!-- </div> -->
+              <a class="demo-preview" href="geb_hinged_on_cart.mp4" data-original="geb_hinged_on_cart.gif">
+                <img src="geb_hinged_on_cart_op.webp" alt="Stabilization of the hinged beam on a moving cart" style="width: 80%" loading="lazy" />
+                <span>Play simulation</span>
+              </a>
             </td>
             <td class="image-description">
               <p>
@@ -352,6 +194,15 @@
           </tr>
         </table>
       </section>
+      <dialog class="demo-player" aria-labelledby="demo-title">
+        <div class="demo-heading">
+          <strong id="demo-title">Simulation</strong>
+          <form method="dialog"><button autofocus>Close</button></form>
+        </div>
+        <video controls playsinline loop preload="none" aria-labelledby="demo-title"></video>
+        <p role="status" hidden>This browser could not play the video.</p>
+        <a class="demo-original">View the original GIF</a>
+      </dialog>
       <div class="comment-wrapper">
         <div
           data-giscus-lazy
